@@ -1,7 +1,15 @@
 <script setup lang="ts">
-import HelloWorld from '~/components/HelloWorld.vue'
+import Provider from '~/components/common/Provider.vue'
 </script>
 
 <template>
-  <HelloWorld />
+  <Provider>
+    <RouterView #default="{ Component }">
+      <Transition name="fade" mode="out-in">
+        <KeepAlive>
+          <component :is="Component" />
+        </KeepAlive>
+      </Transition>
+    </RouterView>
+  </Provider>
 </template>
