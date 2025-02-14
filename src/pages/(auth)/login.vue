@@ -10,8 +10,8 @@ const authStore = useAuthStore()
 const { rememberMe } = storeToRefs(authStore)
 
 const formState = reactive({
-  username: '',
-  password: '',
+  username: 'root',
+  password: '123456',
 })
 
 function login() {
@@ -33,12 +33,14 @@ function login() {
         </h2>
       </div>
       <NForm class="mt-8 space-y-6" @submit.prevent="login">
-        <div class="">
+        <div class="space-y-4">
           <NFormItem label="用户名" path="username">
             <NInput
               v-model:value="formState.username"
               name="username"
               placeholder="用户名"
+              clearable
+              size="large"
             />
           </NFormItem>
           <NFormItem label="密码" path="password">
@@ -47,6 +49,8 @@ function login() {
               name="password"
               type="password"
               placeholder="密码"
+              clearable
+              size="large"
             />
           </NFormItem>
         </div>
@@ -54,9 +58,9 @@ function login() {
         <div class="flex-between">
           <NCheckbox v-model:checked="rememberMe" label="记住我" />
           <div class="text-sm">
-            <router-link to="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
+            <RouterLink to="/register" class="font-medium">
               注册账户
-            </router-link>
+            </RouterLink>
           </div>
         </div>
 
