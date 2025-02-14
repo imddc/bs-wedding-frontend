@@ -10,14 +10,18 @@ const authStore = useAuthStore()
 const { rememberMe } = storeToRefs(authStore)
 
 const formState = reactive({
-  username: 'root',
-  password: '123456',
+  username: '',
+  password: '',
 })
 
 function login() {
   // todo: 实现登录逻辑
-  window.$message.success('登录成功')
-  router.push('/')
+  const message = window.$message.success('登录成功')
+  router.push('/').then(() => {
+    setTimeout(() => {
+      message.destroy()
+    }, 1000)
+  })
 }
 </script>
 
