@@ -18,8 +18,6 @@
   --success: #50fa7b;
   --warning: #f1fa8c;
   --error: #ff5555;
-
-  color-scheme: light;
 }
 
 :root.dark {
@@ -31,6 +29,4 @@
   --success: #50fa7b;
   --warning: #f1fa8c;
   --error: #ff5555;
-
-  color-scheme: dark;
 }
