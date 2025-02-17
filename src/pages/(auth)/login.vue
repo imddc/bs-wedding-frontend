@@ -29,7 +29,7 @@ function login() {
     <div class="max-w-md w-full space-y-8">
       <!-- 头部 -->
       <header>
-        <!-- <img class="mx-auto h-12 w-auto" src="/logo.svg" alt="Logo"> -->
+        <img class="mx-auto h-24 w-auto" src="/src/assets/wedding-ring.png" alt="Logo">
         <h2 class="mt-6 text-center text-3xl font-extrabold">
           {{ authType === 'login' ? '登录到您的账户' : '注册账户' }}
         </h2>
