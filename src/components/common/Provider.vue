@@ -43,7 +43,7 @@ const NaiveProviderContent = defineComponent({
 </script>
 
 <template>
-  <NConfigProvider :theme="theme" :theme-overrides="themeOverrides">
+  <NConfigProvider :theme="theme" :theme-overrides="themeOverrides" class="h-full">
     <NMessageProvider>
       <NDialogProvider>
         <NLoadingBarProvider>

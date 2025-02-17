@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { useDark } from '@vueuse/core'
+import { Moon, Sun } from 'lucide-vue-next'
 import { toggleDark } from '~/utils/toggleDark'
 
 const isDark = useDark()
@@ -8,6 +8,9 @@ const isDark = useDark()
 
 <template>
   <button type="button" class="flex-center" @click="toggleDark">
-    <Icon :icon="!isDark ? 'lucide:sun' : 'lucide:moon'" class="size-6" />
+    <Transition name="fade">
+      <Sun v-if="isDark" class="size-6" />
+      <Moon v-else class="size-6" />
+    </Transition>
   </button>
 </template>

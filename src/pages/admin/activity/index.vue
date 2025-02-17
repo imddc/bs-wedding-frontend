@@ -4,10 +4,8 @@
 
 <template>
   <div>
-    活动页面
+    活动管理页面
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

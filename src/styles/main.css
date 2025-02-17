@@ -7,7 +7,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  @apply bg-background text-primary;
+  @apply bg-background text-primary min-h-screen;
 }
 
 ::view-transition-new(root),

@@ -317,13 +317,6 @@ export default antfu(
             'sibling',
             'index',
           ],
-          pathGroups: [
-            {
-              pattern: '~/**',
-              group: 'external',
-              position: 'after',
-            },
-          ],
         },
       ],
     },
