@@ -198,6 +198,8 @@ async function loadSectionData(section: string) {
         case 'wedding-plan':
           weddingPlan.value = data.data
           break
+        default:
+          break
       }
       message.success('数据加载成功')
     } else {

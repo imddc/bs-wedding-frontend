@@ -2,15 +2,13 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { NButton, NCarousel, NModal } from 'naive-ui'
-
-// Import components
 import ServiceCard from '~/components/home/ServiceCard.vue'
 import FeatureItem from '~/components/home/FeatureItem.vue'
 import TestimonialSlide from '~/components/home/TestimonialSlide.vue'
 import StatisticItem from '~/components/home/StatisticItem.vue'
 import RegisterForm from '~/components/home/RegisterForm.vue'
-
 import Browser from '~/components/home/module/photography/Browser.vue'
+import Package from '~/components/home/module/photography/Package.vue'
 import { testimonials } from './helper'
 
 const router = useRouter()
@@ -74,6 +72,7 @@ onMounted(() => {
     </section>
 
     <Browser id="browser" />
+    <Package />
 
     <!-- Main Services Section -->
     <section class="py-20 bg-white">

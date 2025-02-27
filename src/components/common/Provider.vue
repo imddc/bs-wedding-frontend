@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  lightTheme,
   NConfigProvider,
   NDialogProvider,
   NLoadingBarProvider,
@@ -40,7 +39,7 @@ const NaiveProviderContent = defineComponent({
 </script>
 
 <template>
-  <NConfigProvider :theme="lightTheme" :theme-overrides="themeOverrides" class="h-full">
+  <NConfigProvider :theme-overrides="themeOverrides" class="h-full">
     <NMessageProvider>
       <NDialogProvider>
         <NLoadingBarProvider>
