@@ -20,7 +20,6 @@ import ProfileInfo from '~/components/profile/ProfileInfo.vue'
 import OrdersPanel from '~/components/profile/OrdersPanel.vue'
 import FavoritesPanel from '~/components/profile/FavoritesPanel.vue'
 import MessagesPanel from '~/components/profile/MessagesPanel.vue'
-import VendorManagementPanel from '~/components/profile/VendorManagementPanel.vue'
 import WeddingPlanPanel from '~/components/profile/WeddingPlanPanel.vue'
 import SettingsPanel from '~/components/profile/SettingsPanel.vue'
 
@@ -341,11 +340,6 @@ onMounted(() => {
           <MessagesPanel
             v-else-if="activeKey === 'messages'"
             :messages="messages"
-          />
-
-          <VendorManagementPanel
-            v-else-if="activeKey.startsWith('vendor-') && isVendor"
-            :vendor-type="activeKey.replace('vendor-', '')"
           />
 
           <WeddingPlanPanel
