@@ -3,13 +3,12 @@ import { computed, defineProps, ref, watch } from 'vue'
 import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NSelect, NSpace, NUpload, useLoadingBar, useMessage } from 'naive-ui'
 import { ShoppingBag } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
-import { OrderService } from '~/services/orderService'
 
 // Import components
-import OrderCard from '@/components/order/OrderCard.vue'
-import PaymentModal from '@/components/order/PaymentModal.vue'
-import ReviewModal from '@/components/order/ReviewModal.vue'
-import CancelOrderModal from '@/components/order/CancelOrderModal.vue'
+import OrderCard from '~/components/order/OrderCard.vue'
+import PaymentModal from '~/components/order/PaymentModal.vue'
+import ReviewModal from '~/components/order/ReviewModal.vue'
+import CancelOrderModal from '~/components/order/CancelOrderModal.vue'
 
 // Define props with TypeScript interface
 interface Order {
