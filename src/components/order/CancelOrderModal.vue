@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, ref, watch } from 'vue'
 import type { FormInst, FormRules } from 'naive-ui'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NSelect, NSpace, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NButton, NForm, NFormItem, NInput, NModal, NSelect, NSpace, useMessage } from 'naive-ui'
 import { OrderService } from '~/services/orderService'
 
 // Define interfaces

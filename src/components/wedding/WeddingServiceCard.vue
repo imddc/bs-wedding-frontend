@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmits, defineProps } from 'vue'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NRate, NSelect, NSpace, NTab, NTabs, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NButton, NCard, NSpace, NTag } from 'naive-ui'
 import type { WeddingService } from '~/components/profile/WeddingPlanPanel.vue'
 
 defineProps<{

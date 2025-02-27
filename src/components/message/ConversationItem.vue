@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
-import { NAvatar, NBadge, NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NImage, NInput, NModal, NPagination, NRate, NSelect, NSpace, NTab, NTabs, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NAvatar, NBadge, NTag } from 'naive-ui'
 import type { Conversation } from '~/components/profile/MessagesPanel.vue'
 
 defineProps<{

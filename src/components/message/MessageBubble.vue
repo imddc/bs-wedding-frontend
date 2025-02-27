@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps, ref } from 'vue'
 import { CheckCheckIcon, CheckCircleIcon, CheckIcon } from 'lucide-vue-next'
-import { NAvatar, NButtonGroup, NCard, NDivider, NForm, NFormItem, NImage, NInput, NModal, NPagination, NRate, NSelect, NSpace, NTab, NTabs, NTag, NTooltip, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NAvatar, NImage, NModal, NTooltip } from 'naive-ui'
 import type { Message } from '~/components/profile/MessagesPanel.vue'
 
 const props = defineProps<{

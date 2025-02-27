@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineProps, ref, watch } from 'vue'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NSelect, NSpace, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NButton, NButtonGroup, NCard, NPagination, useMessage } from 'naive-ui'
 import { ShoppingBag } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 
@@ -179,7 +179,7 @@ function handleCancelSuccess(orderId: number) {
       </template>
 
       <div v-if="filteredOrders.length === 0" class="text-center py-16">
-        <ShoppingBag class="mx-auto mb-4 text-gray-300" size="48" />
+        <ShoppingBag class="mx-auto mb-4 text-gray-300" :size="48" />
         <p class="text-gray-500">
           暂无相关订单
         </p>

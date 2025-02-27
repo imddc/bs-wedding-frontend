@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmits, defineProps, reactive, ref } from 'vue'
-import { NAvatar, NButton, NButtonGroup, NCard, NColorPicker, NDivider, NForm, NFormItem, NInput, NInputGroup, NList, NListItem, NModal, NPagination, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSpace, NSwitch, NTab, NTabPane, NTabs, NTag, NThing, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NAvatar, NButton, NCard, NColorPicker, NDivider, NList, NListItem, NModal, NRadioButton, NRadioGroup, NSelect, NSlider, NSpace, NSwitch, NTabPane, NTabs, NTag, NThing, useMessage } from 'naive-ui'
 import {
   Globe,
   Laptop,

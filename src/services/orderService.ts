@@ -38,8 +38,8 @@ export interface Review {
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 })
 
 // Add request interceptor to include auth token
@@ -47,11 +47,11 @@ apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken')
     if (token && config.headers) {
-      config.headers['Authorization'] = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`
     }
     return config
   },
-  (error) => Promise.reject(error)
+  error => Promise.reject(error),
 )
 
 export const OrderService = {
@@ -66,21 +66,21 @@ export const OrderService = {
   },
 
   // Create order
-  createOrder(orderData: any): Promise<ApiResponse<{orderId: number}>> {
+  createOrder(orderData: any): Promise<ApiResponse<{ orderId: number }>> {
     return apiClient.post('/orders', orderData)
   },
 
   // Pay order
   payOrder(orderId: number, paymentMethod: string): Promise<ApiResponse<any>> {
     return apiClient.post(`/orders/${orderId}/pay`, {
-      paymentMethod
+      paymentMethod,
     })
   },
 
   // Cancel order
   cancelOrder(orderId: number, reason: string): Promise<ApiResponse<any>> {
     return apiClient.post(`/orders/${orderId}/cancel`, {
-      reason
+      reason,
     })
   },
 
@@ -93,8 +93,8 @@ export const OrderService = {
   submitReview(orderId: number, reviewData: FormData): Promise<ApiResponse<any>> {
     return apiClient.post(`/orders/${orderId}/review`, reviewData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+        'Content-Type': 'multipart/form-data',
+      },
     })
-  }
+  },
 }

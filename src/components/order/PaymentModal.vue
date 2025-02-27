@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, ref, watch } from 'vue'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NRadioButton, NRadioGroup, NSelect, NSpace, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NButton, NDivider, NModal, NRadioButton, NRadioGroup, NSpace, useMessage } from 'naive-ui'
 import { BugIcon } from 'lucide-vue-next'
 import { OrderService } from '~/services/orderService'
 

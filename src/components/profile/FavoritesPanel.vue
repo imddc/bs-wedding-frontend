@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineProps, ref, watch } from 'vue'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NRate, NSelect, NSpace, NTab, NTabs, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NCard, NPagination, NTab, NTabs, useMessage } from 'naive-ui'
 import { Heart } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import { FavoriteService } from '~/services/favoriteService'

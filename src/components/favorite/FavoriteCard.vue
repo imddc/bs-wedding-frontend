@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineEmits, defineProps } from 'vue'
 import { Heart, MessageCircle } from 'lucide-vue-next'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NRate, NSelect, NSpace, NTab, NTabs, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NButton, NCard, NRate, NTag } from 'naive-ui'
 import type { FavoriteItem } from '~/components/profile/FavoritesPanel.vue'
 
 const props = defineProps<{

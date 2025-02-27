@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmits, defineProps } from 'vue'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NSelect, NSpace, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NButton, NCard, NDivider, NTag } from 'naive-ui'
 
 // Define props with TypeScript interface
 interface Order {

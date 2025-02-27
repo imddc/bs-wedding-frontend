@@ -1,6 +1,6 @@
-import type { Activity } from '~/api/activity/type'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import type { Activity } from '~/api/activity/type'
 // import { getActivities } from '~/api/activity'
 
 export const useActivityStore = defineStore('activity', () => {

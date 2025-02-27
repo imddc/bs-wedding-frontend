@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, defineProps, reactive, ref } from 'vue'
 import type { FormInst, FormRules } from 'naive-ui'
-import { NButton, NButtonGroup, NCard, NCascader, NDatePicker, NDivider, NForm, NFormItem, NInput, NInputGroup, NInputNumber, NModal, NPagination, NProgress, NRate, NSelect, NSpace, NStatistic, NTab, NTabs, NTag, NTimeline, NTimelineItem, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NButton, NCard, NCascader, NDatePicker, NDivider, NForm, NFormItem, NInput, NInputGroup, NInputNumber, NModal, NProgress, NSelect, NStatistic, NTag, NTimeline, NTimelineItem, useMessage } from 'naive-ui'
 import {
   BugIcon,
   Copy,
