@@ -11,7 +11,7 @@ useHead({
 <template>
   <NLayout class="flex flex-col h-full">
     <Nav />
-    <NLayoutContent embedded class="grow h-[calc(100vh-4rem)] p-4">
+    <NLayoutContent :native-scrollbar="false" class="grow h-[calc(100vh-4rem)]">
       <RouterView #default="{ Component }">
         <component :is="Component" />
       </RouterView>
