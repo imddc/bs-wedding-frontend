@@ -10,7 +10,7 @@ import TestimonialSlide from '~/components/home/TestimonialSlide.vue'
 import StatisticItem from '~/components/home/StatisticItem.vue'
 import RegisterForm from '~/components/home/RegisterForm.vue'
 
-import Browser from '~/components/photography/Browser.vue'
+import Browser from '~/components/home/module/photography/Browser.vue'
 import { testimonials } from './helper'
 
 const router = useRouter()

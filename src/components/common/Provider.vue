@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useDark } from '@vueuse/core'
 import {
-  darkTheme,
   lightTheme,
   NConfigProvider,
   NDialogProvider,
@@ -15,15 +13,14 @@ import {
   useModal,
   useNotification,
 } from 'naive-ui'
-import { computed, defineComponent, h } from 'vue'
+import { defineComponent, h } from 'vue'
 import { useThemeOverrides } from '~/composables/useThemeOverrides'
 
 defineSlots<{
   default: () => any
 }>()
 
-const isDark = useDark()
-const theme = computed(() => isDark.value ? darkTheme : lightTheme)
+// const theme = computed(() => isDark.value ? darkTheme : lightTheme)
 const { themeOverrides } = useThemeOverrides()
 
 function setupProviders() {
@@ -43,7 +40,7 @@ const NaiveProviderContent = defineComponent({
 </script>
 
 <template>
-  <NConfigProvider :theme="theme" :theme-overrides="themeOverrides" class="h-full">
+  <NConfigProvider :theme="lightTheme" :theme-overrides="themeOverrides" class="h-full">
     <NMessageProvider>
       <NDialogProvider>
         <NLoadingBarProvider>
