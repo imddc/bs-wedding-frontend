@@ -119,9 +119,9 @@ function calculateImageSize(width?: number, height?: number) {
           <NTooltip placement="bottom">
             <template #trigger>
               <span>
-                <CheckIcon v-if="message.status === 'sent'" size="12" />
-                <CheckCheckIcon v-else-if="message.status === 'delivered'" size="12" />
-                <CheckCircleIcon v-else-if="message.status === 'read'" size="12" class="text-primary" />
+                <CheckIcon v-if="message.status === 'sent'" :size="12" />
+                <CheckCheckIcon v-else-if="message.status === 'delivered'" :size="12" />
+                <CheckCircleIcon v-else-if="message.status === 'read'" :size="12" class="text-primary" />
               </span>
             </template>
             {{ getStatusText(message.status) }}
@@ -135,15 +135,13 @@ function calculateImageSize(width?: number, height?: number) {
       v-model:show="showImagePreview"
       preset="card"
       style="width: auto; max-width: 90vw; max-height: 90vh;"
-      :mask-closable="true"
+      mask-closable
       :show-icon="false"
     >
       <NImage
         v-if="message.contentType === 'image'"
         :src="message.content"
         object-fit="contain"
-        :width="null"
-        :height="null"
         style="max-width: 100%; max-height: 80vh;"
       />
     </NModal>

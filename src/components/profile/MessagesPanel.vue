@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps, nextTick, onMounted, reactive, ref, watchEffect } from 'vue'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NRate, NSelect, NSpace, NTab, NTabs, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NAvatar, NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NRate, NSelect, NSpace, NSpin, NTab, NTabs, NTag, NTooltip, NUpload, useLoadingBar, useMessage } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import {
   ExternalLink,
@@ -445,7 +445,7 @@ watchEffect(() => {
           </div>
 
           <div v-if="conversations.length === 0" class="flex flex-col items-center justify-center h-full text-gray-500">
-            <MessageCircle size="48" class="mb-2 text-gray-300" />
+            <MessageCircle :size="48" class="mb-2 text-gray-300" />
             <p>暂无消息</p>
           </div>
         </div>
@@ -456,7 +456,7 @@ watchEffect(() => {
             <!-- Conversation Header -->
             <div class="p-4 border-b border-gray-200 flex items-center justify-between">
               <div class="flex items-center">
-                <n-avatar
+                <NAvatar
                   :size="40"
                   :src="selectedConversation.avatar"
                   class="mr-3"
@@ -480,23 +480,23 @@ watchEffect(() => {
               </div>
 
               <div class="flex">
-                <n-tooltip trigger="hover" placement="bottom">
+                <NTooltip trigger="hover" placement="bottom">
                   <template #trigger>
                     <NButton circle quaternary @click="viewVendorDetail(selectedConversation)">
-                      <ExternalLink size="18" />
+                      <ExternalLink :size="18" />
                     </NButton>
                   </template>
                   查看商家详情
-                </n-tooltip>
+                </NTooltip>
 
-                <n-tooltip trigger="hover" placement="bottom">
+                <NTooltip trigger="hover" placement="bottom">
                   <template #trigger>
                     <NButton circle quaternary @click="toggleFavorite(selectedConversation)">
-                      <Heart size="18" :fill="selectedConversation.isFavorite ? '#f43f5e' : 'transparent'" />
+                      <Heart :size="18" :fill="selectedConversation.isFavorite ? '#f43f5e' : 'transparent'" />
                     </NButton>
                   </template>
                   {{ selectedConversation.isFavorite ? '取消收藏' : '收藏商家' }}
-                </n-tooltip>
+                </NTooltip>
               </div>
             </div>
 
@@ -506,7 +506,7 @@ watchEffect(() => {
               class="flex-1 p-4 overflow-y-auto bg-gray-50"
             >
               <div v-if="loading" class="flex justify-center py-4">
-                <n-spin size="medium" />
+                <NSpin size="medium" />
               </div>
 
               <template v-else>
@@ -539,10 +539,10 @@ watchEffect(() => {
               <div class="flex mb-2">
                 <NButtonGroup size="small">
                   <NButton quaternary @click="toggleEmojiPicker">
-                    <Smile size="18" />
+                    <Smile :size="18" />
                   </NButton>
                   <NButton quaternary @click="handleImageUpload">
-                    <Image size="18" />
+                    <ImageIcon :size="18" />
                   </NButton>
                 </NButtonGroup>
               </div>
@@ -593,7 +593,7 @@ watchEffect(() => {
           </div>
 
           <div v-else class="flex flex-col items-center justify-center h-full text-gray-500">
-            <MessageSquare size="64" class="mb-4 text-gray-300" />
+            <MessageSquare :size="64" class="mb-4 text-gray-300" />
             <p>选择一个对话开始聊天</p>
           </div>
         </div>

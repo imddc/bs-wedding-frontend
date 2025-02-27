@@ -18,7 +18,7 @@ interface Order {
   hasReview: boolean
 }
 
-const props = defineProps<{
+defineProps<{
   order: Order
 }>()
 

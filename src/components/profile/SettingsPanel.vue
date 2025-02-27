@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmits, defineProps, reactive, ref } from 'vue'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NRate, NSelect, NSpace, NSwitch, NTab, NTabPane, NTabs, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NAvatar, NButton, NButtonGroup, NCard, NColorPicker, NDivider, NForm, NFormItem, NInput, NInputGroup, NList, NListItem, NModal, NPagination, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSpace, NSwitch, NTab, NTabPane, NTabs, NTag, NThing, NUpload, useLoadingBar, useMessage } from 'naive-ui'
 import {
   Globe,
   Laptop,
@@ -59,7 +59,7 @@ const formValue = reactive<Settings>({
     messages: props.settings.notifications.messages,
     weddingPlan: props.settings.notifications.weddingPlan,
     marketing: props.settings.notifications.marketing,
-    methods: [...props.settings.notifications.methods],
+    methods: { ...props.settings.notifications.methods },
   },
   privacy: {
     showProfile: props.settings.privacy.showProfile,
@@ -462,31 +462,31 @@ async function logoutAllDevices() {
                   选择应用的显示模式
                 </div>
               </div>
-              <n-radio-group v-model:value="formValue.appearance.theme" name="theme">
+              <NRadioGroup v-model:value="formValue.appearance.theme" name="theme">
                 <NSpace>
-                  <n-radio-button value="light">
+                  <NRadioButton value="light">
                     <template #default>
                       <div class="flex items-center">
-                        <Sun size="18" class="mr-1" /> 浅色
+                        <Sun :size="18" class="mr-1" /> 浅色
                       </div>
                     </template>
-                  </n-radio-button>
-                  <n-radio-button value="dark">
+                  </NRadioButton>
+                  <NRadioButton value="dark">
                     <template #default>
                       <div class="flex items-center">
-                        <Moon size="18" class="mr-1" /> 深色
+                        <Moon :size="18" class="mr-1" /> 深色
                       </div>
                     </template>
-                  </n-radio-button>
-                  <n-radio-button value="system">
+                  </NRadioButton>
+                  <NRadioButton value="system">
                     <template #default>
                       <div class="flex items-center">
-                        <Monitor size="18" class="mr-1" /> 跟随系统
+                        <Monitor :size="18" class="mr-1" /> 跟随系统
                       </div>
                     </template>
-                  </n-radio-button>
+                  </NRadioButton>
                 </NSpace>
-              </n-radio-group>
+              </NRadioGroup>
             </div>
 
             <NDivider />
@@ -500,7 +500,7 @@ async function logoutAllDevices() {
                   选择应用的主色调
                 </div>
               </div>
-              <n-color-picker
+              <NColorPicker
                 v-model:value="formValue.appearance.primaryColor"
                 :swatches="colorSwatches"
               />
@@ -517,7 +517,7 @@ async function logoutAllDevices() {
                   调整应用的字体大小
                 </div>
               </div>
-              <n-slider
+              <NSlider
                 v-model:value="formValue.appearance.fontSize"
                 :step="1"
                 :min="12"
@@ -527,7 +527,7 @@ async function logoutAllDevices() {
                 <template #thumb>
                   {{ formValue.appearance.fontSize }}px
                 </template>
-              </n-slider>
+              </NSlider>
             </div>
           </div>
         </NTabPane>
@@ -622,21 +622,21 @@ async function logoutAllDevices() {
       style="width: 600px"
     >
       <div>
-        <n-list>
-          <n-list-item v-for="device in loginDevices" :key="device.id">
-            <n-thing
+        <NList>
+          <NListItem v-for="device in loginDevices" :key="device.id">
+            <NThing
               :title="device.name"
               :description="device.location"
             >
               <template #avatar>
-                <n-avatar>
+                <NAvatar>
                   <template #default>
                     <Smartphone v-if="device.type === 'mobile'" />
                     <Laptop v-else-if="device.type === 'desktop'" />
                     <Tablet v-else-if="device.type === 'tablet'" />
                     <Globe v-else />
                   </template>
-                </n-avatar>
+                </NAvatar>
               </template>
 
               <template #header-extra>
@@ -661,9 +661,9 @@ async function logoutAllDevices() {
                   </NButton>
                 </div>
               </template>
-            </n-thing>
-          </n-list-item>
-        </n-list>
+            </NThing>
+          </NListItem>
+        </NList>
 
         <div class="flex justify-end mt-4">
           <NButton type="error" @click="logoutAllDevices">

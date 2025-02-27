@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, onMounted, ref, watch } from 'vue'
 import type { FormInst, FormRules } from 'naive-ui'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NSelect, NSpace, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NImage, NInput, NModal, NPagination, NRate, NSelect, NSpace, NSwitch, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
 import { OrderService } from '~/services/orderService'
 
 // Define interfaces
@@ -253,7 +253,7 @@ watch(() => props.show, (newVal) => {
           label-width="auto"
         >
           <NFormItem label="服务评分" path="rating">
-            <n-rate v-model:value="reviewForm.rating" size="large" />
+            <NRate v-model:value="reviewForm.rating" size="large" />
           </NFormItem>
 
           <NFormItem label="评价内容" path="content">
@@ -284,7 +284,7 @@ watch(() => props.show, (newVal) => {
           </NFormItem>
 
           <NFormItem label="匿名评价">
-            <n-switch v-model:value="reviewForm.anonymous" />
+            <NSwitch v-model:value="reviewForm.anonymous" />
             <template #help>
               <div class="text-xs text-gray-500">
                 开启后，您的用户名将不会显示在评价中
@@ -314,7 +314,7 @@ watch(() => props.show, (newVal) => {
         <div v-if="existingReview">
           <div class="mb-4">
             <div class="flex items-center mb-2">
-              <n-rate :value="existingReview.rating" readonly />
+              <NRate :value="existingReview.rating" readonly />
               <span class="ml-2">{{ existingReview.rating.toFixed(1) }}</span>
               <NTag v-if="existingReview.anonymous" size="small" class="ml-3">
                 匿名评价
@@ -326,7 +326,7 @@ watch(() => props.show, (newVal) => {
             </p>
 
             <div v-if="existingReview.images && existingReview.images.length > 0" class="flex flex-wrap gap-2 mt-3">
-              <n-image
+              <NImage
                 v-for="(image, index) in existingReview.images"
                 :key="index"
                 :src="image"

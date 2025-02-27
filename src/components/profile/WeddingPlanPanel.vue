@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, defineProps, reactive, ref } from 'vue'
 import type { FormInst, FormRules } from 'naive-ui'
-import { NButton, NButtonGroup, NCard, NDivider, NForm, NFormItem, NInput, NModal, NPagination, NRate, NSelect, NSpace, NTab, NTabs, NTag, NUpload, useLoadingBar, useMessage } from 'naive-ui'
+import { NButton, NButtonGroup, NCard, NCascader, NDatePicker, NDivider, NForm, NFormItem, NInput, NInputGroup, NInputNumber, NModal, NPagination, NProgress, NRate, NSelect, NSpace, NStatistic, NTab, NTabs, NTag, NTimeline, NTimelineItem, NUpload, useLoadingBar, useMessage } from 'naive-ui'
 import {
   BugIcon,
   Copy,
@@ -395,7 +395,7 @@ function bookService(service: WeddingService) {
     <NCard title="我的婚礼方案" class="mb-4">
       <div v-if="!plan" class="py-6">
         <div class="text-center mb-6">
-          <Heart class="mx-auto mb-4 text-pink-300" size="48" />
+          <Heart class="mx-auto mb-4 text-pink-300" :size="48" />
           <h3 class="text-lg font-medium mb-2">
             还没有婚礼方案
           </h3>
@@ -412,7 +412,7 @@ function bookService(service: WeddingService) {
           label-width="100px"
         >
           <NFormItem label="婚礼城市" path="city">
-            <n-cascader
+            <NCascader
               v-model:value="formValue.city"
               placeholder="请选择城市"
               :options="cityOptions"
@@ -421,7 +421,7 @@ function bookService(service: WeddingService) {
           </NFormItem>
 
           <NFormItem label="婚礼日期" path="weddingDate">
-            <n-date-picker
+            <NDatePicker
               v-model:value="formValue.weddingDate"
               type="date"
               clearable
@@ -432,8 +432,8 @@ function bookService(service: WeddingService) {
           </NFormItem>
 
           <NFormItem label="婚礼预算" path="budget">
-            <n-input-group>
-              <n-input-number
+            <NInputGroup>
+              <NInputNumber
                 v-model:value="formValue.budget"
                 :min="0"
                 :step="10000"
@@ -442,11 +442,11 @@ function bookService(service: WeddingService) {
               <NButton type="primary" ghost>
                 元
               </NButton>
-            </n-input-group>
+            </NInputGroup>
           </NFormItem>
 
           <NFormItem label="宾客数量" path="guestCount">
-            <n-input-number
+            <NInputNumber
               v-model:value="formValue.guestCount"
               :min="1"
               :max="1000"
@@ -509,13 +509,13 @@ function bookService(service: WeddingService) {
 
         <!-- Plan Summary -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <n-statistic label="婚礼日期" :value="formatDate(plan.weddingDate)" />
-          <n-statistic label="城市" :value="plan.cityName" />
-          <n-statistic label="总预算" :value="`¥${formatPrice(plan.budget)}`" />
-          <n-statistic label="已分配" :value="`¥${formatPrice(plan.allocatedBudget)}`" />
+          <NStatistic label="婚礼日期" :value="formatDate(plan.weddingDate)" />
+          <NStatistic label="城市" :value="plan.cityName" />
+          <NStatistic label="总预算" :value="`¥${formatPrice(plan.budget)}`" />
+          <NStatistic label="已分配" :value="`¥${formatPrice(plan.allocatedBudget)}`" />
         </div>
 
-        <n-progress
+        <NProgress
           type="line"
           :percentage="Math.round((plan.allocatedBudget / plan.budget) * 100)"
           :processing="plan.allocatedBudget < plan.budget"
@@ -543,8 +543,8 @@ function bookService(service: WeddingService) {
             </NButton>
           </div>
 
-          <n-timeline>
-            <n-timeline-item
+          <NTimeline>
+            <NTimelineItem
               v-for="item in plan.timeline.slice(0, 3)"
               :key="item.id"
               :time="formatTimelineDate(item.date)"
@@ -552,7 +552,7 @@ function bookService(service: WeddingService) {
               :title="item.title"
               :content="item.description"
             />
-          </n-timeline>
+          </NTimeline>
         </div>
 
         <NDivider />
@@ -659,8 +659,8 @@ function bookService(service: WeddingService) {
       title="婚礼准备时间线"
       style="width: 700px; max-width: 90vw;"
     >
-      <n-timeline v-if="plan">
-        <n-timeline-item
+      <NTimeline v-if="plan">
+        <NTimelineItem
           v-for="item in plan.timeline"
           :key="item.id"
           :time="formatTimelineDate(item.date)"
@@ -712,8 +712,8 @@ function bookService(service: WeddingService) {
               </div>
             </div>
           </template>
-        </n-timeline-item>
-      </n-timeline>
+        </NTimelineItem>
+      </NTimeline>
     </NModal>
   </div>
 </template>
