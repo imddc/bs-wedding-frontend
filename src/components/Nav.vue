@@ -34,6 +34,3 @@ function handleSelect(key: string) {
     </div>
   </NLayoutHeader>
 </template>
-
-<style scoped>
-</style>

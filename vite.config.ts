@@ -37,5 +37,12 @@ export default defineConfig({
 
   server: {
     port: 9527,
+    proxy: {
+      '/server-api': {
+        target: 'http://localhost:8080/api',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/server-api/, ''),
+      },
+    },
   },
 })

@@ -11,4 +11,4 @@ function setupRouter(app: App) {
   app.use(router)
 }
 
-export { setupRouter }
+export { router, setupRouter }

@@ -2,25 +2,60 @@
 import { NButton, NCheckbox, NFlex, NForm, NFormItem, NInput } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '~/stores/authStore'
+import { useTemplateRef } from 'vue'
+import { register } from '~/api/auth'
+import { useAuthStore, useUserStore } from '~/stores'
 import { createLoginRules, useAuthState } from './helper'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const userStore = useUserStore()
 const { rememberMe } = storeToRefs(authStore)
 
-const { authType, formState, toggleAuthType, isRegister } = useAuthState()
+const formRef = useTemplateRef<InstanceType<typeof NForm>>('formRef')
+const { authType, formState, isRegister, loading, toggleAuthType } = useAuthState()
 
 const rules = createLoginRules(formState)
 
-function login() {
-  // TODO: 实现登录逻辑
-  const message = window.$message.success('登录成功')
-  router.push('/').then(() => {
-    setTimeout(() => {
-      message.destroy()
-    }, 1000)
-  })
+async function formSubmit() {
+  await formRef.value?.validate()
+
+  loading.value = true
+  try {
+    if (isRegister.value) {
+      // 注册逻辑
+      const res = await register({
+        username: formState.value.username,
+        password: formState.value.password,
+      })
+
+      const { success } = res
+
+      if (!success) {
+        return
+      }
+
+      window.$message.success('注册成功，请登录')
+      toggleAuthType() // 切换到登录界面
+    } else {
+      // 登录逻辑
+      const res = await userStore.userLogin({
+        username: formState.value.username,
+        password: formState.value.password,
+      })
+
+      if (res) {
+        const message = window.$message.success('登录成功')
+        router.push('/').then(() => {
+          setTimeout(() => {
+            message.destroy()
+          }, 1000)
+        })
+      }
+    }
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -36,10 +71,11 @@ function login() {
       </header>
 
       <NForm
+        ref="formRef"
         class="mt-8 space-y-6"
         :rules="rules"
         :model="formState"
-        @submit.prevent="login"
+        @submit.prevent="formSubmit"
       >
         <div class="space-y-2">
           <NFormItem label="用户名" path="username">
@@ -86,7 +122,12 @@ function login() {
           justify="center"
           gap="small"
         >
-          <NButton type="primary" block attr-type="submit">
+          <NButton
+            type="primary"
+            block
+            attr-type="submit"
+            :loading="loading"
+          >
             {{ authType === 'login' ? '登 录' : '注 册' }}
           </NButton>
           <NButton block @click="toggleAuthType">

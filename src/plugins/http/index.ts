@@ -1,55 +1,85 @@
-import type { AxiosError, AxiosInstance, AxiosRequestHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import axios from 'axios'
+import type { AxiosError, AxiosResponse } from 'axios'
+import { useUserToken } from '~/composables/useUserStorage'
+import {
+  BASE_URL,
+  TIME_OUT,
+} from '~/plugins/http/request/config'
+import { router } from '~/plugins/router'
+import type { DataType } from './type'
+import type { ErrorMessageMode } from './request/type'
+import Request from './request'
+// import { useUserStore } from '~/stores/userStore'
 
-interface RequestConfig {
-  baseURL?: string
-  headers?: Record<string, string>
-}
-
-function createRequest(config: RequestConfig): AxiosInstance {
-  const http = axios.create({
-    baseURL: config.baseURL,
-    headers: config.headers,
-    withCredentials: true,
-    timeout: 10000,
-  })
-
-  http.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-      const token = localStorage.getItem('token')
-      if (token) {
-        const headers = config.headers as AxiosRequestHeaders
-        headers.Authorization = `Bearer ${token}`
-      }
-      return config
-    },
-    (error: AxiosError) => {
-      return Promise.reject(error)
-    },
-  )
-
-  http.interceptors.response.use(
-    (response: AxiosResponse) => {
-      return response.data
-    },
-    (error: AxiosError) => {
-      if (error.response) {
-        // 处理错误响应，例如 401 未授权错误
-        if (error.response.status === 401) {
-          // 清除 token，跳转到登录页面
-          localStorage.removeItem('token')
-          window.location.href = '/login'
+function SpringRequest(baseURL: string = BASE_URL) {
+  return new Request({
+    baseURL,
+    timeout: TIME_OUT,
+    interceptors: {
+      requestInterceptor(config) {
+        const token = useUserToken()
+        if (token.value) {
+          config.headers!.Authorization = `Bearer ${token.value}`
         }
-      }
-      return Promise.reject(error)
+        return config
+      },
+      // @ts-expect-error non
+      responseInterceptor(res: AxiosResponse<DataType>) {
+        if (res.data.code !== 200) {
+          //
+        }
+        return res.data
+      },
+      responseInterceptorCatch(error: AxiosError<DataType>) {
+        if (error.response) {
+          const { status, data } = error.response
+          if (status && data?.message) {
+            return checkStatus(status, data.message)
+          }
+        }
+        return Promise.reject(error)
+      },
     },
-  )
+  })
+}
+const request = SpringRequest()
 
-  return http
+function checkStatus(status: number, msg: string, errorMessageMode: ErrorMessageMode = 'message') {
+  let errMessage = ''
+  // const userStore = useUserStore()
+
+  switch (status) {
+    case 400:
+      errMessage = `${msg}`
+      break
+    case 401:
+      errMessage = '请重新登录'
+      // 需清除缓存
+      // userStore.clearAllUserInfo()
+      router.push('/login')
+      break
+    case 403:
+      errMessage = msg || '没有权限'
+      break
+    case 404:
+      errMessage = msg || '找不到该页面'
+      break
+    case 422:
+      errMessage = msg || '参数错误'
+      break
+    case 500:
+      errMessage = msg || '服务器异常'
+      break
+    default:
+      errMessage = `${msg}`
+  }
+
+  if (errMessage) {
+    if (errorMessageMode === 'message') {
+      window.$message.info(errMessage)
+    }
+  }
 }
 
-const request = createRequest({
-  baseURL: 'http://localhost:3000',
-})
-
-export default request
+export {
+  request,
+}

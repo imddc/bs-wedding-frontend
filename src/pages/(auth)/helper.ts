@@ -11,25 +11,32 @@ interface FormState {
   repeatPassword: string
 }
 
+export interface RegisterPayload {
+  username: string
+  password: string
+}
+
 export function useAuthState() {
   const authType = ref<AuthType>('login')
+  const loading = ref(false)
   const { state: formState, reset: resetFormState } = useResettableRef<FormState>({
     username: '',
     password: '',
     repeatPassword: '',
   })
 
+  const isRegister = computed(() => authType.value === 'register')
+
   function toggleAuthType() {
     authType.value = authType.value === 'login' ? 'register' : 'login'
     resetFormState()
   }
 
-  const isRegister = computed(() => authType.value === 'register')
-
   return {
     authType,
     isRegister,
     formState,
+    loading,
     resetFormState,
     toggleAuthType,
   }
@@ -39,11 +46,11 @@ export function createLoginRules(formState: MaybeRef<FormState>): FormRules {
   return {
     username: [
       { required: true, message: '请输入用户名', trigger: 'blur' },
-      { min: 3, max: 10, message: '用户名长度在3-10之间', trigger: 'input' },
+      { min: 6, max: 20, message: '用户名长度在6-20之间', trigger: 'input' },
     ],
     password: [
       { required: true, message: '请输入密码', trigger: 'blur' },
-      { min: 6, max: 16, message: '密码长度在6-16之间', trigger: 'input' },
+      { min: 6, max: 20, message: '密码长度在6-20之间', trigger: 'input' },
     ],
     repeatPassword: [
       { required: true, message: '请输入确认密码' },
