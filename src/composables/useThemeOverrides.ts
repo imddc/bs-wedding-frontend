@@ -11,9 +11,12 @@ const commonThemeOverrides: GlobalThemeOverrides = {
 export function useThemeOverrides() {
   const isDark = useDark()
 
-  const themeOverridesDark: GlobalThemeOverrides = {
-  }
   const themeOverridesLight: GlobalThemeOverrides = {
+    common: {
+      bodyColor: '#f5f5f5',
+    },
+  }
+  const themeOverridesDark: GlobalThemeOverrides = {
   }
 
   const themeOverrides = computed(() => {

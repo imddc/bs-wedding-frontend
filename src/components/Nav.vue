@@ -22,7 +22,7 @@ function clickNav(nav: Nav) {
 </script>
 
 <template>
-  <NLayoutHeader bordered class="h-16">
+  <NLayoutHeader class="h-16">
     <div class="container mx-auto h-full px-4 flex items-center gap-4">
       <div class="flex-center cursor-pointer" @click="clickLogo">
         <img class="mx-auto h-12 w-auto" src="/src/assets/wedding-ring.png" alt="Logo">
