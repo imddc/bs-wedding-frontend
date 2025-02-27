@@ -1,12 +1,17 @@
 import { defineStore } from 'pinia'
 import type { IUserInfo } from '~/api/user/type'
-import { getUserInfo, login, logout } from '~/api/auth'
+import { login } from '~/api/auth'
+import { logout } from '~/api/user'
+import { useUserInfo, useUserToken } from '~/composables/useUserStorage'
 
 // 登录请求参数接口定义
 interface LoginPayload {
   username: string
   password: string
 }
+
+const userInfo = useUserInfo()
+const userToken = useUserToken()
 
 // 定义用户状态管理 Store
 export const useUserStore = defineStore('user', {
@@ -37,16 +42,16 @@ export const useUserStore = defineStore('user', {
 
         if (!success) {
           window.$message.warning(response.message)
-          return
+          return false
         }
 
         const { token, user } = data
 
         this.token = token
-        this.userInfo = user
+        userToken.value = token
 
-        // 将 token 存储到 localStorage
-        localStorage.setItem('token', token)
+        this.userInfo = user
+        userInfo.value = user
 
         return true
       } catch {
@@ -72,23 +77,10 @@ export const useUserStore = defineStore('user', {
       this.token = null
       this.userInfo = null
       this.error = null
-      localStorage.removeItem('token')
-    },
 
-    // 从本地存储初始化用户状态
-    // 用于页面刷新后恢复用户登录状态
-    async initializeFromStorage() {
-      const token = localStorage.getItem('token')
-      if (token) {
-        try {
-          const response = await getUserInfo()
-          this.userInfo = response
-          this.token = token
-        } catch (error) {
-          console.error('初始化用户状态失败', error)
-          this.clearUserState()
-        }
-      }
+      // 清空本地数据
+      userInfo.value = null
+      userToken.value = ''
     },
   },
 })

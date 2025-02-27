@@ -1,5 +1,5 @@
-import type { IUserInfo } from '~/api/user/type'
 import { createGlobalState, useStorage } from '@vueuse/core'
+import type { IUserInfo } from '~/api/user/type'
 
 const useUserToken = createGlobalState(() =>
   useStorage('token', ''),
