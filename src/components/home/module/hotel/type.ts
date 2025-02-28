@@ -3,7 +3,6 @@ export interface Hotel {
   name: string
   image: string
   rating: number
-  features: string[]
   location: string
   tables: string
   price: number
