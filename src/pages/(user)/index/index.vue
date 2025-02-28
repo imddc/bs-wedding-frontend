@@ -41,18 +41,9 @@ onMounted(() => {
 <template>
   <div class="overflow-x-hidden">
     <!-- Hero Section with Video Background -->
-    <section class="relative h-[40vh]">
-      <video
-        class="absolute inset-0 w-full h-full object-cover"
-        autoplay
-        loop
-        muted
-        playsinline
-      >
-        <!-- <source src="/videos/wedding-hero.mp4" type="video/mp4"> -->
-      </video>
-      <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70" />
-
+    <section class="relative h-[50vh] overflow-hidden">
+      <img src="/src/assets/banner.png" alt="" class="size-full object-cover absolute">
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70 z-0" />
       <div class="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center items-center text-center">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
           开启您的完美婚礼之旅
