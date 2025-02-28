@@ -39,7 +39,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="overflow-x-hidden space-y-4">
+  <div class="overflow-x-hidden">
     <!-- Hero Section with Video Background -->
     <section class="relative h-[40vh]">
       <video
@@ -72,10 +72,12 @@ onMounted(() => {
       </div>
     </section>
 
-    <Browser id="browser" />
-    <Package />
+    <div class="space-y-4 pb-8">
+      <Browser id="browser" />
+      <Package />
 
-    <Service />
+      <Service />
+    </div>
 
     <!-- Main Services Section -->
     <section class="py-20 bg-white">
