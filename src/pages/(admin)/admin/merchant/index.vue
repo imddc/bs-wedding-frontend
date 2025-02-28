@@ -35,6 +35,7 @@ import {
 } from '~/api/merchant/type'
 import type { MerchantInfo, MerchantQueryParams } from '~/api/merchant/type'
 import MerchantForm from '~/components/merchant/admin/MerchantForm.vue'
+import { router } from '~/plugins'
 
 const message = useMessage()
 
@@ -255,21 +256,7 @@ function handleAdd() {
 
 // 查看商家详情
 async function handleView(id: number) {
-  formLoading.value = true
-  try {
-    const response = await getMerchantById(id)
-    if (response.success) {
-      formData.value = { ...response.data }
-      drawerVisible.value = true
-    } else {
-      message.error(response.message || '获取商家详情失败')
-    }
-  } catch (error) {
-    console.error('获取商家详情出错:', error)
-    message.error('获取商家详情出错')
-  } finally {
-    formLoading.value = false
-  }
+  router.push(`/admin/merchant/${id}`)
 }
 
 // 编辑商家

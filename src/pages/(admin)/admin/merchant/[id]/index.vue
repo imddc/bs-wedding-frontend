@@ -104,7 +104,7 @@ onMounted(() => {
     fetchMerchantDetail()
   } else {
     message.error('商家ID不能为空')
-    router.push('/merchant')
+    router.push('/admin/merchant')
   }
 })
 </script>
@@ -129,7 +129,7 @@ onMounted(() => {
           </template>
           编辑
         </NButton>
-        <NButton @click="router.push('/merchant')">
+        <NButton @click="router.push('/admin/merchant')">
           <template #icon>
             <ListIcon class="mr-1" />
           </template>
