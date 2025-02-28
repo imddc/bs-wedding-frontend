@@ -20,12 +20,11 @@ import {
   updateMerchant,
 } from '~/api/merchant'
 import {
-
   MerchantStatus,
   MerchantType,
-
 } from '~/api/merchant/type'
 import type { MerchantCreateParams, MerchantInfo, MerchantUpdateParams } from '~/api/merchant/type'
+import PreviewUpload from '~/components/common/PreviewUpload.vue'
 
 const props = defineProps<{
   formData: Partial<MerchantInfo> & { isEditing: boolean }
@@ -66,7 +65,7 @@ const form = reactive<Partial<MerchantInfo>>({
 // 表单验证规则
 const rules: FormRules = {
   userId: [
-    { required: true, message: '请输入用户ID', trigger: 'blur' },
+    { required: true, type: 'number', message: '请输入用户ID', trigger: 'blur' },
     { type: 'number', message: '用户ID必须为数字', trigger: 'blur' },
   ],
   merchantName: [
@@ -74,7 +73,7 @@ const rules: FormRules = {
     { max: 100, message: '商家名称长度不能超过100个字符', trigger: 'blur' },
   ],
   merchantType: [
-    { required: true, message: '请选择商家类型', trigger: 'change' },
+    { type: 'number', required: true, message: '请选择商家类型', trigger: 'blur' },
   ],
   logo: [
     { max: 255, message: 'LOGO地址长度不能超过255个字符', trigger: 'blur' },
@@ -185,10 +184,20 @@ async function handleSubmit() {
 function handleCancel() {
   emit('cancel')
 }
+
+function uploadedLogo(v: string[]) {
+  console.log(v)
+  form.logo = v[0]
+}
+
+function removeLogo() {
+  form.logo = ''
+}
 </script>
 
 <template>
   <div class="merchant-form">
+    {{ form }}
     <NForm
       ref="formRef"
       :model="form"
@@ -224,10 +233,12 @@ function handleCancel() {
       </NFormItem>
 
       <NFormItem label="商家LOGO" path="logo">
-        <NInput
-          v-model:value="form.logo"
-          placeholder="请输入商家LOGO地址"
-          :disabled="viewMode"
+        <PreviewUpload
+          :read-only="!formData.isEditing"
+          :max-images="1"
+          :initial-images="formData.logo ? [formData.logo] : []"
+          @update:images="uploadedLogo"
+          @remove="removeLogo"
         />
       </NFormItem>
 

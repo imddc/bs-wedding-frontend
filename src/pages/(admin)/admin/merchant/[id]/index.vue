@@ -95,7 +95,6 @@ function handleEdit() {
 async function handleSubmit() {
   drawerVisible.value = false
   await fetchMerchantDetail()
-  message.success('商家信息已更新')
 }
 
 // 初始化
