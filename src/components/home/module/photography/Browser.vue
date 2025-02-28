@@ -7,7 +7,7 @@ import StudioRankItem from './StudioRankItem.vue'
 </script>
 
 <template>
-  <div class="wedding-photography-browse container mx-auto py-3">
+  <div class="wedding-photography-browse container mx-auto py-3 px-4">
     <!-- Page Header -->
     <div class="page-header">
       <h1 class="text-2xl font-bold">
@@ -111,7 +111,7 @@ import StudioRankItem from './StudioRankItem.vue'
           </div>
 
           <!-- Ranking List -->
-          <div class="space-y-4 h-full">
+          <div class="space-y-4">
             <StudioRankItem
               v-for="studio in studioRankList"
               :key="studio.name"

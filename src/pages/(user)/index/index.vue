@@ -9,6 +9,7 @@ import StatisticItem from '~/components/home/StatisticItem.vue'
 import RegisterForm from '~/components/home/RegisterForm.vue'
 import Browser from '~/components/home/module/photography/Browser.vue'
 import Package from '~/components/home/module/photography/Package.vue'
+import Service from '~/components/home/module/hotel/Service.vue'
 import { testimonials } from './helper'
 
 const router = useRouter()
@@ -73,6 +74,8 @@ onMounted(() => {
 
     <Browser id="browser" />
     <Package />
+
+    <Service />
 
     <!-- Main Services Section -->
     <section class="py-20 bg-white">

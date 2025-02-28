@@ -82,21 +82,23 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full bg-white p-6 rounded-lg shadow-sm container mx-auto">
-    <h2 class="text-xl font-bold mb-4">
-      热卖套餐
-    </h2>
+  <div class="mx-auto container px-4">
+    <div class="p-6 rounded-lg shadow-sm bg-white">
+      <h2 class="text-xl font-bold mb-4">
+        热卖套餐
+      </h2>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-      <PackageCard
-        v-for="pkg in packages"
-        :key="pkg.id"
-        :image="pkg.image"
-        :title="pkg.title"
-        :studio="pkg.studio"
-        :price="pkg.price"
-        :featured="!!pkg.featured"
-      />
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <PackageCard
+          v-for="pkg in packages"
+          :key="pkg.id"
+          :image="pkg.image"
+          :title="pkg.title"
+          :studio="pkg.studio"
+          :price="pkg.price"
+          :featured="!!pkg.featured"
+        />
+      </div>
     </div>
   </div>
 </template>
