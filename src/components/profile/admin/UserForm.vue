@@ -139,10 +139,10 @@ async function handleSubmit() {
 
       const response = await createUser(createData)
       if (response.success) {
-        message.success('创建用户成功')
+        window.$message.success('创建用户成功')
         emit('submit')
       } else {
-        message.error(response.message || '创建用户失败')
+        window.$message.error(response.message || '创建用户失败')
       }
     } else {
       // 更新操作
@@ -157,15 +157,15 @@ async function handleSubmit() {
 
       const response = await updateUser(updateData)
       if (response.success) {
-        message.success('更新用户成功')
+        window.$message.success('更新用户成功')
         emit('submit')
       } else {
-        message.error(response.message || '更新用户失败')
+        window.$message.error(response.message || '更新用户失败')
       }
     }
   } catch (error) {
     console.error('提交表单出错:', error)
-    message.error('提交表单出错')
+    window.$message.error('提交表单出错')
   } finally {
     loading.value = false
   }

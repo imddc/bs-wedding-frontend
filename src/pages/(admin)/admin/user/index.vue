@@ -11,7 +11,6 @@ import {
   NPopconfirm,
   NSelect,
   NTag,
-  useMessage,
 } from 'naive-ui'
 import {
   CheckIcon,
@@ -44,8 +43,6 @@ import {
 } from '~/constants/user'
 import UserForm from '~/components/profile/admin/UserForm.vue'
 import PasswordForm from '~/components/profile/admin/PasswordForm.vue'
-
-const message = useMessage()
 
 // 用户类型选项
 const userTypeOptions = USER_TYPE_OPTIONS
@@ -238,11 +235,11 @@ async function fetchUserList() {
       userList.value = response.data.records || []
       total.value = response.data.total || 0
     } else {
-      message.error(response.message || '获取用户列表失败')
+      window.$message.error(response.message || '获取用户列表失败')
     }
   } catch (error) {
     console.error('获取用户列表出错:', error)
-    message.error('获取用户列表出错')
+    window.$message.error('获取用户列表出错')
   } finally {
     loading.value = false
   }
@@ -290,11 +287,11 @@ async function handleView(id: number) {
       formData.value = { ...response.data, isReadOnly: true }
       drawerVisible.value = true
     } else {
-      message.error(response.message || '获取用户详情失败')
+      window.$message.error(response.message || '获取用户详情失败')
     }
   } catch (error) {
     console.error('获取用户详情出错:', error)
-    message.error('获取用户详情出错')
+    window.$message.error('获取用户详情出错')
   } finally {
     formLoading.value = false
   }
@@ -309,11 +306,11 @@ async function handleEdit(id: number) {
       formData.value = { ...response.data, isReadOnly: false }
       drawerVisible.value = true
     } else {
-      message.error(response.message || '获取用户详情失败')
+      window.$message.error(response.message || '获取用户详情失败')
     }
   } catch (error) {
     console.error('获取用户详情出错:', error)
-    message.error('获取用户详情出错')
+    window.$message.error('获取用户详情出错')
   } finally {
     formLoading.value = false
   }
@@ -330,14 +327,14 @@ async function handleDelete(id: number) {
   try {
     const response = await deleteUser(id)
     if (response.success) {
-      message.success('删除用户成功')
+      window.$message.success('删除用户成功')
       fetchUserList()
     } else {
-      message.error(response.message || '删除用户失败')
+      window.$message.error(response.message || '删除用户失败')
     }
   } catch (error) {
     console.error('删除用户出错:', error)
-    message.error('删除用户出错')
+    window.$message.error('删除用户出错')
   }
 }
 
@@ -346,14 +343,14 @@ async function handleStatusChange(id: number, status: UserStatus) {
   try {
     const response = await updateUserStatus({ id, status })
     if (response.success) {
-      message.success(status === UserStatus.ACTIVE ? '用户启用成功' : '用户禁用成功')
+      window.$message.success(status === UserStatus.ACTIVE ? '用户启用成功' : '用户禁用成功')
       fetchUserList()
     } else {
-      message.error(response.message || '修改用户状态失败')
+      window.$message.error(response.message || '修改用户状态失败')
     }
   } catch (error) {
     console.error('修改用户状态出错:', error)
-    message.error('修改用户状态出错')
+    window.$message.error('修改用户状态出错')
   }
 }
 
@@ -366,7 +363,7 @@ function handleSubmit() {
 // 密码表单提交回调
 function handlePasswordSubmit() {
   passwordDrawerVisible.value = false
-  message.success('密码修改成功')
+  window.$message.success('密码修改成功')
 }
 </script>
 

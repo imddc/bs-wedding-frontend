@@ -11,9 +11,9 @@ import {
   NDrawerContent,
   NGi,
   NGrid,
+  NSpace,
   NSpin,
   NTag,
-  useMessage,
 } from 'naive-ui'
 import {
   ArrowLeftIcon,
@@ -28,7 +28,6 @@ import PasswordForm from '~/components/profile/admin/PasswordForm.vue'
 
 const route = useRoute()
 const router = useRouter()
-const message = useMessage()
 
 // 用户ID
 const userId = ref<number>(Number(route.params.id) || 0)
@@ -75,11 +74,11 @@ async function fetchUserDetail() {
       // 更新用户信息
       Object.assign(userInfo, response.data)
     } else {
-      message.error(response.message || '获取用户详情失败')
+      window.$message.error(response.message || '获取用户详情失败')
     }
   } catch (error) {
     console.error('获取用户详情出错:', error)
-    message.error('获取用户详情出错')
+    window.$message.error('获取用户详情出错')
   } finally {
     loading.value = false
   }
@@ -99,13 +98,11 @@ function handleResetPassword() {
 async function handleSubmit() {
   drawerVisible.value = false
   await fetchUserDetail()
-  message.success('用户信息已更新')
 }
 
 // 密码表单提交回调
 function handlePasswordSubmit() {
   passwordDrawerVisible.value = false
-  message.success('密码修改成功')
 }
 
 // 初始化
@@ -113,7 +110,7 @@ onMounted(() => {
   if (userId.value) {
     fetchUserDetail()
   } else {
-    message.error('用户ID不能为空')
+    window.$message.error('用户ID不能为空')
     router.push('/user')
   }
 })
@@ -132,7 +129,7 @@ onMounted(() => {
           用户详情
         </h1>
       </div>
-      <div>
+      <NSpace>
         <NButton type="warning" class="mr-2" @click="handleResetPassword">
           <template #icon>
             <KeyIcon class="mr-1" />
@@ -151,7 +148,7 @@ onMounted(() => {
           </template>
           用户列表
         </NButton>
-      </div>
+      </NSpace>
     </div>
 
     <div v-if="loading" class="flex justify-center p-8">

@@ -14,9 +14,8 @@ import {
   NSelect,
   NSpace,
   NTag,
-  useMessage,
 } from 'naive-ui'
-import { CameraIcon, EyeIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-vue-next'
+import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-vue-next'
 import { deleteProduct, getCategoriesByType, getProductsByType, updateProductStatus } from '~/api/product'
 import { PRODUCT_STATUS_OPTIONS, ProductStatus, ProductType } from '~/api/product/type'
 import type { PhotographyProduct, ProductQuery, SelectOption } from '~/api/product/type'
@@ -29,7 +28,6 @@ const showDetailModal = ref(false)
 const isEdit = ref(false)
 const currentPhotography = ref<PhotographyProduct | null>(null)
 const categoryOptions = ref<SelectOption[]>([])
-const message = useMessage()
 
 // 分页
 const pagination = reactive({
@@ -260,11 +258,11 @@ async function fetchPhotographyList() {
       photographyList.value = response.data.records as PhotographyProduct[]
       pagination.itemCount = response.data.total
     } else {
-      message.error(response.message || '获取婚纱摄影列表失败')
+      window.$message.error(response.message || '获取婚纱摄影列表失败')
     }
   } catch (error) {
     console.error('获取婚纱摄影列表失败', error)
-    message.error('获取婚纱摄影列表失败')
+    window.$message.error('获取婚纱摄影列表失败')
   } finally {
     loading.value = false
   }
@@ -356,14 +354,14 @@ function handleDeletePhotography(row: PhotographyProduct) {
       try {
         const response = await deleteProduct(row.id!)
         if (response.success) {
-          message.success('删除成功')
+          window.$message.success('删除成功')
           fetchPhotographyList()
         } else {
-          message.error(response.message || '删除失败')
+          window.$message.error(response.message || '删除失败')
         }
       } catch (error) {
         console.error('删除婚纱摄影失败', error)
-        message.error('删除失败')
+        window.$message.error('删除失败')
       }
     },
   })
@@ -380,14 +378,14 @@ async function handleToggleStatus(row: PhotographyProduct) {
   try {
     const response = await updateProductStatus(row.id, newStatus)
     if (response.success) {
-      message.success(`${statusText}成功`)
+      window.$message.success(`${statusText}成功`)
       fetchPhotographyList()
     } else {
-      message.error(response.message || `${statusText}失败`)
+      window.$message.error(response.message || `${statusText}失败`)
     }
   } catch (error) {
     console.error(`${statusText}婚纱摄影失败`, error)
-    message.error(`${statusText}失败`)
+    window.$message.error(`${statusText}失败`)
   }
 }
 </script>
