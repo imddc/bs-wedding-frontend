@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
+import { Store } from 'lucide-vue-next'
+import { User } from 'lucide-vue-next'
 import { Camera, Hotel, LayoutDashboard, Mic2 } from 'lucide-vue-next'
 import { NLayout, NLayoutContent, NLayoutSider, NMenu } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
@@ -43,6 +45,16 @@ const menuOptions: MenuOption[] = [
     label: () => renderLabel('司仪', '/admin/siyi'),
     key: 'siyi',
     icon: () => h(Mic2),
+  },
+  {
+    label: () => renderLabel('用户', '/admin/user'),
+    key: 'user',
+    icon: () => h(User),
+  },
+  {
+    label: () => renderLabel('商家', '/admin/merchant'),
+    key: 'merchant',
+    icon: () => h(Store),
   },
 ]
 

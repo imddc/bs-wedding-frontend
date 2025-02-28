@@ -10,6 +10,7 @@ import {
   NInput,
   NPopconfirm,
   NSelect,
+  NSpace,
   useMessage,
 } from 'naive-ui'
 import {
@@ -334,60 +335,67 @@ function handleSubmit() {
     <!-- 查询表单 -->
     <div class="search-form bg-white p-4 rounded shadow-sm mb-4">
       <NForm
-        inline
         :model="queryParams"
         label-placement="left"
         label-width="auto"
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        class=""
       >
-        <NFormItem label="商家名称">
-          <NInput
-            v-model:value="queryParams.merchantName"
-            placeholder="请输入商家名称"
-            clearable
-          />
-        </NFormItem>
-        <NFormItem label="城市">
-          <NInput
-            v-model:value="queryParams.city"
-            placeholder="请输入城市"
-            clearable
-          />
-        </NFormItem>
-        <NFormItem label="商家类型">
-          <NSelect
-            v-model:value="queryParams.merchantType"
-            :options="merchantTypeOptions"
-            placeholder="请选择商家类型"
-            clearable
-          />
-        </NFormItem>
-        <NFormItem label="状态">
-          <NSelect
-            v-model:value="queryParams.status"
-            :options="statusOptions"
-            placeholder="请选择状态"
-            clearable
-          />
-        </NFormItem>
-        <NFormItem class="flex justify-end">
-          <NButton
-            type="primary"
-            class="mr-2"
-            @click="handleSearch"
-          >
-            <template #icon>
-              <SearchIcon class="mr-1" />
-            </template>
-            查询
-          </NButton>
-          <NButton @click="resetQuery">
-            <template #icon>
-              <RefreshCwIcon class="mr-1" />
-            </template>
-            重置
-          </NButton>
-        </NFormItem>
+        <div class="flex items-center gap-4">
+          <NFormItem label="商家名称">
+            <NInput
+              v-model:value="queryParams.merchantName"
+              placeholder="请输入商家名称"
+              clearable
+            />
+          </NFormItem>
+          <NFormItem label="城市">
+            <NInput
+              v-model:value="queryParams.city"
+              placeholder="请输入城市"
+              clearable
+            />
+          </NFormItem>
+        </div>
+
+        <div class="flex">
+          <div class="flex items-center gap-4 w-2/5">
+            <NFormItem label="商家类型" class="flex-1">
+              <NSelect
+                v-model:value="queryParams.merchantType"
+                :options="merchantTypeOptions"
+                placeholder="请选择商家类型"
+                clearable
+              />
+            </NFormItem>
+            <NFormItem label="状态" class="flex-1">
+              <NSelect
+                v-model:value="queryParams.status"
+                :options="statusOptions"
+                placeholder="请选择状态"
+                clearable
+              />
+            </NFormItem>
+          </div>
+
+          <NSpace justify="end" class="ml-auto">
+            <NButton
+              type="primary"
+              class="mr-2"
+              @click="handleSearch"
+            >
+              <template #icon>
+                <SearchIcon class="mr-1" />
+              </template>
+              查询
+            </NButton>
+            <NButton @click="resetQuery">
+              <template #icon>
+                <RefreshCwIcon class="mr-1" />
+              </template>
+              重置
+            </NButton>
+          </NSpace>
+        </div>
       </NForm>
     </div>
 
