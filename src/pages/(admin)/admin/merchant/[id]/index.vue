@@ -122,7 +122,7 @@ onMounted(() => {
           商家详情
         </h1>
       </div>
-      <div>
+      <div class="flex-center gap-4">
         <NButton type="primary" class="mr-2" @click="handleEdit">
           <template #icon>
             <EditIcon class="mr-1" />
