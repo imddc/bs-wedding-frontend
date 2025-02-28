@@ -3,7 +3,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NPagination, NTag, useMessage } from 'naive-ui'
 import StudioListItem from '~/components/photography/StudioListItem.vue'
-import { areaOptions, mockStudios, priceOptions, styleOptions } from './helper'
+import { areaOptions, mockStudios, priceOptions } from './helper'
 import type { Studio } from './type'
 
 // // Import services
@@ -23,7 +23,6 @@ const totalStudios = ref(0)
 
 // Filter and sort
 const selectedArea = ref('all')
-const selectedStyle = ref('all')
 const selectedPrice = ref('all')
 const sortOption = ref('recommend')
 const viewMode = ref('grid')
@@ -39,7 +38,6 @@ async function loadStudios() {
   try {
     // const filters = {
     //   area: selectedArea.value !== 'all' ? selectedArea.value : undefined,
-    //   style: selectedStyle.value !== 'all' ? selectedStyle.value : undefined,
     //   priceRange: selectedPrice.value !== 'all' ? selectedPrice.value : undefined,
     //   page: currentPage.value,
     //   pageSize: pageSize.value,
@@ -64,13 +62,6 @@ async function loadStudios() {
 
 function selectArea(area: string) {
   selectedArea.value = area
-  currentPage.value = 1
-  updateRouteQuery()
-  loadStudios()
-}
-
-function selectStyle(style: string) {
-  selectedStyle.value = style
   currentPage.value = 1
   updateRouteQuery()
   loadStudios()
@@ -105,7 +96,6 @@ function updateRouteQuery() {
   router.push({
     query: {
       area: selectedArea.value !== 'all' ? selectedArea.value : undefined,
-      style: selectedStyle.value !== 'all' ? selectedStyle.value : undefined,
       price: selectedPrice.value !== 'all' ? selectedPrice.value : undefined,
       sort: sortOption.value !== 'recommend' ? sortOption.value : undefined,
       page: currentPage.value > 1 ? currentPage.value.toString() : undefined,
@@ -120,7 +110,6 @@ function syncQueryToState() {
   const query = route.query
 
   selectedArea.value = query.area?.toString() || 'all'
-  selectedStyle.value = query.style?.toString() || 'all'
   selectedPrice.value = query.price?.toString() || 'all'
   sortOption.value = query.sort?.toString() || 'recommend'
   currentPage.value = Number.parseInt(query.page?.toString() || '1')
@@ -159,23 +148,6 @@ onMounted(() => {
               @click="selectArea(area.value)"
             >
               {{ area.label }}
-            </NTag>
-          </div>
-        </div>
-
-        <!-- Style Filter -->
-        <div class="filter-group mt-2">
-          <span class="text-gray-600 mr-2">风格:</span>
-          <div class="filter-options flex flex-wrap gap-2">
-            <NTag
-              v-for="(style, index) in styleOptions"
-              :key="index"
-              :type="selectedStyle === style.value ? 'primary' : 'default'"
-              :bordered="false"
-              class="cursor-pointer hover:bg-gray-100"
-              @click="selectStyle(style.value)"
-            >
-              {{ style.label }}
             </NTag>
           </div>
         </div>

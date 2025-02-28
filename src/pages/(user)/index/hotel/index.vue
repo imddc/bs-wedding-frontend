@@ -4,6 +4,8 @@ import { NRate } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import type { Hotel } from '~/components/home/module/hotel/type'
 
+import { hotels } from './helper'
+
 const router = useRouter()
 
 // Filter data
@@ -14,16 +16,6 @@ const districts = ref([
   { label: '丰台区', value: 'fengtai' },
   { label: '西城区', value: 'xicheng' },
   { label: '东城区', value: 'dongcheng' },
-])
-
-const styles = ref([
-  { label: '全部', value: 'all' },
-  { label: '韩式', value: 'korean' },
-  { label: '森系', value: 'forest' },
-  { label: '欧美', value: 'western' },
-  { label: '中式', value: 'chinese' },
-  { label: '日系', value: 'japanese' },
-  { label: '复古', value: 'vintage' },
 ])
 
 const prices = ref([
@@ -37,93 +29,13 @@ const prices = ref([
 
 // Selected filters
 const selectedDistrict = ref('all')
-const selectedStyle = ref('all')
 const selectedPrice = ref('all')
-
-// Hotel data
-const hotels = ref([
-  {
-    id: 1,
-    name: '梦幻婚纱摄影工作室 1',
-    image: '/images/hotels/hotel1.jpg',
-    featuredImage: '/images/hotels/featured1.jpg',
-    rating: 3,
-    location: '深圳',
-    branch: '预约免费车接送店',
-    price: '¥15000以上',
-    priceValue: 15000,
-    style: 'western',
-    district: 'futian',
-    recommended: true,
-  },
-  {
-    id: 2,
-    name: '梦幻婚纱摄影工作室 2',
-    image: '/images/hotels/hotel2.jpg',
-    featuredImage: '/images/hotels/featured2.jpg',
-    rating: 3,
-    location: '北京',
-    branch: '预约免费车接送店',
-    price: '¥15000以上',
-    priceValue: 15000,
-    style: 'korean',
-    district: 'chaoyang',
-    recommended: true,
-  },
-  {
-    id: 3,
-    name: '梦幻婚纱摄影工作室 3',
-    image: '/images/hotels/hotel3.jpg',
-    featuredImage: '/images/hotels/featured3.jpg',
-    rating: 3,
-    location: '广州',
-    branch: '预约免费车接送店',
-    price: '¥3000-8000',
-    priceValue: 5000,
-    style: 'forest',
-    district: 'haizhu',
-    recommended: true,
-  },
-  {
-    id: 4,
-    name: '水晶之恋婚纱摄影',
-    image: '/images/hotels/hotel4.jpg',
-    featuredImage: '/images/hotels/featured4.jpg',
-    rating: 4,
-    location: '北京',
-    branch: '朝阳店',
-    price: '¥6999起',
-    priceValue: 6999,
-    style: 'western',
-    district: 'chaoyang',
-    recommended: false,
-  },
-  {
-    id: 5,
-    name: '韩国匠艺婚纱摄影',
-    image: '/images/hotels/hotel5.jpg',
-    featuredImage: '/images/hotels/featured5.jpg',
-    rating: 5,
-    location: '北京',
-    branch: '西城区店',
-    price: '¥8888起',
-    priceValue: 8888,
-    style: 'korean',
-    district: 'xicheng',
-    recommended: false,
-  },
-])
 
 // Filter hotels based on selected filters
 const filteredHotels = computed(() => {
   return hotels.value.filter((hotel) => {
     // District filter
     if (selectedDistrict.value !== 'all' && hotel.district !== selectedDistrict.value) {
-      return false
-    }
-
-    // Style filter
-    if (selectedStyle.value !== 'all' && hotel.style !== selectedStyle.value) {
       return false
     }
 
@@ -187,24 +99,6 @@ function clickHotel(hotel: Hotel) {
             @click="selectedDistrict = district.value"
           >
             {{ district.label }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Style Filter -->
-      <div class="mb-4">
-        <div class="text-sm font-medium mb-2">
-          风格:
-        </div>
-        <div class="flex flex-wrap gap-4">
-          <span
-            v-for="style in styles"
-            :key="style.value"
-            class="cursor-pointer text-sm"
-            :class="selectedStyle === style.value ? 'text-red-500 font-medium' : 'text-gray-700'"
-            @click="selectedStyle = style.value"
-          >
-            {{ style.label }}
           </span>
         </div>
       </div>

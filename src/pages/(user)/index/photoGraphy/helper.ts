@@ -10,16 +10,6 @@ export const areaOptions = [
   { label: '东城区', value: 'dongcheng' },
 ]
 
-export const styleOptions = [
-  { label: '全部', value: 'all' },
-  { label: '韩式', value: 'korean' },
-  { label: '森系', value: 'forest' },
-  { label: '欧美', value: 'western' },
-  { label: '中式', value: 'chinese' },
-  { label: '日系', value: 'japanese' },
-  { label: '复古', value: 'vintage' },
-]
-
 export const priceOptions = [
   { label: '全部', value: 'all' },
   { label: '¥5000以下', value: 'under5k' },
@@ -44,7 +34,6 @@ export const mockStudios: Studio[] = Array.from({ length: 50 }, (_, index) => ({
   coverImage: `https://picsum.photos/seed/${index + 1}/800/600`,
   subImages: Array.from({ length: 3 }).map((_, i) => `https://picsum.photos/seed/${i + 1}/800/600`),
   location: ['上海', '北京', '广州', '深圳'][Math.floor(Math.random() * 4)],
-  styles: ['韩式', '欧美', '中式', '日式'].slice(0, Math.floor(Math.random() * 3) + 1),
   priceRange: ['3000以下', '3000-8000', '8000-15000', '15000以上'][Math.floor(Math.random() * 4)],
   rating: 3.5 + Math.random() * 1.5,
   reviewCount: Math.floor(Math.random() * 200) + 50,

@@ -2,13 +2,12 @@
 import { computed, ref } from 'vue'
 import { NButton, NPagination, NTag, useMessage } from 'naive-ui'
 import { Star } from 'lucide-vue-next'
-import { hosts as data, experienceOptions, priceOptions, sortOptions, styleOptions } from './helper'
+import { hosts as data, experienceOptions, priceOptions, sortOptions } from './helper'
 
 const message = useMessage()
 
 // Filter state
 const selectedPrice = ref('all')
-const selectedStyle = ref('all')
 const selectedExperience = ref('all')
 const sortBy = ref('comprehensive')
 const currentPage = ref(1)
@@ -36,11 +35,6 @@ const filteredHosts = computed(() => {
           return true
       }
     })
-  }
-
-  // Apply style filter
-  if (selectedStyle.value !== 'all') {
-    result = result.filter(host => host.style === selectedStyle.value)
   }
 
   // Apply experience filter
@@ -84,7 +78,6 @@ const totalPages = computed(() => Math.ceil(filteredHosts.value.length / pageSiz
 // Methods
 function resetFilters() {
   selectedPrice.value = 'all'
-  selectedStyle.value = 'all'
   selectedExperience.value = 'all'
   sortBy.value = 'comprehensive'
   currentPage.value = 1
@@ -131,25 +124,6 @@ function selectHost(host: any) {
               @click="selectedPrice = price.value"
             >
               {{ price.label }}
-            </NTag>
-          </div>
-        </div>
-
-        <!-- Style Filter -->
-        <div>
-          <h3 class="text-sm font-medium mb-2">
-            主持风格
-          </h3>
-          <div class="flex flex-wrap gap-2">
-            <NTag
-              v-for="style in styleOptions"
-              :key="style.value"
-              :type="selectedStyle === style.value ? 'primary' : 'default'"
-              size="large"
-              class="cursor-pointer"
-              @click="selectedStyle = style.value"
-            >
-              {{ style.label }}
             </NTag>
           </div>
         </div>

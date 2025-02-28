@@ -4,7 +4,6 @@ export interface Studio {
   coverImage: string
   subImages: string[]
   location: string
-  styles: string[]
   priceRange: string
   rating: number
   reviewCount: number
