@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { NButton, NPagination, NTag, useMessage } from 'naive-ui'
 import { Star } from 'lucide-vue-next'
-import { experienceOptions, priceOptions, sortOptions, styleOptions } from './helper'
+import { hosts as data, experienceOptions, priceOptions, sortOptions, styleOptions } from './helper'
 
 const message = useMessage()
 
@@ -14,82 +14,7 @@ const sortBy = ref('comprehensive')
 const currentPage = ref(1)
 const pageSize = ref(12)
 
-// Hosts data
-const hosts = ref([
-  {
-    id: 1,
-    name: '张明',
-    image: '/images/hosts/host1.jpg',
-    rating: 4.9,
-    reviewCount: 328,
-    price: 5800,
-    tags: ['幽默风趣', '知名主持'],
-    weddingCount: 586,
-    experience: 8,
-    style: 'humor',
-  },
-  {
-    id: 2,
-    name: '李婷',
-    image: '/images/hosts/host2.jpg',
-    rating: 4.8,
-    reviewCount: 256,
-    price: 6200,
-    tags: ['温馨感人', '资深主持'],
-    weddingCount: 420,
-    experience: 7,
-    style: 'warm',
-  },
-  {
-    id: 3,
-    name: '王浩',
-    image: '/images/hosts/host3.jpg',
-    rating: 4.7,
-    reviewCount: 189,
-    price: 4800,
-    tags: ['庄重大气', '人气主持'],
-    weddingCount: 320,
-    experience: 5,
-    style: 'elegant',
-  },
-  {
-    id: 4,
-    name: '陈青',
-    image: '/images/hosts/host4.jpg',
-    rating: 4.9,
-    reviewCount: 412,
-    price: 8600,
-    tags: ['知名主持', '电视主持'],
-    weddingCount: 723,
-    experience: 12,
-    style: 'elegant',
-  },
-  {
-    id: 5,
-    name: '刘阳',
-    image: '/images/hosts/host5.jpg',
-    rating: 4.6,
-    reviewCount: 167,
-    price: 3800,
-    tags: ['活力青春', '新锐主持'],
-    weddingCount: 213,
-    experience: 3,
-    style: 'energetic',
-  },
-  {
-    id: 6,
-    name: '赵雪',
-    image: '/images/hosts/host6.jpg',
-    rating: 4.8,
-    reviewCount: 284,
-    price: 4200,
-    tags: ['温馨感人', '资深主持'],
-    weddingCount: 376,
-    experience: 6,
-    style: 'warm',
-  },
-  // Add more hosts data as needed
-])
+const hosts = ref(data)
 
 // Filter logic
 const filteredHosts = computed(() => {
@@ -155,11 +80,6 @@ const filteredHosts = computed(() => {
 
 // Pagination
 const totalPages = computed(() => Math.ceil(filteredHosts.value.length / pageSize.value))
-const paginatedHosts = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return filteredHosts.value.slice(start, end)
-})
 
 // Methods
 function resetFilters() {
