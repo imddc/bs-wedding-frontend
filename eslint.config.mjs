@@ -244,7 +244,7 @@ export default antfu(
       'vue/no-multiple-objects-in-class': 'error',
       'vue/no-ref-object-reactivity-loss': 'off',
       'vue/no-root-v-if': 'error',
-      'vue/no-setup-props-reactivity-loss': 'error',
+      'vue/no-setup-props-reactivity-loss': 'off',
       'vue/no-static-inline-styles': 'off',
       'vue/no-undef-components': [
         'error',
