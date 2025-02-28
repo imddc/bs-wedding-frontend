@@ -3,11 +3,22 @@ import { useHead } from '@vueuse/head'
 import { CalendarRangeIcon, Camera, Hotel, LayoutDashboard, Mic2, PopsicleIcon, Store, User } from 'lucide-vue-next'
 import { NLayout, NLayoutContent, NLayoutSider, NMenu } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
-import { h } from 'vue'
-import { RouterLink } from 'vue-router'
+import { h, ref, watchEffect } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 
 useHead({
   titleTemplate: 'wedding admin',
+})
+
+const route = useRoute()
+const activeKey = ref('dashboard')
+
+// 监听路由变化，更新菜单选中项
+watchEffect(() => {
+  const path = route.path
+  // 从路径中提取关键字，例如 /admin/hotel -> hotel
+  const key = path.split('/').pop() || 'dashboard'
+  activeKey.value = key
 })
 
 function renderLabel(label: string, path: string) {
@@ -82,7 +93,7 @@ function clickMenu() {
     >
       <NMenu
         :options="menuOptions"
-        default-value="dashboard"
+        :value="activeKey"
         @click="clickMenu"
       />
     </NLayoutSider>
