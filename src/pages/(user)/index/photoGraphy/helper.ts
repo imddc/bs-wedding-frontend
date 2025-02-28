@@ -1,3 +1,5 @@
+import type { Studio } from './type'
+
 // Filter options
 export const areaOptions = [
   { label: '全部', value: 'all' },
@@ -35,3 +37,16 @@ export const sortOptions = [
   { label: '价格从低到高', value: 'price-asc' },
   { label: '价格从高到低', value: 'price-desc' },
 ]
+
+export const mockStudios: Studio[] = Array.from({ length: 50 }, (_, index) => ({
+  id: index + 1,
+  name: `梦幻婚纱摄影工作室 ${index + 1}`,
+  coverImage: `https://picsum.photos/seed/${index + 1}/800/600`,
+  subImages: Array.from({ length: 3 }).map((_, i) => `https://picsum.photos/seed/${i + 1}/800/600`),
+  location: ['上海', '北京', '广州', '深圳'][Math.floor(Math.random() * 4)],
+  styles: ['韩式', '欧美', '中式', '日式'].slice(0, Math.floor(Math.random() * 3) + 1),
+  priceRange: ['3000以下', '3000-8000', '8000-15000', '15000以上'][Math.floor(Math.random() * 4)],
+  rating: 3.5 + Math.random() * 1.5,
+  reviewCount: Math.floor(Math.random() * 200) + 50,
+  description: '专业的婚纱摄影服务，为您留下最美的回忆。',
+}))

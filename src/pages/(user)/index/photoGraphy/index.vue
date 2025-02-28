@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { h, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NPagination, NTag, useMessage } from 'naive-ui'
-import StudioCard from '~/components/photography/StudioCard.vue'
 import StudioListItem from '~/components/photography/StudioListItem.vue'
-import { areaOptions, priceOptions, sortOptions, styleOptions } from './helper'
+import { areaOptions, mockStudios, priceOptions, styleOptions } from './helper'
+import type { Studio } from './type'
 
 // // Import services
 // import { PhotographyService } from '~/services/PhotographyService'
@@ -37,19 +37,23 @@ async function loadStudios() {
   loading.value = true
 
   try {
-    const filters = {
-      area: selectedArea.value !== 'all' ? selectedArea.value : undefined,
-      style: selectedStyle.value !== 'all' ? selectedStyle.value : undefined,
-      priceRange: selectedPrice.value !== 'all' ? selectedPrice.value : undefined,
-      page: currentPage.value,
-      pageSize: pageSize.value,
-      sortBy: sortOption.value,
-    }
+    // const filters = {
+    //   area: selectedArea.value !== 'all' ? selectedArea.value : undefined,
+    //   style: selectedStyle.value !== 'all' ? selectedStyle.value : undefined,
+    //   priceRange: selectedPrice.value !== 'all' ? selectedPrice.value : undefined,
+    //   page: currentPage.value,
+    //   pageSize: pageSize.value,
+    //   sortBy: sortOption.value,
+    // }
 
-    const response = await PhotographyService.searchStudios(filters)
+    // const response = await PhotographyService.searchStudios(filters)
 
-    studios.value = response.data.studios
-    totalStudios.value = response.data.total
+    const response = { data: mockStudios }
+
+    // studios.value = response.data.studios
+    // totalStudios.value = response.data.total
+    studios.value = response.data
+    totalStudios.value = response.data.length
   } catch (error) {
     message.error('加载婚纱摄影工作室数据失败')
     console.error('Error loading studios:', error)
@@ -93,7 +97,7 @@ function handlePageSizeChange(size: number) {
 }
 
 function viewStudioDetail(studioId: number) {
-  router.push(`/photography/studios/${studioId}`)
+  router.push(`/photography/${studioId}`)
 }
 
 // Update URL query parameters
@@ -129,35 +133,6 @@ watch(() => route.query, () => {
   syncQueryToState()
   loadStudios()
 }, { deep: true })
-
-// 修改 SVG 图标组件定义
-function GridIcon() {
-  return h('svg', {
-    xmlns: 'http://www.w3.org/2000/svg',
-    viewBox: '0 0 24 24',
-    width: '24',
-    height: '24',
-    fill: 'currentColor',
-  }, [
-    h('path', {
-      d: 'M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z',
-    }),
-  ])
-}
-
-function ListIcon() {
-  return h('svg', {
-    xmlns: 'http://www.w3.org/2000/svg',
-    viewBox: '0 0 24 24',
-    width: '24',
-    height: '24',
-    fill: 'currentColor',
-  }, [
-    h('path', {
-      d: 'M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z',
-    }),
-  ])
-}
 
 // Initialize
 onMounted(() => {
@@ -233,18 +208,8 @@ onMounted(() => {
 
     <!-- Studio List -->
     <div class="studio-list mb-6">
-      <!-- Grid View -->
-      <div v-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <StudioCard
-          v-for="studio in studios"
-          :key="studio.id"
-          :studio="studio"
-          @click="viewStudioDetail(studio.id)"
-        />
-      </div>
-
       <!-- List View -->
-      <div v-else class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4">
         <StudioListItem
           v-for="studio in studios"
           :key="studio.id"
