@@ -1,7 +1,7 @@
 // ~/stores/navStore.ts
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import {  Hotel, Camera, Mic, CalendarDays } from 'lucide-vue-next'
+import { CalendarDays, Camera, Hotel, Mic } from 'lucide-vue-next'
 
 export interface Nav {
   label: string
@@ -30,11 +30,11 @@ export const useNavStore = defineStore('nav', () => {
     {
       label: '婚礼策划',
       path: '/planning',
-      icon: CalendarDays
-    }
+      icon: CalendarDays,
+    },
   ])
 
   return {
-    navList
+    navList,
   }
 })

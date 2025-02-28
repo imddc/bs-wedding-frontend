@@ -348,12 +348,6 @@ onMounted(() => {
             v-else-if="activeKey === 'wedding-plan'"
             :plan="weddingPlan"
           />
-
-          <SettingsPanel
-            v-else-if="activeKey === 'settings'"
-            :settings="userSettings"
-            @update="updateSettings"
-          />
         </div>
       </div>
     </div>

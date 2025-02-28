@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { h, ref } from 'vue'
-import { NLayoutHeader, NDropdown, NAvatar, NIcon, NBadge } from 'naive-ui'
+import type { Component } from 'vue'
+import { NAvatar, NBadge, NDropdown, NLayoutHeader } from 'naive-ui'
+import type { DropdownOption } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
+import { User } from 'lucide-vue-next'
 import { useNavStore } from '~/stores/navStore'
-import { User, ShoppingBag, Bell, Heart, Settings } from 'lucide-vue-next'
 import type { Nav } from '~/stores/navStore'
+import { useUserStore } from '~/stores'
 
 const router = useRouter()
 const navStore = useNavStore()
+const userStore = useUserStore()
 const { navList } = storeToRefs(navStore)
 
 // Whether user is logged in
@@ -20,42 +24,21 @@ const userData = ref({
   avatar: '/src/assets/avatar.png',
 })
 
+function renderIcon(icon: Component) {
+  return () => h(icon, { class: 'size-4' })
+}
+
 // User dropdown menu options
-const userOptions = ref([
+const userOptions = ref<DropdownOption[]>([
   {
     label: '个人信息',
     key: 'profile',
-    icon: User,
-  },
-  {
-    label: '我的收藏',
-    key: 'favorites',
-    icon: Heart,
-  },
-  {
-    label: '我的订单',
-    key: 'orders',
-    icon: ShoppingBag,
-  },
-  {
-    label: '我的消息',
-    key: 'messages',
-    icon: Bell,
-    badge: 3,
-  },
-  {
-    type: 'divider',
-  },
-  {
-    label: '账号设置',
-    key: 'settings',
-    icon: Settings,
+    icon: renderIcon(User),
   },
   {
     label: '退出登录',
     key: 'logout',
-    icon: 'logout',
-  }
+  },
 ])
 
 function clickLogo() {
@@ -71,32 +54,15 @@ function handleUserAction(key: string) {
   console.log('User action:', key)
   switch (key) {
     case 'profile':
-      router.push('/user/profile')
-      break
-    case 'favorites':
-      router.push('/user/favorites')
-      break
-    case 'orders':
-      router.push('/user/orders')
-      break
-    case 'messages':
-      router.push('/user/messages')
-      break
-    case 'settings':
-      router.push('/user/settings')
+      router.push('/profile')
       break
     case 'logout':
       // Implement logout logic
+      userStore.logout()
       console.log('Logging out...')
       break
-  }
-}
-
-function renderIcon(icon: any) {
-  return () => {
-    return h(NIcon, null, {
-      default: () => h(icon)
-    })
+    default:
+      break
   }
 }
 </script>
@@ -108,7 +74,7 @@ function renderIcon(icon: any) {
       <div class="flex-shrink-0 cursor-pointer" @click="clickLogo">
         <img class="h-12 w-auto" src="/src/assets/wedding-ring.png" alt="Logo">
       </div>
-      
+
       <!-- Main Navigation -->
       <div class="hidden md:flex items-center gap-6">
         <div
@@ -116,9 +82,9 @@ function renderIcon(icon: any) {
           :key="nav.path"
           class="cursor-pointer flex items-center py-2 px-1 border-b-2 transition-colors duration-150"
           :class="[
-            router.currentRoute.value.path === nav.path 
-              ? 'border-primary-500 text-primary-600' 
-              : 'border-transparent hover:text-primary-500'
+            router.currentRoute.value.path === nav.path
+              ? 'border-primary-500 text-primary-600'
+              : 'border-transparent hover:text-primary-500',
           ]"
           @click="() => clickNav(nav)"
         >
@@ -126,18 +92,14 @@ function renderIcon(icon: any) {
           {{ nav.label }}
         </div>
       </div>
-      
+
       <!-- User Area -->
       <div class="flex items-center gap-4 ml-auto">
         <!-- Search - Could be expanded later -->
-        
+
         <!-- User Profile / Login -->
         <div v-if="isLoggedIn">
-          <NDropdown
-            trigger="click"
-            :options="userOptions"
-            @select="handleUserAction"
-          >
+          <NDropdown trigger="click" :options="userOptions" @select="handleUserAction">
             <div class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 rounded-full p-1">
               <NBadge :value="3" :max="99" dot>
                 <NAvatar round size="medium" :src="userData.avatar">
