@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { Store } from 'lucide-vue-next'
-import { User } from 'lucide-vue-next'
-import { Camera, Hotel, LayoutDashboard, Mic2 } from 'lucide-vue-next'
+import { CalendarRangeIcon, Camera, Hotel, LayoutDashboard, Mic2, PopsicleIcon, Store, User } from 'lucide-vue-next'
 import { NLayout, NLayoutContent, NLayoutSider, NMenu } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { h } from 'vue'
@@ -55,6 +53,16 @@ const menuOptions: MenuOption[] = [
     label: () => renderLabel('商家', '/admin/merchant'),
     key: 'merchant',
     icon: () => h(Store),
+  },
+  {
+    label: () => renderLabel('区域', '/admin/district'),
+    key: 'district',
+    icon: () => h(PopsicleIcon),
+  },
+  {
+    label: () => renderLabel('价格区间', '/admin/priceRange'),
+    key: 'priceRange',
+    icon: () => h(CalendarRangeIcon),
   },
 ]
 
