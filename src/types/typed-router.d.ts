@@ -19,6 +19,12 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/(auth)/login': RouteRecordInfo<'/(auth)/login', '/login', Record<never, never>, Record<never, never>>,
+    '/(admin)/[...admin_all]': RouteRecordInfo<'/(admin)/[...admin_all]', '/:admin_all(.*)', { admin_all: ParamValue<true> }, { admin_all: ParamValue<false> }>,
+    '/(admin)/admin': RouteRecordInfo<'/(admin)/admin', '/admin', Record<never, never>, Record<never, never>>,
+    '/(admin)/admin/': RouteRecordInfo<'/(admin)/admin/', '/admin', Record<never, never>, Record<never, never>>,
+    '/(admin)/admin/hotel/': RouteRecordInfo<'/(admin)/admin/hotel/', '/admin/hotel', Record<never, never>, Record<never, never>>,
+    '/(admin)/admin/photography/': RouteRecordInfo<'/(admin)/admin/photography/', '/admin/photography', Record<never, never>, Record<never, never>>,
+    '/(admin)/admin/siyi/': RouteRecordInfo<'/(admin)/admin/siyi/', '/admin/siyi', Record<never, never>, Record<never, never>>,
     '/(user)/': RouteRecordInfo<'/(user)/', '/', Record<never, never>, Record<never, never>>,
     '/(user)//': RouteRecordInfo<'/(user)//', '/', Record<never, never>, Record<never, never>>,
     '/(user)//activity/': RouteRecordInfo<'/(user)//activity/', '/activity', Record<never, never>, Record<never, never>>,
@@ -30,9 +36,5 @@ declare module 'vue-router/auto-routes' {
     '/(user)//profile/': RouteRecordInfo<'/(user)//profile/', '/profile', Record<never, never>, Record<never, never>>,
     '/(user)//siyi/': RouteRecordInfo<'/(user)//siyi/', '/siyi', Record<never, never>, Record<never, never>>,
     '/(user)/[...all]': RouteRecordInfo<'/(user)/[...all]', '/:all(.*)', { all: ParamValue<true> }, { all: ParamValue<false> }>,
-    '/admin/': RouteRecordInfo<'/admin/', '/admin', Record<never, never>, Record<never, never>>,
-    '/admin/[...admin]': RouteRecordInfo<'/admin/[...admin]', '/admin/:admin(.*)', { admin: ParamValue<true> }, { admin: ParamValue<false> }>,
-    '/admin/activity/': RouteRecordInfo<'/admin/activity/', '/admin/activity', Record<never, never>, Record<never, never>>,
-    '/admin/system/': RouteRecordInfo<'/admin/system/', '/admin/system', Record<never, never>, Record<never, never>>,
   }
 }

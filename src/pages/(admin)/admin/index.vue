@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    404
+    admin index
   </div>
 </template>
 

@@ -4,8 +4,10 @@
 
 <template>
   <div>
-    活动管理页面
+    admin 404
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>
