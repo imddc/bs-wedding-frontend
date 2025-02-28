@@ -92,7 +92,7 @@ async function formSubmit() {
               v-model:value="formState.password"
               name="password"
               type="password"
-              show-password-toggle
+              show-password-on="click"
               placeholder="密码"
               clearable
               size="large"
@@ -106,7 +106,7 @@ async function formSubmit() {
                 name="repeatPassword"
                 type="password"
                 placeholder="确认密码"
-                show-password-toggle
+                show-password-on="click"
                 clearable
                 size="large"
               />

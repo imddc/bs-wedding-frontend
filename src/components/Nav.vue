@@ -58,8 +58,8 @@ function handleUserAction(key: string) {
       break
     case 'logout':
       // Implement logout logic
-      userStore.logout()
-      console.log('Logging out...')
+      userStore.userLogout()
+      router.replace('/')
       break
     default:
       break
