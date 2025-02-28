@@ -10,23 +10,22 @@ import {
   NInput,
   NPopconfirm,
   NSelect,
+  NSpace,
   NTag,
 } from 'naive-ui'
 import {
-  CheckIcon,
-  EditIcon,
   EyeIcon,
-  KeyIcon,
   PlusIcon,
   RefreshCwIcon,
   SearchIcon,
+  ToggleLeftIcon,
+  ToggleRightIcon,
   Trash2Icon,
-  XIcon,
 } from 'lucide-vue-next'
 import type { DataTableColumns } from 'naive-ui'
+import { useRouter } from 'vue-router'
 import {
   deleteUser,
-  getUserById,
   pageUsers,
   updateUserStatus,
 } from '~/api/user'
@@ -43,6 +42,8 @@ import {
 } from '~/constants/user'
 import UserForm from '~/components/profile/admin/UserForm.vue'
 import PasswordForm from '~/components/profile/admin/PasswordForm.vue'
+
+const router = useRouter()
 
 // 用户类型选项
 const userTypeOptions = USER_TYPE_OPTIONS
@@ -151,27 +152,7 @@ const columns = ref<DataTableColumns<UserInfo>>([
             quaternary: true,
             onClick: () => handleView(row.id),
           },
-          { default: () => h(EyeIcon, { size: 16 }), icon: () => h(EyeIcon, { size: 16 }) },
-        ),
-        h(
-          NButton,
-          {
-            size: 'small',
-            type: 'primary',
-            quaternary: true,
-            onClick: () => handleEdit(row.id),
-          },
-          { default: () => h(EditIcon, { size: 16 }), icon: () => h(EditIcon, { size: 16 }) },
-        ),
-        h(
-          NButton,
-          {
-            size: 'small',
-            type: 'warning',
-            quaternary: true,
-            onClick: () => handleResetPassword(row.id),
-          },
-          { default: () => h(KeyIcon, { size: 16 }), icon: () => h(KeyIcon, { size: 16 }) },
+          { default: () => h(EyeIcon, { size: 16 }) },
         ),
         h(
           NPopconfirm,
@@ -187,7 +168,7 @@ const columns = ref<DataTableColumns<UserInfo>>([
                 type: 'error',
                 quaternary: true,
               },
-              { default: () => h(Trash2Icon, { size: 16 }), icon: () => h(Trash2Icon, { size: 16 }) },
+              { default: () => h(Trash2Icon, { size: 16 }) },
             ),
           },
         ),
@@ -202,16 +183,13 @@ const columns = ref<DataTableColumns<UserInfo>>([
               NButton,
               {
                 size: 'small',
-                type: row.status === UserStatus.ACTIVE ? 'error' : 'success',
+                type: row.status === UserStatus.ACTIVE ? 'success' : 'error',
                 quaternary: true,
               },
               {
                 default: () => row.status === UserStatus.ACTIVE
-                  ? h(XIcon, { size: 16 })
-                  : h(CheckIcon, { size: 16 }),
-                icon: () => row.status === UserStatus.ACTIVE
-                  ? h(XIcon, { size: 16 })
-                  : h(CheckIcon, { size: 16 }),
+                  ? h(ToggleRightIcon, { size: 16 })
+                  : h(ToggleLeftIcon, { size: 16 }),
               },
             ),
           },
@@ -280,46 +258,7 @@ function handleAdd() {
 
 // 查看用户详情
 async function handleView(id: number) {
-  formLoading.value = true
-  try {
-    const response = await getUserById(id)
-    if (response.success) {
-      formData.value = { ...response.data, isReadOnly: true }
-      drawerVisible.value = true
-    } else {
-      window.$message.error(response.message || '获取用户详情失败')
-    }
-  } catch (error) {
-    console.error('获取用户详情出错:', error)
-    window.$message.error('获取用户详情出错')
-  } finally {
-    formLoading.value = false
-  }
-}
-
-// 编辑用户
-async function handleEdit(id: number) {
-  formLoading.value = true
-  try {
-    const response = await getUserById(id)
-    if (response.success) {
-      formData.value = { ...response.data, isReadOnly: false }
-      drawerVisible.value = true
-    } else {
-      window.$message.error(response.message || '获取用户详情失败')
-    }
-  } catch (error) {
-    console.error('获取用户详情出错:', error)
-    window.$message.error('获取用户详情出错')
-  } finally {
-    formLoading.value = false
-  }
-}
-
-// 修改密码
-function handleResetPassword(id: number) {
-  selectedUserId.value = id
-  passwordDrawerVisible.value = true
+  router.push(`/admin/user/${id}`)
 }
 
 // 删除用户
@@ -384,74 +323,79 @@ function handlePasswordSubmit() {
     <!-- 查询表单 -->
     <div class="search-form bg-white p-4 rounded shadow-sm mb-4">
       <NForm
-        inline
         :model="queryParams"
         label-placement="left"
         label-width="auto"
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
       >
-        <NFormItem label="用户名">
-          <NInput
-            v-model:value="queryParams.username"
-            placeholder="请输入用户名"
-            clearable
-          />
-        </NFormItem>
-        <NFormItem label="真实姓名">
-          <NInput
-            v-model:value="queryParams.realName"
-            placeholder="请输入真实姓名"
-            clearable
-          />
-        </NFormItem>
-        <NFormItem label="手机号">
-          <NInput
-            v-model:value="queryParams.phone"
-            placeholder="请输入手机号"
-            clearable
-          />
-        </NFormItem>
-        <NFormItem label="邮箱">
-          <NInput
-            v-model:value="queryParams.email"
-            placeholder="请输入邮箱"
-            clearable
-          />
-        </NFormItem>
-        <NFormItem label="用户类型">
-          <NSelect
-            v-model:value="queryParams.userType"
-            :options="userTypeOptions"
-            placeholder="请选择用户类型"
-            clearable
-          />
-        </NFormItem>
-        <NFormItem label="状态">
-          <NSelect
-            v-model:value="queryParams.status"
-            :options="statusOptions"
-            placeholder="请选择状态"
-            clearable
-          />
-        </NFormItem>
-        <NFormItem class="flex justify-end">
-          <NButton
-            type="primary"
-            class="mr-2"
-            @click="handleSearch"
-          >
-            <template #icon>
-              <SearchIcon class="mr-1" />
-            </template>
-            查询
-          </NButton>
-          <NButton @click="resetQuery">
-            <template #icon>
-              <RefreshCwIcon class="mr-1" />
-            </template>
-            重置
-          </NButton>
-        </NFormItem>
+        <div class="flex items-center gap-4">
+          <NFormItem label="用户名">
+            <NInput
+              v-model:value="queryParams.username"
+              placeholder="请输入用户名"
+              clearable
+            />
+          </NFormItem>
+          <NFormItem label="真实姓名">
+            <NInput
+              v-model:value="queryParams.realName"
+              placeholder="请输入真实姓名"
+              clearable
+            />
+          </NFormItem>
+          <NFormItem label="手机号">
+            <NInput
+              v-model:value="queryParams.phone"
+              placeholder="请输入手机号"
+              clearable
+            />
+          </NFormItem>
+          <NFormItem label="邮箱">
+            <NInput
+              v-model:value="queryParams.email"
+              placeholder="请输入邮箱"
+              clearable
+            />
+          </NFormItem>
+        </div>
+
+        <div class="flex-between gap-4">
+          <div class="w-1/3 flex items-center">
+            <NFormItem label="用户类型" class="flex-1">
+              <NSelect
+                v-model:value="queryParams.userType"
+                :options="userTypeOptions"
+                placeholder="请选择用户类型"
+                clearable
+              />
+            </NFormItem>
+            <NFormItem label="状态" class="flex-1">
+              <NSelect
+                v-model:value="queryParams.status"
+                :options="statusOptions"
+                placeholder="请选择状态"
+                clearable
+              />
+            </NFormItem>
+          </div>
+          <NSpace>
+            <NButton
+              type="primary"
+              class="mr-2"
+              @click="handleSearch"
+            >
+              <template #icon>
+                <SearchIcon class="mr-1" />
+              </template>
+              查询
+            </NButton>
+            <NButton @click="resetQuery">
+              <template #icon>
+                <RefreshCwIcon class="mr-1" />
+              </template>
+              重置
+            </NButton>
+          </NSpace>
+        </div>
       </NForm>
     </div>
 

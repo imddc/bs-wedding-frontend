@@ -111,7 +111,7 @@ onMounted(() => {
     fetchUserDetail()
   } else {
     window.$message.error('用户ID不能为空')
-    router.push('/user')
+    router.push('/admin/user')
   }
 })
 </script>
@@ -142,7 +142,7 @@ onMounted(() => {
           </template>
           编辑
         </NButton>
-        <NButton @click="router.push('/user')">
+        <NButton @click="router.push('/admin/user')">
           <template #icon>
             <ListIcon class="mr-1" />
           </template>
