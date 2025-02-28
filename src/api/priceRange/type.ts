@@ -32,14 +32,3 @@ export interface PageParams {
   page: number
   size: number
 }
-
-/**
- * 分页数据
- */
-export interface PageData<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  size: number
-  number: number
-}

@@ -1,6 +1,6 @@
 import { request } from '~/plugins/http'
-import type { DataType } from '~/plugins/http/type'
-import type { PageData, PageParams, PriceRangeDTO, PriceRangeParams } from './type'
+import type { DataType, PageData } from '~/plugins/http/type'
+import type { PageParams, PriceRangeDTO, PriceRangeParams } from './type'
 
 /**
  * 获取价格范围详情
@@ -15,7 +15,7 @@ export async function getPriceRange(id: number) {
  * 获取价格范围分页列表
  */
 export async function listPriceRanges(params: PageParams) {
-  return request.get<DataType<PageData<PriceRangeDTO>>>({
+  return request.get<PageData<PriceRangeDTO>>({
     url: '/price-ranges',
     params,
   })

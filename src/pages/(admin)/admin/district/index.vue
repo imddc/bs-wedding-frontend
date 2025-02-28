@@ -14,20 +14,20 @@ import {
   useMessage,
 } from 'naive-ui'
 import type { DataTableColumns, FormInst } from 'naive-ui'
-import { AlertCircleIcon, EyeIcon, PencilIcon, PlusIcon } from 'lucide-vue-next'
+import { AlertCircleIcon, EditIcon, PlusIcon, Trash2Icon } from 'lucide-vue-next'
 import {
-  createPriceRange,
-  deletePriceRange,
-  listPriceRanges,
-  updatePriceRange,
-} from '~/api/priceRange'
-import type { PriceRangeDTO, PriceRangeParams } from '~/api/priceRange/type'
+  createDistrict,
+  deleteDistrict,
+  listDistricts,
+  updateDistrict,
+} from '~/api/district'
+import type { DistrictDTO, DistrictParams } from '~/api/district/type'
 
 // 消息提示
 const message = useMessage()
 
 // 表格数据
-const priceRanges = ref<PriceRangeDTO[]>([])
+const districts = ref<DistrictDTO[]>([])
 const loading = ref(false)
 const pagination = reactive({
   page: 1,
@@ -37,12 +37,12 @@ const pagination = reactive({
   pageSizes: [10, 20, 30, 50],
   onChange: (page: number) => {
     pagination.page = page
-    fetchPriceRanges()
+    fetchDistricts()
   },
   onUpdatePageSize: (pageSize: number) => {
     pagination.pageSize = pageSize
     pagination.page = 1
-    fetchPriceRanges()
+    fetchDistricts()
   },
 })
 
@@ -51,11 +51,9 @@ const formRef = ref<FormInst | null>(null)
 const showModal = ref(false)
 const isEdit = ref(false)
 const submitting = ref(false)
-const formModel = reactive<PriceRangeParams>({
+const formModel = reactive<DistrictParams>({
   code: '',
   name: '',
-  minPrice: null,
-  maxPrice: null,
   sortOrder: 0,
   isEnabled: true,
 })
@@ -67,66 +65,36 @@ const currentId = ref<number | null>(null)
 // 表单校验规则
 const rules = {
   code: [
-    { required: true, message: '请输入价格范围代码', trigger: 'blur' },
-    { max: 50, message: '价格范围代码最多50个字符', trigger: 'blur' },
+    { required: true, message: '请输入区域代码', trigger: 'blur' },
+    { max: 50, message: '区域代码最多50个字符', trigger: 'blur' },
   ],
   name: [
-    { required: true, message: '请输入价格范围名称', trigger: 'blur' },
-    { max: 50, message: '价格范围名称最多50个字符', trigger: 'blur' },
-  ],
-  minPrice: [
-    { type: 'number', message: '请输入有效的价格', trigger: 'blur' },
-  ],
-  maxPrice: [
-    { type: 'number', message: '请输入有效的价格', trigger: 'blur' },
-    {
-      validator: (rule: any, value: number | null) => {
-        if (value !== null && formModel.minPrice !== null && value < formModel.minPrice) {
-          return new Error('最高价格不能低于最低价格')
-        }
-        return true
-      },
-      trigger: 'blur',
-    },
+    { required: true, message: '请输入区域名称', trigger: 'blur' },
+    { max: 50, message: '区域名称最多50个字符', trigger: 'blur' },
   ],
 }
 
 // 表格列定义
-const columns = computed<DataTableColumns<PriceRangeDTO>>(() => [
+const columns = computed<DataTableColumns<DistrictDTO>>(() => [
   {
     title: 'ID',
     key: 'id',
     width: 80,
   },
   {
-    title: '价格范围代码',
+    title: '区域代码',
     key: 'code',
     width: 150,
   },
   {
-    title: '价格范围名称',
+    title: '区域名称',
     key: 'name',
     width: 150,
   },
   {
-    title: '价格区间',
-    key: 'priceRange',
-    render(row) {
-      if (row.minPrice === null && row.maxPrice === null) {
-        return '不限'
-      } else if (row.minPrice === null) {
-        return `≤ ¥${row.maxPrice}`
-      } else if (row.maxPrice === null) {
-        return `≥ ¥${row.minPrice}`
-      } else {
-        return `¥${row.minPrice} - ¥${row.maxPrice}`
-      }
-    },
-  },
-  {
     title: '排序',
     key: 'sortOrder',
-    width: 80,
+    width: 100,
   },
   {
     title: '状态',
@@ -162,32 +130,32 @@ const columns = computed<DataTableColumns<PriceRangeDTO>>(() => [
   {
     title: '操作',
     key: 'actions',
-    width: 120,
+    width: 150,
     fixed: 'right',
     render(row) {
-      return h('div', { class: 'flex gap-2' }, [
+      return h('div', { class: 'flex space-x-2' }, [
         h(
           NButton,
           {
             size: 'small',
-            type: 'info',
+            type: 'primary',
             quaternary: true,
             onClick: () => handleEdit(row),
           },
           {
-            default: () => h(EyeIcon, { size: 16 }),
+            default: () => h(EditIcon, { size: 16 }),
           },
         ),
         h(
           NButton,
           {
             size: 'small',
-            type: 'warning',
+            type: 'error',
             quaternary: true,
             onClick: () => handleDelete(row.id),
           },
           {
-            default: () => h(PencilIcon, { size: 16 }),
+            default: () => h(Trash2Icon, { size: 16 }),
           },
         ),
       ])
@@ -195,31 +163,33 @@ const columns = computed<DataTableColumns<PriceRangeDTO>>(() => [
   },
 ])
 
-const rowKey = (row: PriceRangeDTO) => row.id
+const rowKey = (row: DistrictDTO) => row.id
 
 // 生命周期钩子
 onMounted(() => {
-  fetchPriceRanges()
+  fetchDistricts()
 })
 
-// 获取价格范围列表
-async function fetchPriceRanges() {
+// 获取区域列表
+async function fetchDistricts() {
   loading.value = true
+  console.log('Fetching districts with pagination:', { page: pagination.page, size: pagination.pageSize })
   try {
-    const response = await listPriceRanges({
+    const response = await listDistricts({
       page: pagination.page,
       size: pagination.pageSize,
     })
 
     if (response.success) {
       const pageData = response.data
-      priceRanges.value = pageData.records
+      console.log('Received page data:', pageData)
+      districts.value = pageData.records
       pagination.itemCount = pageData.total
     } else {
-      message.error(response.message || '获取价格范围列表失败')
+      message.error(response.message || '获取区域列表失败')
     }
   } catch (error) {
-    message.error('获取价格范围列表失败')
+    message.error('获取区域列表失败')
     console.error(error)
   } finally {
     loading.value = false
@@ -229,25 +199,23 @@ async function fetchPriceRanges() {
 // 处理翻页
 function handlePageChange(page: number) {
   pagination.page = page
-  fetchPriceRanges()
+  fetchDistricts()
 }
 
-// 添加价格范围
+// 添加区域
 function handleAdd() {
   isEdit.value = false
   resetForm()
   showModal.value = true
 }
 
-// 编辑价格范围
-function handleEdit(row: PriceRangeDTO) {
+// 编辑区域
+function handleEdit(row: DistrictDTO) {
   isEdit.value = true
   currentId.value = row.id
   Object.assign(formModel, {
     code: row.code,
     name: row.name,
-    minPrice: row.minPrice,
-    maxPrice: row.maxPrice,
     sortOrder: row.sortOrder,
     isEnabled: row.isEnabled,
   })
@@ -266,11 +234,11 @@ async function confirmDelete() {
     return
 
   try {
-    const response = await deletePriceRange(currentId.value)
+    const response = await deleteDistrict(currentId.value)
 
     if (response.success) {
       message.success('删除成功')
-      fetchPriceRanges()
+      fetchDistricts()
     } else {
       message.error(response.message || '删除失败')
     }
@@ -291,26 +259,24 @@ function handleSubmit() {
 
     submitting.value = true
     try {
-      const submitData: PriceRangeParams = {
+      const submitData: DistrictParams = {
         code: formModel.code,
         name: formModel.name,
-        minPrice: formModel.minPrice,
-        maxPrice: formModel.maxPrice,
         sortOrder: formModel.sortOrder,
         isEnabled: formModel.isEnabled,
       }
 
       let response
       if (isEdit.value && currentId.value !== null) {
-        response = await updatePriceRange(currentId.value, submitData)
+        response = await updateDistrict(currentId.value, submitData)
       } else {
-        response = await createPriceRange(submitData)
+        response = await createDistrict(submitData)
       }
 
       if (response.success) {
         message.success(isEdit.value ? '更新成功' : '创建成功')
         showModal.value = false
-        fetchPriceRanges()
+        fetchDistricts()
       } else {
         message.error(response.message || (isEdit.value ? '更新失败' : '创建失败'))
       }
@@ -328,8 +294,6 @@ function resetForm() {
   currentId.value = null
   formModel.code = ''
   formModel.name = ''
-  formModel.minPrice = null
-  formModel.maxPrice = null
   formModel.sortOrder = 0
   formModel.isEnabled = true
 
@@ -343,13 +307,13 @@ function resetForm() {
   <div class="p-6">
     <div class="mb-4 flex justify-between items-center">
       <h1 class="text-2xl font-bold">
-        价格范围管理
+        区域管理
       </h1>
       <NButton type="primary" @click="handleAdd">
         <template #icon>
           <PlusIcon class="mr-1" :size="16" />
         </template>
-        添加价格范围
+        添加区域
       </NButton>
     </div>
 
@@ -357,7 +321,7 @@ function resetForm() {
     <NCard>
       <NDataTable
         :columns="columns"
-        :data="priceRanges"
+        :data="districts"
         :loading="loading"
         :pagination="pagination"
         :row-key="rowKey"
@@ -370,7 +334,7 @@ function resetForm() {
       v-model:show="showModal"
       :mask-closable="false"
       preset="card"
-      :title="isEdit ? '编辑价格范围' : '新增价格范围'"
+      :title="isEdit ? '编辑区域' : '新增区域'"
       class="max-w-2xl"
     >
       <NForm
@@ -381,27 +345,11 @@ function resetForm() {
         label-width="auto"
         require-mark-placement="right-hanging"
       >
-        <NFormItem label="价格范围代码" path="code">
-          <NInput v-model:value="formModel.code" placeholder="请输入价格范围代码" />
+        <NFormItem label="区域代码" path="code">
+          <NInput v-model:value="formModel.code" placeholder="请输入区域代码" />
         </NFormItem>
-        <NFormItem label="价格范围名称" path="name">
-          <NInput v-model:value="formModel.name" placeholder="请输入价格范围名称" />
-        </NFormItem>
-        <NFormItem label="最低价格" path="minPrice">
-          <NInputNumber
-            v-model:value="formModel.minPrice"
-            placeholder="请输入最低价格"
-            :precision="2"
-            class="w-full"
-          />
-        </NFormItem>
-        <NFormItem label="最高价格" path="maxPrice">
-          <NInputNumber
-            v-model:value="formModel.maxPrice"
-            placeholder="请输入最高价格"
-            :precision="2"
-            class="w-full"
-          />
+        <NFormItem label="区域名称" path="name">
+          <NInput v-model:value="formModel.name" placeholder="请输入区域名称" />
         </NFormItem>
         <NFormItem label="排序顺序" path="sortOrder">
           <NInputNumber
@@ -416,7 +364,7 @@ function resetForm() {
         </NFormItem>
       </NForm>
       <template #footer>
-        <NSpace>
+        <NSpace justify="end">
           <NButton @click="showModal = false">
             取消
           </NButton>
@@ -440,7 +388,7 @@ function resetForm() {
       <template #icon>
         <AlertCircleIcon class="text-red-500" />
       </template>
-      确定要删除该价格范围吗？此操作不可恢复。
+      确定要删除该区域吗？此操作不可恢复。
     </NModal>
   </div>
 </template>

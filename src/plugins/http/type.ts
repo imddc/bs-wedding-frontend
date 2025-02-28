@@ -9,12 +9,12 @@ export interface DataType<T = any> {
   code: number
 }
 
-export interface ListType<T = any> extends DataType {
+export interface PageData<T = any> extends DataType {
   data: {
-    list: T[]
+    records: T[]
     total: number
-    totalPages: number
-    page: number
-    pageSize: number
+    size: number
+    current: number
+    pages: number
   }
 }
