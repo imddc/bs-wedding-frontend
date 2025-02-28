@@ -13,7 +13,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.path.startsWith('/admin')) {
     // 这里可以调用你的检查管理员权限的方法
     // 例如: const isAdmin = await checkIsAdmin()
-    const isAdmin = false // 这里替换成你的管理员验证逻辑
+    const isAdmin = true // 这里替换成你的管理员验证逻辑
 
     if (!isAdmin) {
       // 如果不是管理员，可以重定向到登录页或者显示错误页

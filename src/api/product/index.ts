@@ -76,6 +76,65 @@ export async function updateProductStatus(id: number, status: number) {
 }
 
 /**
+ * 搜索商品
+ */
+export async function searchProducts(keyword: string, productType?: ProductType) {
+  return request.get<DataType<Product[]>>({
+    url: '/products/search',
+    params: { keyword, type: productType },
+  })
+}
+
+/**
+ * 获取推荐商品
+ */
+export async function getRecommendProducts(productType?: ProductType, limit: number = 6) {
+  return request.get<DataType<Product[]>>({
+    url: '/products/recommend',
+    params: { type: productType, limit },
+  })
+}
+
+/**
+ * 获取指定商家的商品列表
+ */
+export async function getProductsByMerchant(merchantId: number) {
+  return request.get<DataType<Product[]>>({
+    url: `/products/merchant/${merchantId}`,
+  })
+}
+
+/**
+ * 批量获取商品
+ */
+export async function batchGetProducts(ids: number[]) {
+  return request.get<DataType<Product[]>>({
+    url: '/products/batch',
+    params: { ids: ids.join(',') },
+  })
+}
+
+/**
+ * 批量更新商品
+ */
+export async function batchUpdateProducts(products: Partial<Product>[]) {
+  return request.put<DataType<null>>({
+    url: '/products/batch',
+    data: { products },
+  })
+}
+
+/**
+ * 批量删除商品
+ */
+export async function batchDeleteProducts(ids: number[]) {
+  return request.delete<DataType<null>>({
+    url: '/products/batch',
+    data: { ids },
+  })
+}
+
+/**
  * 获取商品分类列表(根据商品类型)
  */
 export async function getCategoriesByType(productType: ProductType) {
@@ -101,9 +160,25 @@ export async function getMerchantList(type?: ProductType) {
 export async function uploadImage(file: File) {
   const formData = new FormData()
   formData.append('file', file)
-
   return request.post<DataType<{ url: string }>>({
     url: '/upload',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+}
+
+/**
+ * 上传多张图片
+ */
+export async function uploadImages(files: File[]) {
+  const formData = new FormData()
+  files.forEach((file, index) => {
+    formData.append(`file${index}`, file)
+  })
+  return request.post<DataType<{ urls: string[] }>>({
+    url: '/upload/batch',
     data: formData,
     headers: {
       'Content-Type': 'multipart/form-data',
