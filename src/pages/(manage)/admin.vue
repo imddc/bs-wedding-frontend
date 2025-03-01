@@ -41,9 +41,9 @@ const menuOptions: MenuOption[] = [
     icon: () => h(LayoutDashboard),
   },
   {
-    label: () => renderLabel('产品管理', '/admin/product'),
+    label: () => renderLabel('商品管理', '/admin/product'),
     key: 'product',
-    icon: () => h(Inbox),
+    icon: () => h(Store),
   },
   {
     label: () => renderLabel('消息管理', '/admin/message'),
@@ -68,7 +68,7 @@ const menuOptions: MenuOption[] = [
   {
     label: () => renderLabel('区域', '/admin/district'),
     key: 'district',
-    icon: () => h(PopsicleIcon),
+    icon: () => h(LayoutDashboard),
   },
   {
     label: () => renderLabel('价格区间', '/admin/priceRange'),
