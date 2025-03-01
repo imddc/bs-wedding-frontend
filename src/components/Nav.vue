@@ -104,6 +104,12 @@ const navigationItems = [
     icon: Store,
     activeColor: 'text-indigo-600 border-indigo-600',
   },
+  {
+    label: '我的收藏',
+    path: '/favorite',
+    icon: Heart,
+    activeColor: 'text-indigo-600 border-indigo-600',
+  },
 ]
 
 // 获取当前活动路由

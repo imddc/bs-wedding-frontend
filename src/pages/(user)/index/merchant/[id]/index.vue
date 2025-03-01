@@ -3,21 +3,28 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NButton, NCard, NDivider, NEmpty, NSpin, NTabPane, NTabs, NTag } from 'naive-ui'
-import { ArrowLeft, Camera, Heart, Hotel, MapPin, Phone, User, Users } from 'lucide-vue-next'
+import { ArrowLeft, Camera, Heart, Hotel, MapPin, Phone, Star, User, Users } from 'lucide-vue-next'
+import { storeToRefs } from 'pinia'
 import { getMerchantById } from '~/api/merchant'
+import { getProducts } from '~/api/product'
+import { checkFavoriteExists, createFavorite, deleteFavoriteByUserAndMerchant } from '~/api/favorite'
+import { useUserStore } from '~/stores'
 import { MerchantType } from '~/api/merchant/type'
 import type { MerchantInfo } from '~/api/merchant/type'
 import type { Product, ProductQueryParams } from '~/api/product/type'
-import { getProducts } from '~/api/product'
 
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
+const { userInfo } = storeToRefs(userStore)
 const merchantId = Number(route.params.id)
 
 // 商家详情数据
 const merchant = ref<MerchantInfo | null>(null)
 const loading = ref(false)
 const favorited = ref(false)
+const favoriteLoading = ref(false)
+const favoriteId = ref<number | null>(null)
 
 // 获取商家详情
 async function fetchMerchantDetail() {
@@ -37,6 +44,98 @@ async function fetchMerchantDetail() {
     console.error(error)
   } finally {
     loading.value = false
+  }
+}
+
+// 返回列表页
+function goBack() {
+  router.push('/merchant')
+}
+
+// 检查是否已收藏
+async function checkIsFavorited() {
+  if (!merchantId || !userInfo.value?.id)
+    return
+
+  try {
+    const response = await checkFavoriteExists({
+      userId: userInfo.value.id,
+      merchantId,
+    })
+
+    if (response.success) {
+      favorited.value = response.data
+    }
+  } catch (error) {
+    console.error('检查收藏状态失败', error)
+  }
+}
+
+// 收藏商家
+async function toggleFavorite() {
+  if (!userInfo.value?.id) {
+    window.$message.warning('请先登录')
+    return
+  }
+
+  if (favoriteLoading.value)
+    return
+  favoriteLoading.value = true
+
+  try {
+    if (favorited.value) {
+      // 取消收藏
+      const response = await deleteFavoriteByUserAndMerchant(userInfo.value.id, merchantId)
+      if (response.success) {
+        favorited.value = false
+        window.$message.success('已取消收藏')
+        // 更新收藏计数
+        if (merchant.value) {
+          merchant.value.favoriteCount = Math.max(0, merchant.value.favoriteCount - 1)
+        }
+      } else {
+        window.$message.error('取消收藏失败')
+      }
+    } else {
+      // 添加收藏
+      const response = await createFavorite({
+        userId: userInfo.value.id,
+        merchantId,
+      })
+
+      if (response.success) {
+        favorited.value = true
+        favoriteId.value = response.data
+        window.$message.success('收藏成功')
+        // 更新收藏计数
+        if (merchant.value) {
+          merchant.value.favoriteCount += 1
+        }
+      } else {
+        window.$message.error('收藏失败')
+      }
+    }
+
+    checkIsFavorited()
+  } catch (error) {
+    window.$message.error('操作失败，请稍后重试')
+    console.error('收藏操作失败', error)
+  } finally {
+    favoriteLoading.value = false
+  }
+}
+
+// 获取商家类型图标
+function getMerchantTypeIcon(type?: MerchantType) {
+  switch (type) {
+    case MerchantType.PHOTOGRAPHY:
+      return Camera
+    case MerchantType.HOTEL:
+      return Hotel
+    case MerchantType.HOST:
+      return Users
+    default:
+      return User
   }
 }
 
@@ -72,45 +171,15 @@ async function fetchMerchantProducts() {
   }
 }
 
-// 返回列表页
-function goBack() {
-  router.push('/merchant')
-}
-
-// 收藏商家
-function toggleFavorite() {
-  favorited.value = !favorited.value
-
-  if (favorited.value) {
-    window.$message.success('收藏成功')
-  } else {
-    window.$message.info('已取消收藏')
-  }
-
-  // 这里应该有实际的收藏API调用
-  // 暂时模拟收藏功能
-  if (merchant.value) {
-    merchant.value.favoriteCount += favorited.value ? 1 : -1
-  }
-}
-
-// 获取商家类型图标
-function getMerchantTypeIcon(type?: MerchantType) {
-  switch (type) {
-    case MerchantType.PHOTOGRAPHY:
-      return Camera
-    case MerchantType.HOTEL:
-      return Hotel
-    case MerchantType.HOST:
-      return Users
-    default:
-      return User
-  }
-}
-
-onMounted(async () => {
-  await fetchMerchantDetail()
-  await fetchMerchantProducts()
+onMounted(() => {
+  fetchMerchantDetail()
+    .then(() => {
+      // 获取商家详情成功后加载产品
+      fetchMerchantProducts()
+    })
+    .then(() => {
+      checkIsFavorited()
+    })
 })
 </script>
 
@@ -154,7 +223,7 @@ onMounted(async () => {
                   <component
                     :is="getMerchantTypeIcon(merchant.merchantType)"
                     class="text-gray-400"
-                    ::size="64"
+                    :size="64"
                   />
                 </div>
               </div>
@@ -168,6 +237,7 @@ onMounted(async () => {
                     circle
                     :quaternary="!favorited"
                     :type="favorited ? 'error' : 'default'"
+                    :loading="favoriteLoading"
                     @click="toggleFavorite"
                   >
                     <template #icon>
@@ -191,15 +261,15 @@ onMounted(async () => {
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div v-if="merchant.city" class="flex items-center text-gray-600">
-                    <MapPin ::size="16" class="mr-2" />
+                    <MapPin :size="16" class="mr-2" />
                     <span>{{ merchant.city }}</span>
                   </div>
                   <div v-if="merchant.address" class="flex items-center text-gray-600">
-                    <MapPin ::size="16" class="mr-2" />
+                    <MapPin :size="16" class="mr-2" />
                     <span>{{ merchant.address }}</span>
                   </div>
                   <div v-if="merchant.contactPhone" class="flex items-center text-gray-600">
-                    <Phone ::size="16" class="mr-2" />
+                    <Phone :size="16" class="mr-2" />
                     <span>{{ merchant.contactPhone }}</span>
                   </div>
                   <div v-if="merchant.contactPerson" class="flex items-center text-gray-600">
@@ -225,7 +295,10 @@ onMounted(async () => {
           <NCard>
             <NTabs type="line" animated>
               <NTabPane name="products" tab="产品服务">
-                <div v-if="productList.length === 0" class="py-8 text-center text-gray-500">
+                <div v-if="productLoading" class="py-8 flex justify-center">
+                  <NSpin size="medium" />
+                </div>
+                <div v-else-if="productList.length === 0" class="py-8 text-center text-gray-500">
                   暂无产品服务
                 </div>
                 <div v-else class="space-y-4">
@@ -236,26 +309,63 @@ onMounted(async () => {
                   >
                     <div class="sm:w-1/3 h-48 sm:h-auto bg-gray-100 overflow-hidden">
                       <img
+                        v-if="product.mainImage"
                         :src="product.mainImage"
                         :alt="product.productName"
                         class="w-full h-full object-cover"
                       >
+                      <div v-else class="w-full h-full flex items-center justify-center">
+                        <component
+                          :is="getMerchantTypeIcon(merchant?.merchantType)"
+                          class="text-gray-400"
+                          :size="48"
+                        />
+                      </div>
                     </div>
                     <div class="sm:w-2/3 p-4">
-                      <h3 class="text-lg font-bold mb-2">
-                        {{ product.productName }}
-                      </h3>
+                      <div class="flex justify-between items-start">
+                        <h3 class="text-lg font-bold mb-2">
+                          {{ product.productName }}
+                        </h3>
+                        <div class="flex items-center">
+                          <Star class="text-yellow-400 mr-1" :size="16" />
+                          <span>{{ product.rating }}</span>
+                        </div>
+                      </div>
+
+                      <div class="flex flex-wrap gap-1 mb-2">
+                        <NTag v-if="product.categoryName" type="info" size="small">
+                          {{ product.categoryName }}
+                        </NTag>
+                        <NTag
+                          v-for="(tag, index) in product.tagsList"
+                          :key="index"
+                          type="success"
+                          size="small"
+                        >
+                          {{ tag }}
+                        </NTag>
+                      </div>
+
                       <p class="text-gray-600 mb-3">
-                        {{ product.description }}
+                        {{ product.description || '暂无描述' }}
                       </p>
+
                       <div class="flex justify-between items-center mt-auto pt-2 border-t border-gray-100">
                         <div class="text-red-600 font-bold text-lg">
-                          ¥ {{ product.price }}
+                          ¥ {{ product.price.toLocaleString() }}
                           <span class="text-gray-500 text-sm ml-1">起</span>
                         </div>
-                        <NButton type="primary" color="#B91C1C" size="small">
-                          预约咨询
-                        </NButton>
+                        <div class="flex items-center gap-2">
+                          <NButton
+                            type="primary"
+                            color="#B91C1C"
+                            size="small"
+                            @click="$router.push(`/photography/${product.id}`)"
+                          >
+                            查看详情
+                          </NButton>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -318,6 +428,9 @@ onMounted(async () => {
                     {{ merchant.address }}
                   </div>
                 </div>
+              </div>
+              <div class="h-40 bg-gray-200 rounded-lg flex items-center justify-center mt-2">
+                <span class="text-gray-500 text-sm">地图加载中...</span>
               </div>
             </div>
           </NCard>
