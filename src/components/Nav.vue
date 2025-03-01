@@ -5,7 +5,7 @@ import type { Component } from 'vue'
 import { NAvatar, NDropdown, NLayoutHeader } from 'naive-ui'
 import type { DropdownOption } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import { Camera, Heart, Hotel, Mic, Store, User } from 'lucide-vue-next'
+import { Camera, Heart, Hotel, ListOrderedIcon, Mic, Store, User } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '~/stores'
 
@@ -23,11 +23,6 @@ const userOptions = ref<DropdownOption[]>([
     label: '个人信息',
     key: 'profile',
     icon: renderIcon(User),
-  },
-  {
-    label: '我的收藏',
-    key: 'favorites',
-    icon: renderIcon(Heart),
   },
   {
     type: 'divider',
@@ -93,12 +88,6 @@ const navigationItems = [
     activeColor: 'text-indigo-600 border-indigo-600',
   },
   {
-    label: '定制方案',
-    path: '/custom',
-    icon: Heart,
-    activeColor: 'text-pink-600 border-pink-600',
-  },
-  {
     label: '商家精选',
     path: '/merchant',
     icon: Store,
@@ -108,6 +97,12 @@ const navigationItems = [
     label: '我的收藏',
     path: '/favorite',
     icon: Heart,
+    activeColor: 'text-indigo-600 border-indigo-600',
+  },
+  {
+    label: '我的订单',
+    path: '/order',
+    icon: ListOrderedIcon,
     activeColor: 'text-indigo-600 border-indigo-600',
   },
 ]
