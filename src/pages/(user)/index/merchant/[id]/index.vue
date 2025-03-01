@@ -429,9 +429,6 @@ onMounted(() => {
                   </div>
                 </div>
               </div>
-              <div class="h-40 bg-gray-200 rounded-lg flex items-center justify-center mt-2">
-                <span class="text-gray-500 text-sm">地图加载中...</span>
-              </div>
             </div>
           </NCard>
 

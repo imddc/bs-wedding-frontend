@@ -221,8 +221,13 @@ onMounted(() => {
                   >
                     立即预约
                   </NButton>
-                  <NButton type="default" size="large" class="flex-1">
-                    加入收藏
+
+                  <NButton
+                    size="large"
+                    class="flex-1"
+                    @click="$router.push(`/merchant/${product.merchantId}`)"
+                  >
+                    查看商家
                   </NButton>
                 </div>
               </div>
@@ -248,73 +253,6 @@ onMounted(() => {
                 <div v-else class="text-gray-500 text-center py-8">
                   暂无详细信息
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 右侧商家信息 -->
-          <div class="lg:col-span-1">
-            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-              <div class="border-b border-gray-200">
-                <div class="p-4">
-                  <h2 class="text-xl font-bold flex items-center">
-                    <Store class="mr-2" :size="20" />
-                    商家信息
-                  </h2>
-                </div>
-              </div>
-              <div class="p-6">
-                <div class="flex items-center mb-4">
-                  <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                    <Store :size="24" class="text-gray-400" />
-                  </div>
-                  <div>
-                    <div class="font-bold">
-                      {{ product.merchantName || '暂无商家信息' }}
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      ID: {{ product.merchantId }}
-                    </div>
-                  </div>
-                </div>
-
-                <div class="border-t border-gray-100 pt-4 mt-4">
-                  <div class="mb-3">
-                    <div class="text-sm text-gray-500 mb-1">
-                      经营年限
-                    </div>
-                    <div>{{ product.establishmentYears ? `${product.establishmentYears}年` : '未设定' }}</div>
-                  </div>
-                  <div class="mb-3">
-                    <div class="text-sm text-gray-500 mb-1">
-                      地址
-                    </div>
-                    <div>{{ product.location || '未设定' }}</div>
-                  </div>
-                </div>
-
-                <div v-if="product.servicesMap" class="border-t border-gray-100 pt-4 mt-4">
-                  <div class="text-sm text-gray-500 mb-2">
-                    提供服务
-                  </div>
-                  <div class="space-y-2">
-                    <div
-                      v-for="(value, key) in product.servicesMap"
-                      :key="key"
-                      class="flex items-start"
-                    >
-                      <Check class="text-green-500 mr-2 flex-shrink-0 mt-1" :size="16" />
-                      <div>
-                        <span class="font-medium">{{ key }}:</span> {{ value }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <NButton type="default" block class="mt-4">
-                  <MessageCircle class="mr-2" :size="16" />
-                  联系商家
-                </NButton>
               </div>
             </div>
           </div>
