@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { NButton, NCarousel, NModal } from 'naive-ui'
+import { NButton, NCarousel } from 'naive-ui'
 import ServiceCard from '~/components/home/ServiceCard.vue'
 import FeatureItem from '~/components/home/FeatureItem.vue'
 import TestimonialSlide from '~/components/home/TestimonialSlide.vue'
 import StatisticItem from '~/components/home/StatisticItem.vue'
-import RegisterForm from '~/components/home/RegisterForm.vue'
 import Browser from '~/components/home/module/photography/Browser.vue'
 import Package from '~/components/home/module/photography/Package.vue'
 import Service from '~/components/home/module/hotel/Service.vue'
@@ -24,12 +23,6 @@ function scrollToServices() {
   if (servicesSection) {
     servicesSection.scrollIntoView({ behavior: 'smooth' })
   }
-}
-
-// Handle register success
-function handleRegisterSuccess() {
-  showRegisterModal.value = false
-  // Show success message or redirect
 }
 
 // Lifecycle hooks
@@ -306,10 +299,5 @@ onMounted(() => {
         </div>
       </div>
     </section>
-
-    <!-- Register Modal -->
-    <NModal v-model:show="showRegisterModal">
-      <RegisterForm @success="handleRegisterSuccess" @cancel="showRegisterModal = false" />
-    </NModal>
   </div>
 </template>
