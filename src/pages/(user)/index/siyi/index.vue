@@ -1,253 +1,503 @@
+<!-- src/views/HostList.vue -->
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { NButton, NPagination, NTag, useMessage } from 'naive-ui'
-import { Star } from 'lucide-vue-next'
-import { hosts as data, experienceOptions, priceOptions, sortOptions } from './helper'
+import { onMounted, reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { NButton, NGrid, NGridItem, NInput, NInputNumber, NPagination, NRate, NSelect, NSpin } from 'naive-ui'
+import { History, Image, Languages, MapPin, Mic, Sparkles, Star, User } from 'lucide-vue-next'
+import {
+  getHotHostProducts,
+  getProducts,
+} from '~/api/product'
+import type {
+  HostProduct,
+  HotProduct,
+  HotProductQueryParams,
+  PageResult,
+  ProductQueryParams,
+} from '~/api/product/type'
 
-const message = useMessage()
+const router = useRouter()
 
-// Filter state
-const selectedPrice = ref('all')
-const selectedExperience = ref('all')
-const sortBy = ref('comprehensive')
-const currentPage = ref(1)
-const pageSize = ref(12)
-
-const hosts = ref(data)
-
-// Filter logic
-const filteredHosts = computed(() => {
-  let result = [...hosts.value]
-
-  // Apply price filter
-  if (selectedPrice.value !== 'all') {
-    result = result.filter((host) => {
-      switch (selectedPrice.value) {
-        case 'under3000':
-          return host.price < 3000
-        case '3000to5000':
-          return host.price >= 3000 && host.price <= 5000
-        case '5000to8000':
-          return host.price > 5000 && host.price <= 8000
-        case 'above8000':
-          return host.price > 8000
-        default:
-          return true
-      }
-    })
-  }
-
-  // Apply experience filter
-  if (selectedExperience.value !== 'all') {
-    result = result.filter((host) => {
-      switch (selectedExperience.value) {
-        case 'under3':
-          return host.experience < 3
-        case '3to5':
-          return host.experience >= 3 && host.experience <= 5
-        case '5to10':
-          return host.experience > 5 && host.experience <= 10
-        case 'above10':
-          return host.experience > 10
-        default:
-          return true
-      }
-    })
-  }
-
-  // Apply sorting
-  result.sort((a, b) => {
-    switch (sortBy.value) {
-      case 'price':
-        return a.price - b.price
-      case 'rating':
-        return b.rating - a.rating
-      case 'experience':
-        return b.experience - a.experience
-      default:
-        return b.rating - a.rating // Default comprehensive sort prioritizes rating
-    }
-  })
-
-  return result
+// 商品列表数据
+const products = ref<PageResult<HostProduct>>({
+  total: 0,
+  list: [],
+  pageNum: 1,
+  pageSize: 10,
+  pages: 0,
 })
 
-// Pagination
-const totalPages = computed(() => Math.ceil(filteredHosts.value.length / pageSize.value))
+// 热门商品
+const hotProducts = ref<HotProduct[]>([])
 
-// Methods
-function resetFilters() {
-  selectedPrice.value = 'all'
-  selectedExperience.value = 'all'
-  sortBy.value = 'comprehensive'
-  currentPage.value = 1
+// 加载状态
+const loading = ref(false)
+const hotLoading = ref(false)
+
+// 查询参数
+const queryParams = reactive<ProductQueryParams>({
+  productType: 3, // 假设3为司仪商品
+  pageNum: 1,
+  pageSize: 9,
+  orderBy: 'rating_desc',
+})
+
+// 筛选特定参数
+const experienceYears = ref<number>()
+const language = ref<string>()
+
+// 监听特定参数变化，转换为tags查询
+watch([experienceYears, language], () => {
+  const tagValues = []
+  if (experienceYears.value)
+    tagValues.push(`hostingExperience:${experienceYears.value}`)
+  if (language.value)
+    tagValues.push(`language:${language.value}`)
+
+  if (tagValues.length > 0) {
+    queryParams.tags = tagValues.join(',')
+  } else {
+    queryParams.tags = undefined
+  }
+})
+
+// 筛选器选项
+const locationOptions = [
+  { label: '北京', value: '北京' },
+  { label: '上海', value: '上海' },
+  { label: '广州', value: '广州' },
+  { label: '深圳', value: '深圳' },
+  { label: '杭州', value: '杭州' },
+  { label: '成都', value: '成都' },
+]
+
+const experienceOptions = [
+  { label: '1年以下', value: 1 },
+  { label: '1-3年', value: 3 },
+  { label: '3-5年', value: 5 },
+  { label: '5-10年', value: 10 },
+  { label: '10年以上', value: 15 },
+]
+
+const styleOptions = [
+  { label: '欢快活泼', value: '欢快活泼' },
+  { label: '稳重大气', value: '稳重大气' },
+  { label: '温馨感人', value: '温馨感人' },
+  { label: '幽默诙谐', value: '幽默诙谐' },
+  { label: '创意互动', value: '创意互动' },
+]
+
+const sortOptions = [
+  { label: '评分高到低', value: 'rating_desc' },
+  { label: '价格高到低', value: 'price_desc' },
+  { label: '价格低到高', value: 'price_asc' },
+  { label: '经验高到低', value: 'hostingExperience_desc' },
+  { label: '场次多到少', value: 'sales_desc' },
+]
+
+// 获取商品列表
+async function fetchProducts() {
+  loading.value = true
+  try {
+    const response = await getProducts(queryParams)
+    if (response.success) {
+      products.value = response.data
+    } else {
+      window.$message.error('获取司仪列表失败')
+    }
+  } catch (error) {
+    window.$message.error('获取司仪列表失败')
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
 }
 
-function applyFilters() {
-  currentPage.value = 1
-  message.success('筛选条件已应用')
+// 获取热门商品
+async function fetchHotProducts() {
+  hotLoading.value = true
+  try {
+    const hotParams: HotProductQueryParams = {
+      productType: 3,
+      limit: 4,
+    }
+    const response = await getHotHostProducts(hotParams)
+    if (response.success) {
+      hotProducts.value = response.data
+    } else {
+      window.$message.error('获取推荐司仪失败')
+    }
+  } catch (error) {
+    window.$message.error('获取推荐司仪失败')
+    console.error(error)
+  } finally {
+    hotLoading.value = false
+  }
 }
 
-function viewDetails(host: any) {
-  message.info(`查看${host.name}的详细信息`)
-  // Navigate to host details page
-  // router.push(`/hosts/${host.id}`)
+// 搜索
+function handleSearch() {
+  queryParams.pageNum = 1
+  fetchProducts()
 }
 
-function selectHost(host: any) {
-  message.success(`已选择${host.name}作为您的婚礼主持人`)
-  // Add host to wedding plan or open booking modal
+// 重置
+function handleReset() {
+  queryParams.productName = undefined
+  queryParams.minPrice = undefined
+  queryParams.maxPrice = undefined
+  queryParams.minRating = undefined
+  queryParams.location = undefined
+  queryParams.tags = undefined
+  experienceYears.value = undefined
+  language.value = undefined
+  queryParams.pageNum = 1
+  queryParams.orderBy = 'rating_desc'
+  fetchProducts()
 }
+
+// 查看商品详情
+function viewDetails(id: number) {
+  router.push(`/siyi/${id}`)
+}
+
+onMounted(() => {
+  fetchProducts()
+  fetchHotProducts()
+})
 </script>
 
 <template>
-  <div class="w-full bg-white p-6 container mx-auto space-y-6">
-    <h2 class="text-xl font-bold">
-      婚宴主持人
-    </h2>
-
-    <!-- Filter Section -->
-    <div class="bg-gray-50 rounded-lg p-4">
-      <div class="mb-4 space-y-4">
-        <!-- Price Filter -->
-        <div>
-          <h3 class="text-sm font-medium mb-2">
-            价格区间
-          </h3>
-          <div class="flex flex-wrap gap-2">
-            <NTag
-              v-for="price in priceOptions"
-              :key="price.value"
-              :type="selectedPrice === price.value ? 'primary' : 'default'"
-              size="large"
-              class="cursor-pointer"
-              @click="selectedPrice = price.value"
-            >
-              {{ price.label }}
-            </NTag>
-          </div>
-        </div>
-
-        <!-- Experience Filter -->
-        <div>
-          <h3 class="text-sm font-medium mb-2">
-            主持经验
-          </h3>
-          <div class="flex flex-wrap gap-2">
-            <NTag
-              v-for="exp in experienceOptions"
-              :key="exp.value"
-              :type="selectedExperience === exp.value ? 'primary' : 'default'"
-              size="large"
-              class="cursor-pointer"
-              @click="selectedExperience = exp.value"
-            >
-              {{ exp.label }}
-            </NTag>
-          </div>
-        </div>
+  <div class="host-list-container">
+    <!-- 头部横幅 -->
+    <div
+      class="banner relative h-64 bg-gradient-to-r from-indigo-800 to-indigo-600 mb-8 overflow-hidden rounded-lg"
+    >
+      <div class="container mx-auto px-4 h-full flex flex-col justify-center z-10 relative">
+        <h1 class="text-4xl font-bold text-white mb-2">
+          典礼之声 · 婚礼司仪
+        </h1>
+        <p class="text-xl text-white opacity-90">
+          见证真爱，主持盛典
+        </p>
       </div>
-
-      <!-- Search and Reset -->
-      <div class="flex justify-end gap-2">
-        <NButton type="default" size="small" @click="resetFilters">
-          重置
-        </NButton>
-        <NButton type="primary" size="small" @click="applyFilters">
-          搜索
-        </NButton>
+      <div class="absolute right-0 bottom-0 opacity-20">
+        <Mic :size="160" color="white" />
       </div>
     </div>
 
-    <!-- Sort Options -->
-    <div class="flex justify-between items-center">
-      <div class="flex gap-4">
-        <span
-          v-for="sort in sortOptions"
-          :key="sort.value"
-          class="px-2 py-1 text-sm cursor-pointer"
-          :class="[sortBy === sort.value ? 'text-primary-500 font-medium' : 'text-gray-500']"
-          @click="sortBy = sort.value"
-        >
-          {{ sort.label }}
-        </span>
+    <div class="container mx-auto px-4">
+      <!-- 热门推荐部分 -->
+      <div class="mb-12">
+        <div class="flex items-center mb-4">
+          <div class="w-1 h-6 bg-indigo-700 mr-3" />
+          <h2 class="text-2xl font-bold text-gray-800">
+            推荐司仪
+          </h2>
+        </div>
+        <div v-if="hotLoading" class="py-8 flex justify-center">
+          <NSpin size="large" />
+        </div>
+        <div v-else-if="hotProducts.length === 0" class="text-center py-8 text-gray-500">
+          暂无推荐司仪
+        </div>
+        <div v-else>
+          <NGrid x-gap="16" y-gap="16" cols="1 s:2 m:3 l:4">
+            <NGridItem v-for="product in hotProducts" :key="product.id">
+              <div class="host-card relative bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300">
+                <div class="absolute top-2 right-2 px-2 py-1 rounded-full bg-indigo-600 text-white text-xs z-10">
+                  推荐
+                </div>
+                <div class="relative h-48 overflow-hidden">
+                  <img
+                    v-if="product.mainImage"
+                    :src="product.mainImage"
+                    :alt="product.productName"
+                    class="w-full h-full object-cover object-top"
+                  >
+                  <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <Image class="text-gray-400" :size="48" />
+                  </div>
+                  <div class="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black to-transparent opacity-70" />
+                  <div class="absolute bottom-2 left-2 text-white">
+                    <div class="text-lg font-bold line-clamp-1">
+                      {{ product.productName }}
+                    </div>
+                    <div class="flex items-center text-sm">
+                      <Star class="text-yellow-400 mr-1" :size="14" />
+                      <span>{{ product.rating }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-4">
+                  <div class="flex justify-between items-start mb-3">
+                    <div class="text-indigo-600 font-bold">
+                      ￥{{ product.price.toLocaleString() }}
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      <MapPin :size="14" class="inline mr-1" />
+                      <span>{{ product.location || '未知' }}</span>
+                    </div>
+                  </div>
+                  <p class="text-gray-600 text-sm mb-3 line-clamp-2">
+                    {{ product.description || '暂无描述' }}
+                  </p>
+                  <NButton
+                    type="primary"
+                    size="small"
+                    block
+                    color="#4F46E5"
+                    @click="viewDetails(product.id)"
+                  >
+                    查看详情
+                  </NButton>
+                </div>
+              </div>
+            </NGridItem>
+          </NGrid>
+        </div>
       </div>
-      <div class="text-sm text-gray-500">
-        共找到 <span class="text-primary-500 font-medium">{{ filteredHosts.length }}</span> 名主持人
-      </div>
-    </div>
 
-    <!-- Host List -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div
-        v-for="host in filteredHosts"
-        :key="host.id"
-        class="bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-md transition-shadow"
-      >
-        <!-- Host Image -->
-        <div class="aspect-[4/3] relative overflow-hidden">
-          <img :src="host.image" :alt="host.name" class="w-full h-full object-cover">
-          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-            <h3 class="text-white font-medium">
-              {{ host.name }}
+      <!-- 筛选和列表部分 -->
+      <div class="flex flex-wrap md:flex-nowrap gap-6">
+        <!-- 筛选侧边栏 -->
+        <div class="w-full md:w-1/4 lg:w-1/5">
+          <div class="bg-white rounded-lg border border-gray-200 p-4 sticky top-4">
+            <h3 class="text-lg font-bold mb-4 pb-2 border-b border-indigo-100">
+              筛选条件
             </h3>
+
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">司仪姓名</label>
+              <NInput
+                v-model:value="queryParams.productName"
+                placeholder="请输入司仪姓名"
+                clearable
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">价格范围</label>
+              <div class="flex items-center">
+                <NInputNumber
+                  v-model:value="queryParams.minPrice"
+                  placeholder="最低价"
+                  :min="0"
+                  clearable
+                  class="flex-1"
+                />
+                <span class="mx-2">-</span>
+                <NInputNumber
+                  v-model:value="queryParams.maxPrice"
+                  placeholder="最高价"
+                  :min="0"
+                  clearable
+                  class="flex-1"
+                />
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">最低评分</label>
+              <NRate
+                v-model:value="queryParams.minRating"
+                allow-half
+                class="flex justify-start"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">地区</label>
+              <NSelect
+                v-model:value="queryParams.location"
+                filterable
+                clearable
+                placeholder="选择地区"
+                :options="locationOptions"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">主持经验</label>
+              <NSelect
+                v-model:value="experienceYears"
+                clearable
+                placeholder="选择经验年限"
+                :options="experienceOptions"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">主持风格</label>
+              <NSelect
+                v-model:value="queryParams.tags"
+                filterable
+                clearable
+                placeholder="选择风格"
+                :options="styleOptions"
+              />
+            </div>
+
+            <div class="flex items-center gap-2 pt-2">
+              <NButton
+                type="primary"
+                color="#4F46E5"
+                :loading="loading"
+                @click="handleSearch"
+              >
+                搜索
+              </NButton>
+              <NButton type="default" @click="handleReset">
+                重置
+              </NButton>
+            </div>
           </div>
         </div>
 
-        <!-- Host Info -->
-        <div class="p-4">
-          <div class="flex justify-between mb-2">
-            <div class="flex items-center">
-              <Star class="h-4 w-4 text-yellow-400" />
-              <span class="ml-1 text-sm">{{ host.rating }}</span>
-              <span class="ml-2 text-xs text-gray-500">({{ host.reviewCount }}条评价)</span>
+        <!-- 列表内容 -->
+        <div class="w-full md:w-3/4 lg:w-4/5">
+          <div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+            <div class="flex justify-between items-center mb-4">
+              <div class="text-lg font-bold">
+                司仪列表
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-sm text-gray-500">排序：</span>
+                <NSelect
+                  v-model:value="queryParams.orderBy"
+                  size="small"
+                  :options="sortOptions"
+                  style="width: 120px"
+                />
+              </div>
             </div>
-            <div class="text-red-500 font-medium">
-              ¥{{ host.price }}
+
+            <div v-if="loading" class="py-8 flex justify-center">
+              <NSpin size="large" />
             </div>
-          </div>
+            <div v-else-if="products.list.length === 0" class="text-center py-8 text-gray-500">
+              暂无司仪，请调整筛选条件
+            </div>
+            <div v-else>
+              <NGrid x-gap="16" y-gap="16" cols="1 s:2 m:2 l:3">
+                <NGridItem v-for="product in products.list" :key="product.id">
+                  <div
+                    class="host-item bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-indigo-300 transition"
+                  >
+                    <div class="flex items-center p-4 border-b border-gray-100">
+                      <div class="w-20 h-20 rounded-full overflow-hidden mr-3 flex-shrink-0 border-2 border-indigo-100">
+                        <img
+                          v-if="product.mainImage"
+                          :src="product.mainImage"
+                          :alt="product.productName"
+                          class="w-full h-full object-cover"
+                        >
+                        <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
+                          <User class="text-gray-400" :size="32" />
+                        </div>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <h3 class="text-lg font-bold truncate">
+                          {{ product.productName }}
+                        </h3>
+                        <div class="flex items-center text-sm text-gray-500">
+                          <MapPin :size="14" class="mr-1" />
+                          <span class="truncate">{{ product.location || '未知' }}</span>
+                        </div>
+                        <div class="flex items-center mt-1">
+                          <Star class="text-yellow-400 mr-1" :size="16" />
+                          <span class="text-gray-600 text-sm">{{ product.rating }}</span>
+                          <span class="text-gray-400 mx-2">|</span>
+                          <span class="text-gray-600 text-sm">{{ product.sales }}场</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-4">
+                      <div class="grid grid-cols-2 gap-2 mb-3">
+                        <div v-if="product.hostingExperience" class="text-sm text-gray-600">
+                          <History :size="14" class="inline mr-1" />
+                          <span>{{ product.hostingExperience }}年经验</span>
+                        </div>
+                        <div v-if="product.hostingStyle" class="text-sm text-gray-600">
+                          <Sparkles :size="14" class="inline mr-1" />
+                          <span>{{ product.hostingStyle }}</span>
+                        </div>
+                        <div v-if="product.languagesList?.length" class="text-sm text-gray-600 col-span-2">
+                          <Languages :size="14" class="inline mr-1" />
+                          <span>{{ product.languagesList.join('、') }}</span>
+                        </div>
+                      </div>
 
-          <div class="flex flex-wrap gap-1 mb-3">
-            <NTag
-              v-for="tag in host.tags"
-              :key="tag"
-              size="small"
-              type="info"
-            >
-              {{ tag }}
-            </NTag>
-          </div>
+                      <p class="text-gray-600 text-sm mb-3 line-clamp-2">
+                        {{ product.description || '暂无描述' }}
+                      </p>
 
-          <div class="text-xs text-gray-500 mb-3">
-            主持场数: {{ host.weddingCount }}场 | 经验: {{ host.experience }}年
-          </div>
+                      <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                        <div class="text-indigo-600 font-bold">
+                          ￥{{ product.price.toLocaleString() }}
+                        </div>
+                        <NButton
+                          type="primary"
+                          size="small"
+                          color="#4F46E5"
+                          @click="viewDetails(product.id)"
+                        >
+                          查看详情
+                        </NButton>
+                      </div>
+                    </div>
+                  </div>
+                </NGridItem>
+              </NGrid>
+            </div>
 
-          <div class="flex justify-between items-center">
-            <NButton
-              type="primary"
-              ghost
-              size="small"
-              @click="viewDetails(host)"
-            >
-              查看详情
-            </NButton>
-            <NButton type="primary" size="small" @click="selectHost(host)">
-              立即预约
-            </NButton>
+            <!-- 分页 -->
+            <div v-if="products.list.length > 0" class="mt-4 flex justify-center">
+              <NPagination
+                v-model:page="queryParams.pageNum"
+                :page-count="products.pages"
+                :page-size="queryParams.pageSize"
+                @update:page="fetchProducts"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="flex justify-center mt-8">
-      <NPagination
-        v-model:page="currentPage"
-        :page-count="totalPages"
-        :page-sizes="[12, 24, 36]"
-        :page-size="pageSize"
-        @update:page-size="pageSize = $event"
-      />
     </div>
   </div>
 </template>
+
+<style scoped>
+.host-list-container {
+  background-color: #f9f8f6;
+  min-height: 100vh;
+}
+
+.host-card {
+  transition: all 0.3s ease;
+}
+
+.host-card:hover {
+  transform: translateY(-5px);
+}
+
+.host-item {
+  transition: all 0.3s ease;
+}
+
+.host-item:hover {
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+}
+
+/* 中国风细节 */
+.banner h1 {
+  font-family: 'STZhongsong', 'SimSun', serif;
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+  .banner h1 {
+    font-size: 1.875rem;
+  }
+}
+</style>
