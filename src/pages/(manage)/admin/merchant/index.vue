@@ -162,16 +162,6 @@ const columns = ref<DataTableColumns<MerchantInfo>>([
           { default: () => h(EyeIcon, { size: 16 }) },
         ),
         h(
-          NButton,
-          {
-            size: 'small',
-            type: 'primary',
-            quaternary: true,
-            onClick: () => handleEdit(row.id),
-          },
-          { default: () => h(EditIcon, { size: 16 }) },
-        ),
-        h(
           NPopconfirm,
           {
             onPositiveClick: () => handleDelete(row.id),

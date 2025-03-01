@@ -185,16 +185,12 @@ onMounted(() => {
 
 <template>
   <div class="merchant-detail-container">
-    <!-- 顶部操作栏 -->
-    <div class="bg-white shadow-sm py-3 mb-4">
-      <div class="container mx-auto px-4">
-        <NButton quaternary circle @click="goBack">
-          <template #icon>
-            <ArrowLeft />
-          </template>
-        </NButton>
-        <span class="ml-2 text-lg">返回列表</span>
-      </div>
+    <!-- 返回按钮 -->
+    <div class="my-4 container mx-auto px-4">
+      <NButton class="flex items-center" @click="goBack">
+        <ArrowLeft class="mr-1" :size="16" />
+        返回列表
+      </NButton>
     </div>
 
     <div class="container mx-auto px-4">

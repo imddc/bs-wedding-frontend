@@ -30,7 +30,7 @@ const loading = ref(false)
 
 // 查询参数
 const queryParams = reactive<MerchantQueryParams>({
-  merchantType: MerchantType.PHOTOGRAPHY, // 默认展示婚纱摄影商家
+  merchantType: undefined, // 默认展示全部商家
   pageNum: 1,
   pageSize: 8,
   status: MerchantStatus.ONLINE, // 默认只展示上架的商家
@@ -38,6 +38,7 @@ const queryParams = reactive<MerchantQueryParams>({
 
 // 商家类型选项
 const merchantTypeOptions = [
+  { label: '全部商家', value: undefined },
   { label: '婚纱摄影', value: MerchantType.PHOTOGRAPHY },
   { label: '婚宴酒店', value: MerchantType.HOTEL },
   { label: '司仪主持', value: MerchantType.HOST },
@@ -55,6 +56,8 @@ const cityOptions = [
 
 // 获取商家类型名称
 function getMerchantTypeName(type: MerchantType): string {
+  if (type === undefined)
+    return '全部商家'
   const option = merchantTypeOptions.find(option => option.value === type)
   return option ? option.label : '未知'
 }
@@ -98,6 +101,8 @@ function viewDetails(id: number) {
 
 // 商家类型图标
 function getMerchantIcon(type: MerchantType) {
+  if (type === undefined)
+    return Heart
   switch (type) {
     case MerchantType.PHOTOGRAPHY:
       return Camera
