@@ -6,18 +6,13 @@ import { NButton, NDatePicker, NInput, NSelect, NSpin } from 'naive-ui'
 import {
   ArrowLeft,
   CalendarClock,
-  Check,
   FileText,
-  Heart,
   Hotel,
   ImageIcon,
   Info,
   MapPin,
   Maximize2,
-  Phone,
-  Share,
   Star,
-  Store,
   Users,
 } from 'lucide-vue-next'
 import { getHotelProduct } from '~/api/product'
@@ -72,6 +67,10 @@ function goBack() {
 onMounted(() => {
   fetchProductDetail()
 })
+
+function joinCar(p?: HotelProduct) {
+  console.log(p)
+}
 </script>
 
 <template>
@@ -304,68 +303,25 @@ onMounted(() => {
                   />
                 </div>
 
-                <div class="mt-6">
+                <div class="mt-6 space-y-2">
                   <NButton
                     type="primary"
                     block
                     size="large"
                     color="#D97706"
+                    @click="() => joinCar(product)"
                   >
-                    预约看场
+                    加入购物车
                   </NButton>
-                  <div class="flex justify-between mt-4">
-                    <NButton quaternary class="flex items-center">
-                      <Phone :size="16" class="mr-1" />
-                      电话咨询
-                    </NButton>
-                    <NButton quaternary class="flex items-center">
-                      <Heart :size="16" class="mr-1" />
-                      收藏
-                    </NButton>
-                    <NButton quaternary class="flex items-center">
-                      <Share :size="16" class="mr-1" />
-                      分享
-                    </NButton>
-                  </div>
-                </div>
-              </div>
 
-              <!-- 商家信息 -->
-              <div class="p-6">
-                <h3 class="font-bold text-lg mb-4">
-                  商家信息
-                </h3>
-
-                <div class="flex items-center mb-4">
-                  <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mr-3">
-                    <Store :size="24" class="text-amber-500" />
-                  </div>
-                  <div>
-                    <div class="font-bold">
-                      {{ product.merchantName || '暂无商家信息' }}
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      ID: {{ product.merchantId }}
-                    </div>
-                  </div>
-                </div>
-
-                <div v-if="product.servicesMap" class="border-t border-gray-100 pt-4 mt-4">
-                  <div class="text-sm text-gray-500 mb-2">
-                    提供服务
-                  </div>
-                  <div class="space-y-2">
-                    <div
-                      v-for="(value, key) in product.servicesMap"
-                      :key="key"
-                      class="flex items-start"
-                    >
-                      <Check class="text-green-500 mr-2 flex-shrink-0 mt-1" :size="16" />
-                      <div>
-                        <span class="font-medium">{{ key }}:</span> {{ value }}
-                      </div>
-                    </div>
-                  </div>
+                  <NButton
+                    block
+                    size="large"
+                    class="mt-2"
+                    @click="$router.push(`/merchant/${product.merchantId}`)"
+                  >
+                    查看商家
+                  </NButton>
                 </div>
               </div>
             </div>
