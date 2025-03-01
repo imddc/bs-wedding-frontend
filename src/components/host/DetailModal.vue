@@ -25,7 +25,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { UploadIcon } from 'lucide-vue-next'
-import { createProduct, getCategoriesByType, getMerchantList, updateProduct, uploadImage } from '~/api/product'
+import { createProduct, updateProduct } from '~/api/product'
 import { PRODUCT_STATUS_OPTIONS, ProductStatus, ProductType } from '~/api/product/type'
 import type { HostProduct, SelectOption } from '~/api/product/type'
 
@@ -137,8 +137,6 @@ watch(() => props.host, (newHost) => {
 // Lifecycle
 onMounted(async () => {
   await Promise.all([
-    fetchCategoryOptions(),
-    fetchMerchantOptions(),
   ])
 })
 
@@ -174,36 +172,6 @@ function resetForm() {
   }
 }
 
-async function fetchCategoryOptions() {
-  try {
-    const response = await getCategoriesByType(ProductType.HOST)
-
-    if (response.success) {
-      categoryOptions.value = response.data.map((item: any) => ({
-        label: item.name,
-        value: item.id,
-      }))
-    }
-  } catch (error) {
-    console.error('获取分类选项失败', error)
-  }
-}
-
-async function fetchMerchantOptions() {
-  try {
-    const response = await getMerchantList(ProductType.HOST)
-
-    if (response.success) {
-      merchantOptions.value = response.data.map((item: any) => ({
-        label: item.merchantName,
-        value: item.id,
-      }))
-    }
-  } catch (error) {
-    console.error('获取商家选项失败', error)
-  }
-}
-
 function handleClose() {
   showModal.value = false
 }
@@ -211,45 +179,6 @@ function handleClose() {
 function getFileNameFromUrl(url: string): string {
   const parts = url.split('/')
   return parts[parts.length - 1]
-}
-
-function handleBeforeUpload(data: { file: UploadFileInfo }): boolean {
-  // 这里可以添加文件类型、大小等检查
-  return true
-}
-
-async function handleCustomUpload({ file, onFinish, onError }: UploadCustomRequestOptions) {
-  try {
-    const fileObj = file.file as File
-    if (!fileObj) {
-      onError()
-      return
-    }
-
-    const response = await uploadImage(fileObj)
-
-    if (response.success) {
-      const url = response.data.url
-      onFinish()
-
-      // 根据上传位置更新formData
-      if (file.id === 'mainImage' || !file.id?.toString().startsWith('subImage_')) {
-        formData.mainImage = url
-      } else {
-        if (!formData.subImagesList) {
-          formData.subImagesList = []
-        }
-        formData.subImagesList.push(url)
-      }
-    } else {
-      message.error('图片上传失败')
-      onError()
-    }
-  } catch (error) {
-    console.error('图片上传失败', error)
-    message.error('图片上传失败')
-    onError()
-  }
 }
 
 function handleRemoveMainImage() {
@@ -460,22 +389,6 @@ async function handleSubmit() {
                   object-fit="contain"
                 />
               </div>
-              <NUpload
-                v-else
-                list-type="image-card"
-                :max="1"
-                :default-upload="false"
-                :on-before-upload="handleBeforeUpload"
-                :custom-request="handleCustomUpload"
-                :disabled="viewMode"
-                :default-file-list="mainImageFileList"
-                @remove="handleRemoveMainImage"
-              >
-                <div v-if="!formData.mainImage" class="flex justify-center items-center flex-col">
-                  <UploadIcon class="mb-1" />
-                  <span>上传图片</span>
-                </div>
-              </NUpload>
             </NFormItem>
 
             <NFormItem label="附加图片" path="subImagesList">
@@ -488,22 +401,6 @@ async function handleSubmit() {
                   />
                 </div>
               </div>
-              <NUpload
-                v-else
-                list-type="image-card"
-                multiple
-                :default-upload="false"
-                :on-before-upload="handleBeforeUpload"
-                :custom-request="handleCustomUpload"
-                :disabled="viewMode"
-                :default-file-list="subImagesFileList"
-                @remove="handleRemoveSubImage"
-              >
-                <div class="flex justify-center items-center flex-col">
-                  <UploadIcon class="mb-1" />
-                  <span>上传图片</span>
-                </div>
-              </NUpload>
             </NFormItem>
           </div>
         </NTabPane>

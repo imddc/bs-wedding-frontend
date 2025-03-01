@@ -1,187 +1,158 @@
+// src/api/product/index.ts
 import { request } from '~/plugins/http'
+import type { DataType } from '~/plugins/http/type'
 import type {
-  DataType,
+  HostProduct,
+  HostProductParams,
+  HotelProduct,
+  HotelProductParams,
+  HotProduct,
+  HotProductQueryParams,
   PageResult,
+  PhotographyProduct,
+  PhotographyProductParams,
   Product,
-  ProductQuery,
-  ProductType,
+  ProductCreateParams,
+  ProductQueryParams,
 } from './type'
 
-/**
- * 获取商品列表（分页）
- */
-export async function getProductList(params: ProductQuery) {
+const BASE_URL = '/products'
+
+// 通用产品API
+export async function getProducts(params: ProductQueryParams) {
   return request.get<DataType<PageResult<Product>>>({
-    url: '/products',
+    url: BASE_URL,
     params,
   })
 }
 
-/**
- * 根据商品类型获取商品列表
- */
-export async function getProductsByType(productType: ProductType, params?: Omit<ProductQuery, 'productType'>) {
-  return request.get<DataType<PageResult<Product>>>({
-    url: '/products',
-    params: { ...params, productType },
-  })
-}
-
-/**
- * 获取商品详情
- */
-export async function getProductDetail(id: number) {
+export async function getProduct(id: number) {
   return request.get<DataType<Product>>({
-    url: `/products/${id}`,
+    url: `${BASE_URL}/${id}`,
   })
 }
 
-/**
- * 创建商品
- */
-export async function createProduct(data: Product) {
-  return request.post<DataType<Product>>({
-    url: '/products',
+export async function createProduct(data: ProductCreateParams) {
+  return request.post<DataType<boolean>>({
+    url: BASE_URL,
     data,
   })
 }
 
-/**
- * 更新商品
- */
-export async function updateProduct(id: number, data: Partial<Product>) {
-  return request.put<DataType<Product>>({
-    url: `/products/${id}`,
+export async function updateProduct(id: number, data: ProductCreateParams) {
+  return request.put<DataType<boolean>>({
+    url: `${BASE_URL}/${id}`,
     data,
   })
 }
 
-/**
- * 删除商品
- */
 export async function deleteProduct(id: number) {
-  return request.delete<DataType<null>>({
-    url: `/products/${id}`,
+  return request.delete<DataType<boolean>>({
+    url: `${BASE_URL}/${id}`,
   })
 }
 
-/**
- * 更新商品状态（上下架）
- */
-export async function updateProductStatus(id: number, status: number) {
-  return request.patch<DataType<Product>>({
-    url: `/products/${id}/status`,
-    data: { status },
-  })
-}
-
-/**
- * 搜索商品
- */
-export async function searchProducts(keyword: string, productType?: ProductType) {
-  return request.get<DataType<Product[]>>({
-    url: '/products/search',
-    params: { keyword, type: productType },
-  })
-}
-
-/**
- * 获取推荐商品
- */
-export async function getRecommendProducts(productType?: ProductType, limit: number = 6) {
-  return request.get<DataType<Product[]>>({
-    url: '/products/recommend',
-    params: { type: productType, limit },
-  })
-}
-
-/**
- * 获取指定商家的商品列表
- */
-export async function getProductsByMerchant(merchantId: number) {
-  return request.get<DataType<Product[]>>({
-    url: `/products/merchant/${merchantId}`,
-  })
-}
-
-/**
- * 批量获取商品
- */
-export async function batchGetProducts(ids: number[]) {
-  return request.get<DataType<Product[]>>({
-    url: '/products/batch',
-    params: { ids: ids.join(',') },
-  })
-}
-
-/**
- * 批量更新商品
- */
-export async function batchUpdateProducts(products: Partial<Product>[]) {
-  return request.put<DataType<null>>({
-    url: '/products/batch',
-    data: { products },
-  })
-}
-
-/**
- * 批量删除商品
- */
 export async function batchDeleteProducts(ids: number[]) {
-  return request.delete<DataType<null>>({
-    url: '/products/batch',
-    data: { ids },
+  return request.delete<DataType<boolean>>({
+    url: `${BASE_URL}/batch`,
+    data: ids,
   })
 }
 
-/**
- * 获取商品分类列表(根据商品类型)
- */
-export async function getCategoriesByType(productType: ProductType) {
-  return request.get<DataType<any[]>>({
-    url: '/categories',
-    params: { merchantType: productType },
+export async function updateProductStatus(id: number, status: number) {
+  return request.put<DataType<boolean>>({
+    url: `${BASE_URL}/${id}/status/${status}`,
   })
 }
 
-/**
- * 获取商家列表
- */
-export async function getMerchantList(type?: ProductType) {
-  return request.get<DataType<any[]>>({
-    url: '/merchants',
-    params: type ? { merchantType: type } : undefined,
+// 婚纱摄影产品API
+export async function getPhotographyProduct(id: number) {
+  return request.get<DataType<PhotographyProduct>>({
+    url: `${BASE_URL}/photography/${id}`,
   })
 }
 
-/**
- * 上传图片
- */
-export async function uploadImage(file: File) {
-  const formData = new FormData()
-  formData.append('file', file)
-  return request.post<DataType<{ url: string }>>({
-    url: '/upload',
-    data: formData,
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+export async function createPhotographyProduct(data: PhotographyProductParams) {
+  return request.post<DataType<boolean>>({
+    url: `${BASE_URL}/photography`,
+    data,
   })
 }
 
-/**
- * 上传多张图片
- */
-export async function uploadImages(files: File[]) {
-  const formData = new FormData()
-  files.forEach((file, index) => {
-    formData.append(`file${index}`, file)
+export async function updatePhotographyProduct(id: number, data: PhotographyProductParams) {
+  return request.put<DataType<boolean>>({
+    url: `${BASE_URL}/photography/${id}`,
+    data,
   })
-  return request.post<DataType<{ urls: string[] }>>({
-    url: '/upload/batch',
-    data: formData,
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+}
+
+// 婚宴酒店产品API
+export async function getHotelProduct(id: number) {
+  return request.get<DataType<HotelProduct>>({
+    url: `${BASE_URL}/hotel/${id}`,
+  })
+}
+
+export async function createHotelProduct(data: HotelProductParams) {
+  return request.post<DataType<boolean>>({
+    url: `${BASE_URL}/hotel`,
+    data,
+  })
+}
+
+export async function updateHotelProduct(id: number, data: HotelProductParams) {
+  return request.put<DataType<boolean>>({
+    url: `${BASE_URL}/hotel/${id}`,
+    data,
+  })
+}
+
+// 司仪主持产品API
+export async function getHostProduct(id: number) {
+  return request.get<DataType<HostProduct>>({
+    url: `${BASE_URL}/host/${id}`,
+  })
+}
+
+export async function createHostProduct(data: HostProductParams) {
+  return request.post<DataType<boolean>>({
+    url: `${BASE_URL}/host`,
+    data,
+  })
+}
+
+export async function updateHostProduct(id: number, data: HostProductParams) {
+  return request.put<DataType<boolean>>({
+    url: `${BASE_URL}/host/${id}`,
+    data,
+  })
+}
+
+// 热门产品API
+export async function getHotProducts(params: HotProductQueryParams) {
+  return request.get<DataType<HotProduct[]>>({
+    url: `${BASE_URL}/hot`,
+    params,
+  })
+}
+
+export async function getHotPhotographyProducts(params: HotProductQueryParams) {
+  return request.get<DataType<HotProduct[]>>({
+    url: `${BASE_URL}/hot/photography`,
+    params,
+  })
+}
+
+export async function getHotHotelProducts(params: HotProductQueryParams) {
+  return request.get<DataType<HotProduct[]>>({
+    url: `${BASE_URL}/hot/hotel`,
+    params,
+  })
+}
+
+export async function getHotHostProducts(params: HotProductQueryParams) {
+  return request.get<DataType<HotProduct[]>>({
+    url: `${BASE_URL}/hot/host`,
+    params,
   })
 }

@@ -15,7 +15,6 @@ import {
   NImage,
   NSpin,
   NTag,
-  useMessage,
 } from 'naive-ui'
 import {
   ArrowLeftIcon,
@@ -28,7 +27,6 @@ import MerchantForm from '~/components/merchant/admin/MerchantForm.vue'
 
 const route = useRoute()
 const router = useRouter()
-const message = useMessage()
 
 // 商家ID
 const merchantId = ref<number>(Number(route.params.id) || 0)
@@ -76,11 +74,11 @@ async function fetchMerchantDetail() {
       // 更新商家信息
       Object.assign(merchantInfo, response.data)
     } else {
-      message.error(response.message || '获取商家详情失败')
+      window.$message.error(response.message || '获取商家详情失败')
     }
   } catch (error) {
     console.error('获取商家详情出错:', error)
-    message.error('获取商家详情出错')
+    window.$message.error('获取商家详情出错')
   } finally {
     loading.value = false
   }
@@ -102,7 +100,7 @@ onMounted(() => {
   if (merchantId.value) {
     fetchMerchantDetail()
   } else {
-    message.error('商家ID不能为空')
+    window.$message.error('商家ID不能为空')
     router.push('/admin/merchant')
   }
 })

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import type { FormInst, FormRules } from 'naive-ui'
-import { NButton, NCard, NCheckbox, NDivider, NForm, NFormItem, NInput, NModal, useMessage } from 'naive-ui'
+import { NButton, NCard, NCheckbox, NDivider, NForm, NFormItem, NInput, NModal } from 'naive-ui'
 import {
   BugIcon,
   Lock,
@@ -19,7 +19,6 @@ const emit = defineEmits<{
   cancel: []
 }>()
 
-const message = useMessage()
 const formRef = ref<FormInst | null>(null)
 const submitting = ref(false)
 
@@ -86,13 +85,13 @@ function handleSubmit() {
       })
 
       if (data.code === 200) {
-        message.success('注册成功，欢迎加入！')
+        window.$message.success('注册成功，欢迎加入！')
         emit('success')
       } else {
-        message.error(data.message || '注册失败，请稍后重试')
+        window.$message.error(data.message || '注册失败，请稍后重试')
       }
     } catch (error) {
-      message.error('注册失败，请检查网络连接')
+      window.$message.error('注册失败，请检查网络连接')
       console.error('Registration error:', error)
     } finally {
       submitting.value = false
@@ -108,15 +107,15 @@ function showLoginForm() {
 
 // Social login methods
 function loginWithWechat() {
-  message.info('微信登录功能开发中')
+  window.$message.info('微信登录功能开发中')
 }
 
 function loginWithWeibo() {
-  message.info('微博登录功能开发中')
+  window.$message.info('微博登录功能开发中')
 }
 
 function loginWithQQ() {
-  message.info('QQ登录功能开发中')
+  window.$message.info('QQ登录功能开发中')
 }
 </script>
 

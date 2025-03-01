@@ -1,123 +1,128 @@
-// 基础响应类型
-export interface DataType<T> {
-  code: number
-  message: string
-  data: T
-  success: boolean
-}
-
-// 通用分页类型
-export interface PageResult<T> {
-  records: T[]
-  total: number
-  size: number
-  current: number
-  pages: number
-}
-
-// 商品类型枚举
-export enum ProductType {
-  PHOTOGRAPHY = 1, // 婚纱摄影
-  HOTEL = 2, // 婚宴酒店
-  HOST = 3, // 司仪主持
-}
-
-// 商品状态枚举
-export enum ProductStatus {
-  OFF = 0, // 下架
-  ON = 1, // 上架
-}
-
-// 基础商品信息类型
-export interface ProductBase {
-  id?: number
+// src/api/product/types.ts
+export interface Product {
+  id: number
   merchantId: number
+  merchantName?: string
   productName: string
   categoryId: number
   categoryName?: string
-  productType: ProductType
-  location?: string
-  establishmentYears?: number
+  productType: number
+  productTypeName?: string
   price: number
-  rating?: number
+  rating: number
   mainImage?: string
   subImagesList?: string[]
-  subImages?: string
   description?: string
-  tags?: string
   tagsList?: string[]
-  servicesMap?: Record<string, string[]>
-  services?: string
+  servicesMap?: Record<string, string>
   detail?: string
   stock?: number
-  sales?: number
-  status: ProductStatus
-  createTime?: string
-  updateTime?: string
+  sales: number
+  location?: string
+  establishmentYears?: number
+  status: number
+  statusName?: string
+  createTime: string
+  updateTime: string
 }
 
-// 婚纱摄影特有属性
-export interface PhotographyAttributes {
-  shootingLocations?: string
+export interface PhotographyProduct extends Product {
   shootingLocationsList?: string[]
   costumeCount?: number
   photographerLevel?: string
   photoCount?: number
 }
 
-// 婚宴酒店特有属性
-export interface HotelAttributes {
+export interface HotelProduct extends Product {
+  venueSize?: number
+  maxTables?: number
+  minTables?: number
+  cateringStyleList?: string[]
+}
+
+export interface HostProduct extends Product {
+  hostingExperience?: number
+  hostingStyle?: string
+  languagesList?: string[]
+}
+
+export interface ProductQueryParams {
+  productName?: string
+  categoryId?: number
+  productType?: number
+  minPrice?: number
+  maxPrice?: number
+  minRating?: number
+  tags?: string
+  location?: string
+  status?: number
+  pageNum?: number
+  pageSize?: number
+  orderBy?: string
+}
+
+export interface HotProductQueryParams {
+  productType?: number
+  categoryId?: number
+  limit?: number
+}
+
+export interface ProductCreateParams {
+  merchantId: number
+  productName: string
+  categoryId: number
+  productType: number
+  price: number
+  rating?: number
+  mainImage?: string
+  subImages?: string
+  description?: string
+  tags?: string
+  services?: string
+  detail?: string
+  stock?: number
+  location?: string
+  establishmentYears?: number
+  status?: number
+}
+
+export interface PhotographyProductParams extends ProductCreateParams {
+  shootingLocations?: string
+  costumeCount?: number
+  photographerLevel?: string
+  photoCount?: number
+}
+
+export interface HotelProductParams extends ProductCreateParams {
   venueSize?: number
   maxTables?: number
   minTables?: number
   cateringStyle?: string
-  cateringStyleList?: string[]
 }
 
-// 司仪主持特有属性
-export interface HostAttributes {
+export interface HostProductParams extends ProductCreateParams {
   hostingExperience?: number
   hostingStyle?: string
   languages?: string
-  languagesList?: string[]
 }
 
-// 组合类型
-export type PhotographyProduct = ProductBase & PhotographyAttributes
-export type HotelProduct = ProductBase & HotelAttributes
-export type HostProduct = ProductBase & HostAttributes
+export interface PageResult<T> {
+  total: number
+  list: T[]
+  pageNum: number
+  pageSize: number
+  pages: number
+}
 
-// 通用Product类型(包含所有可能的字段)
-export type Product = ProductBase & Partial<PhotographyAttributes> & Partial<HotelAttributes> & Partial<HostAttributes>
-
-// 查询条件类型
-export interface ProductQuery {
-  page?: number
-  size?: number
-  productType?: ProductType
-  categoryId?: number
-  minPrice?: number
-  maxPrice?: number
+export interface HotProduct {
+  id: number
+  productName: string
+  productType: number
+  productTypeName: string
+  price: number
+  rating: number
+  mainImage?: string
+  description?: string
+  sales: number
   location?: string
-  tags?: string
-  keyword?: string
 }
-
-// 下拉选项类型
-export interface SelectOption {
-  label: string
-  value: number | string
-}
-
-// 类型选项
-export const PRODUCT_TYPE_OPTIONS: SelectOption[] = [
-  { label: '婚纱摄影', value: ProductType.PHOTOGRAPHY },
-  { label: '婚宴酒店', value: ProductType.HOTEL },
-  { label: '司仪主持', value: ProductType.HOST },
-]
-
-// 状态选项
-export const PRODUCT_STATUS_OPTIONS: SelectOption[] = [
-  { label: '下架', value: ProductStatus.OFF },
-  { label: '上架', value: ProductStatus.ON },
-]

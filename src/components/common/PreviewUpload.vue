@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { NButton, NModal, NProgress, useMessage } from 'naive-ui'
+import { NButton, NModal, NProgress } from 'naive-ui'
 import { ChevronLeft, ChevronRight, Eye, PlusCircle, Trash } from 'lucide-vue-next'
 import { uploadFile } from '~/api/file'
 import { handleImgUrl } from '~/utils/core'
@@ -55,7 +55,6 @@ const emit = defineEmits<{
 }>()
 
 // 状态
-const message = useMessage()
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const imageList = ref<string[]>([...props.initialImages])
 const uploading = ref(false)
@@ -136,7 +135,7 @@ async function handleFileChange(event: Event) {
 
   // 检查是否超过最大数量
   if (props.maxImages > 0 && imageList.value.length + files.length > props.maxImages) {
-    message.warning(`最多只能上传${props.maxImages}张图片`)
+    window.$message.warning(`最多只能上传${props.maxImages}张图片`)
     // 重置文件输入框
     if (fileInputRef.value) {
       fileInputRef.value.value = ''
@@ -194,7 +193,7 @@ async function uploadFiles(files: FileList) {
         // fileUrl
         uploadedImages.push(response.data.fileUrl)
       } else {
-        message.error(`文件 ${file.name} 上传失败`)
+        window.$message.error(`文件 ${file.name} 上传失败`)
       }
     }
 
@@ -207,10 +206,10 @@ async function uploadFiles(files: FileList) {
       imageList.value = [...imageList.value, ...uploadedImages]
       emit('update:images', imageList.value)
       emit('uploadSuccess', uploadedImages)
-      message.success('图片上传成功')
+      window.$message.success('图片上传成功')
     }
   } catch (error) {
-    message.error('上传过程中发生错误')
+    window.$message.error('上传过程中发生错误')
     console.error('上传错误:', error)
   } finally {
     // 延迟重置上传状态，让进度条有时间显示100%
