@@ -208,32 +208,6 @@ async function handleDeleteMessage(id: number) {
   }
 }
 
-async function handleBatchDelete() {
-  if (selectedRowKeys.value.length === 0)
-    return
-
-  loading.value = true
-  try {
-    // In a real application, you would have a batch endpoint
-    // Here we're handling each message individually as a workaround
-    const promises = selectedRowKeys.value.map(id => deleteMessage(Number(id)))
-    const results = await Promise.all(promises)
-
-    const success = results.every(res => res.success)
-    if (success) {
-      window.$message.success('批量删除成功')
-      fetchData()
-    } else {
-      window.$message.error('部分消息删除失败')
-    }
-  } catch (error) {
-    console.error('Failed to delete messages:', error)
-    window.$message.error('删除失败')
-  } finally {
-    loading.value = false
-  }
-}
-
 // Initialize
 onMounted(() => {
   fetchData()

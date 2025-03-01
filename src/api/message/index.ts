@@ -5,7 +5,6 @@ import type {
   ChatMessageCreateParams,
   ChatMessagePage,
   ChatMessageQueryParams,
-  ChatMessageUpdateParams,
 } from './type'
 
 /**

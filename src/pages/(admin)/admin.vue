@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { CalendarRangeIcon, Camera, Hotel, LayoutDashboard, Mic2, PopsicleIcon, Store, User } from 'lucide-vue-next'
+import { CalendarRangeIcon, Heart, Inbox, LayoutDashboard, MessageCircle, PopsicleIcon, Store, User } from 'lucide-vue-next'
 import { NLayout, NLayoutContent, NLayoutSider, NMenu } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { h, ref, watchEffect } from 'vue'
@@ -41,19 +41,19 @@ const menuOptions: MenuOption[] = [
     icon: () => h(LayoutDashboard),
   },
   {
-    label: () => renderLabel('hotel', '/admin/hotel'),
-    key: 'hotel',
-    icon: () => h(Hotel),
+    label: () => renderLabel('产品管理', '/admin/product'),
+    key: 'product',
+    icon: () => h(Inbox),
   },
   {
-    label: () => renderLabel('婚纱摄影', '/admin/photography'),
-    key: 'photography',
-    icon: () => h(Camera),
+    label: () => renderLabel('消息管理', '/admin/message'),
+    key: 'message',
+    icon: () => h(MessageCircle),
   },
   {
-    label: () => renderLabel('司仪', '/admin/siyi'),
-    key: 'siyi',
-    icon: () => h(Mic2),
+    label: () => renderLabel('收藏管理', '/admin/favorite'),
+    key: 'favorite',
+    icon: () => h(Heart),
   },
   {
     label: () => renderLabel('用户', '/admin/user'),
