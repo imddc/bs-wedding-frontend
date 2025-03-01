@@ -27,6 +27,7 @@ const product = ref<HotelProduct | null>(null)
 const bookingDate = ref(null)
 const guestCount = ref(null)
 const contactPhone = ref('')
+const submitting = ref(false)
 
 // 预约选项
 const guestCountOptions = [
@@ -36,6 +37,56 @@ const guestCountOptions = [
   { label: '300-500人（30-50桌）', value: 50 },
   { label: '500人以上（50桌以上）', value: 100 },
 ]
+
+// 表单验证
+function validateForm() {
+  if (!bookingDate.value) {
+    window.$message.warning('请选择预定日期')
+    return false
+  }
+  if (!guestCount.value) {
+    window.$message.warning('请选择预计宾客数量')
+    return false
+  }
+  if (!contactPhone.value) {
+    window.$message.warning('请输入联系电话')
+    return false
+  }
+  const phoneRegex = /^1[3-9]\d{9}$/
+  if (!phoneRegex.test(contactPhone.value)) {
+    window.$message.warning('请输入正确的手机号码')
+    return false
+  }
+  return true
+}
+
+// 创建订单
+async function createOrder(p?: HotelProduct) {
+  if (!p)
+    return
+  if (!validateForm())
+    return
+
+  submitting.value = true
+  try {
+    // TODO: 调用创建订单API
+    const orderData = {
+      productId: p.id,
+      bookingDate: bookingDate.value,
+      guestCount: guestCount.value,
+      contactPhone: contactPhone.value,
+    }
+    console.log('创建订单:', orderData)
+
+    window.$message.success('订单创建成功')
+    router.push('/order/list') // 跳转到订单列表页
+  } catch (error) {
+    console.error('创建订单失败:', error)
+    window.$message.error('创建订单失败,请重试')
+  } finally {
+    submitting.value = false
+  }
+}
 
 async function fetchProductDetail() {
   loading.value = true
@@ -309,9 +360,10 @@ function joinCar(p?: HotelProduct) {
                     block
                     size="large"
                     color="#D97706"
-                    @click="() => joinCar(product)"
+                    :loading="submitting"
+                    @click="() => createOrder(product)"
                   >
-                    加入购物车
+                    立即预定
                   </NButton>
 
                   <NButton
