@@ -177,8 +177,7 @@ const columns = computed<DataTableColumns<Product>>(() => [
             onClick: () => handleView(row),
           },
           {
-            default: () => '查看',
-            icon: () => h(EyeIcon, { size: 14 }),
+            default: () => h(EyeIcon, { size: 14 }),
           },
         ),
         h(
@@ -189,8 +188,7 @@ const columns = computed<DataTableColumns<Product>>(() => [
             onClick: () => handleEdit(row),
           },
           {
-            default: () => '编辑',
-            icon: () => h(EditIcon, { size: 14 }),
+            default: () => h(EditIcon, { size: 14 }),
           },
         ),
         h(
@@ -208,8 +206,7 @@ const columns = computed<DataTableColumns<Product>>(() => [
                   size: 'small',
                 },
                 {
-                  default: () => '删除',
-                  icon: () => h(TrashIcon, { size: 14 }),
+                  default: () => h(TrashIcon, { size: 14 }),
                 },
               ),
           },

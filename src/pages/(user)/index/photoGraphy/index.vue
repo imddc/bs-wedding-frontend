@@ -152,7 +152,7 @@ onMounted(() => {
 
     <div class="container mx-auto px-4">
       <!-- 热门推荐部分 -->
-      <div class="mb-12 h-[400px]">
+      <div class="mb-12 h-[500px] pb-10">
         <div class="flex items-center mb-4">
           <div class="w-1 h-6 bg-red-700 mr-3" />
           <h2 class="text-2xl font-bold text-gray-800">
@@ -178,7 +178,7 @@ onMounted(() => {
         >
           <NCarouselItem v-for="product in hotProducts" :key="product.id" class="">
             <div class="hot-product-card">
-              <div class="relative overflow-hidden rounded-t-lg h-60">
+              <div class="relative overflow-hidden rounded-t-lg h-72">
                 <img
                   v-if="product.mainImage"
                   :src="product.mainImage"

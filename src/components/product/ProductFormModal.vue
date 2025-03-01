@@ -4,7 +4,6 @@ import { computed, nextTick, reactive, ref, watch } from 'vue'
 import type {
   FormInst,
   FormRules,
-  UploadCustomRequestOptions,
 } from 'naive-ui'
 import {
   NButton,
@@ -20,7 +19,6 @@ import {
   NRadio,
   NRadioGroup,
   NSelect,
-  NUpload,
 } from 'naive-ui'
 import {
   createHostProduct,
@@ -36,7 +34,6 @@ import {
   updatePhotographyProduct,
   updateProduct,
 } from '~/api/product'
-import { uploadFile } from '~/api/file'
 import {
   COMMON_FORM_RULES,
   DEFAULT_HOST_PRODUCT,
@@ -82,13 +79,6 @@ const modalVisible = computed({
 const showPreview = ref(false)
 const previewUrl = ref('')
 
-// 选项数据
-const merchantOptions = ref([
-  { label: '商家1', value: 1 },
-  { label: '商家2', value: 2 },
-  { label: '商家3', value: 3 },
-])
-
 // 弹窗标题
 const modalTitle = computed(() => {
   const actionText = {
@@ -133,37 +123,6 @@ function handleProductTypeChange(value: number) {
   } else if (value === PRODUCT_TYPE.HOST) {
     Object.assign(formData, DEFAULT_HOST_PRODUCT)
   }
-}
-
-// 上传处理
-async function handleUpload({ file }: UploadCustomRequestOptions) {
-  if (!file)
-    return
-
-  try {
-    const params = {
-      file: file.file as File,
-      description: '商品图片',
-    }
-
-    const res = await uploadFile(params)
-    if (res.success) {
-      // @ts-expect-error non
-      formData.mainImage = res.data.url
-      window.$message.success('上传成功')
-    } else {
-      window.$message.error(res.message || '上传失败')
-    }
-  } catch (error) {
-    console.error('上传图片出错', error)
-    window.$message.error('上传图片出错')
-  }
-}
-
-// 预览图片
-function handlePreview(file: any) {
-  previewUrl.value = file.url || ''
-  showPreview.value = true
 }
 
 // 加载商品数据
@@ -276,13 +235,16 @@ function resetForm() {
 // 监听弹窗显示状态
 watch(
   () => modalVisible.value,
-  (visible) => {
+  (visible, oldVisible) => {
     if (visible) {
       if (props.formType === 'create') {
         resetForm()
       } else {
         loadProductData()
       }
+    } else if (oldVisible) {
+      // 当弹窗关闭时重置表单数据
+      resetForm()
     }
   },
 )
@@ -334,12 +296,8 @@ watch(
           </NFormItem>
         </NGridItem>
         <NGridItem :span="12">
-          <NFormItem label="商家" path="merchantId">
-            <NSelect
-              v-model:value="formData.merchantId"
-              :options="merchantOptions"
-              placeholder="请选择商家"
-            />
+          <NFormItem label="商家id" path="merchantId">
+            <NInput v-model:value="formData.merchantId" placeholder="请输入商家id" />
           </NFormItem>
         </NGridItem>
         <NGridItem :span="12">
@@ -407,16 +365,7 @@ watch(
         </NGridItem>
         <NGridItem :span="12">
           <NFormItem label="主图" path="mainImage">
-            <NUpload
-              action="#"
-              :default-upload="false"
-              :max="1"
-              :custom-request="handleUpload"
-              list-type="image-card"
-              @preview="handlePreview"
-            >
-              <NButton>上传主图</NButton>
-            </NUpload>
+            <NInput v-model:value="formData.mainImage" placeholder="请输入主图" />
           </NFormItem>
         </NGridItem>
         <NGridItem :span="12">
