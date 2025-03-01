@@ -35,9 +35,6 @@ export const COMMON_FORM_RULES = {
     { required: true, message: '请输入商品名称', trigger: 'blur' },
     { max: 100, message: '商品名称不能超过100个字符', trigger: 'blur' },
   ],
-  merchantId: [
-    { required: true, message: '请选择商家', trigger: 'change', type: 'number' },
-  ],
   categoryId: [
     { required: true, message: '请选择分类', trigger: 'change', type: 'number' },
   ],

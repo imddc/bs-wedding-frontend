@@ -254,7 +254,7 @@ onMounted(() => {
                 type="primary"
                 color="#4F46E5"
                 block
-                @click="navigateTo('/host')"
+                @click="navigateTo('/siyi')"
               >
                 寻找婚礼司仪
               </NButton>
@@ -345,15 +345,6 @@ onMounted(() => {
                 </div>
               </div>
             </div>
-
-            <NButton
-              type="primary"
-              size="large"
-              color="#E11D48"
-              @click="navigateTo('/custom')"
-            >
-              创建我的婚礼方案
-            </NButton>
           </div>
         </div>
       </div>
@@ -483,7 +474,7 @@ onMounted(() => {
                 type="primary"
                 size="large"
                 color="#E11D48"
-                @click="navigateTo('/register')"
+                @click="navigateTo('/login')"
               >
                 立即注册
               </NButton>
@@ -512,14 +503,6 @@ onMounted(() => {
         </p>
 
         <div class="flex flex-wrap justify-center gap-4">
-          <NButton
-            type="primary"
-            size="large"
-            color="#E11D48"
-            @click="navigateTo('/custom')"
-          >
-            创建婚礼方案
-          </NButton>
           <NButton
             type="default"
             size="large"

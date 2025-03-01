@@ -230,7 +230,7 @@ onMounted(() => {
                   class="bg-amber-600 text-white"
                   @click="viewDetails(product.id)"
                 >
-                  预约看场
+                  查看详情
                 </NButton>
               </div>
             </div>

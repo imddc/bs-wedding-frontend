@@ -139,7 +139,7 @@ onMounted(() => {
       </div>
       <div v-else>
         <!-- 酒店横幅 -->
-        <div class="relative h-80 mb-6 rounded-lg overflow-hidden">
+        <div class="relative h-[500px] mb-6 rounded-lg overflow-hidden">
           <img
             v-if="product.mainImage"
             :src="product.mainImage"

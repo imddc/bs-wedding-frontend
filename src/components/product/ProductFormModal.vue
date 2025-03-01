@@ -1,4 +1,3 @@
-//src/views/product/components/ProductFormModal.vue
 <script setup lang="ts">
 import { computed, nextTick, reactive, ref, watch } from 'vue'
 import type {
