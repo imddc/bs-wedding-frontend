@@ -152,7 +152,7 @@ onMounted(() => {
 
     <div class="container mx-auto px-4">
       <!-- 热门推荐部分 -->
-      <div class="mb-12">
+      <div class="mb-12 h-[400px]">
         <div class="flex items-center mb-4">
           <div class="w-1 h-6 bg-red-700 mr-3" />
           <h2 class="text-2xl font-bold text-gray-800">
@@ -173,8 +173,9 @@ onMounted(() => {
           next-slide-style="transform: translateX(50%) translateZ(-800px);"
           :show-dots="hotProducts.length > 3"
           :interval="4000"
+          class="my-4"
         >
-          <NCarouselItem v-for="product in hotProducts" :key="product.id">
+          <NCarouselItem v-for="product in hotProducts" :key="product.id" class="">
             <div class="hot-product-card">
               <div class="relative overflow-hidden rounded-t-lg h-60">
                 <img

@@ -202,9 +202,9 @@ onMounted(() => {
           暂无推荐司仪
         </div>
         <div v-else>
-          <NGrid x-gap="16" y-gap="16" cols="1 s:2 m:3 l:4">
+          <NGrid x-gap="16" y-gap="16" cols="4">
             <NGridItem v-for="product in hotProducts" :key="product.id">
-              <div class="host-card relative bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300">
+              <div class="host-card relative bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300 h-full">
                 <div class="absolute top-2 right-2 px-2 py-1 rounded-full bg-indigo-600 text-white text-xs z-10">
                   推荐
                 </div>
