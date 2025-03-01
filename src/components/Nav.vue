@@ -1,19 +1,15 @@
+<!-- src/layouts/AppHeader.vue -->
 <script setup lang="ts">
 import { h, ref } from 'vue'
 import type { Component } from 'vue'
 import { NAvatar, NBadge, NDropdown, NLayoutHeader } from 'naive-ui'
 import type { DropdownOption } from 'naive-ui'
-import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { User } from 'lucide-vue-next'
-import { useNavStore } from '~/stores/navStore'
-import type { Nav } from '~/stores/navStore'
+import { Camera, Heart, Hotel, Mic, User } from 'lucide-vue-next'
 import { useUserStore } from '~/stores'
 
 const router = useRouter()
-const navStore = useNavStore()
 const userStore = useUserStore()
-const { navList } = storeToRefs(navStore)
 
 // Whether user is logged in
 const isLoggedIn = ref(true)
@@ -36,18 +32,26 @@ const userOptions = ref<DropdownOption[]>([
     icon: renderIcon(User),
   },
   {
+    label: '我的收藏',
+    key: 'favorites',
+    icon: renderIcon(Heart),
+  },
+  {
+    type: 'divider',
+    key: 'd1',
+  },
+  {
     label: '退出登录',
     key: 'logout',
   },
 ])
 
 function clickLogo() {
-  console.log('clickLogo')
   router.push('/')
 }
 
-function clickNav(nav: Nav) {
-  router.push(nav.path)
+function clickNav(path: string) {
+  router.push(path)
 }
 
 function handleUserAction(key: string) {
@@ -55,6 +59,9 @@ function handleUserAction(key: string) {
   switch (key) {
     case 'profile':
       router.push('/profile')
+      break
+    case 'favorites':
+      router.push('/favorites')
       break
     case 'logout':
       // Implement logout logic
@@ -65,38 +72,87 @@ function handleUserAction(key: string) {
       break
   }
 }
+
+// 自定义导航列表，适配我们的婚礼服务主题
+const navigationItems = [
+  {
+    label: '首页',
+    path: '/',
+    icon: null,
+    activeColor: '',
+  },
+  {
+    label: '婚纱摄影',
+    path: '/photography',
+    icon: Camera,
+    activeColor: 'text-red-600 border-red-600',
+  },
+  {
+    label: '婚宴酒店',
+    path: '/hotel',
+    icon: Hotel,
+    activeColor: 'text-amber-600 border-amber-600',
+  },
+  {
+    label: '司仪主持',
+    path: '/siyi',
+    icon: Mic,
+    activeColor: 'text-indigo-600 border-indigo-600',
+  },
+  {
+    label: '定制方案',
+    path: '/custom',
+    icon: Heart,
+    activeColor: 'text-pink-600 border-pink-600',
+  },
+]
+
+// 获取当前活动路由
+const currentPath = ref(router.currentRoute.value.path)
+
+// 计算当前活动项的颜色
+// function getActiveColor(path: string) {
+//   const activeItem = navigationItems.find(item =>
+//     path === item.path || (item.path !== '/' && path.startsWith(item.path)),
+//   )
+//   return activeItem?.activeColor || 'text-gray-900 border-gray-900'
+// }
+
+// 监听路由变化
+router.afterEach((to) => {
+  currentPath.value = to.path
+})
 </script>
 
 <template>
-  <NLayoutHeader class="h-16 shadow-sm bg-white">
+  <NLayoutHeader class="h-16 shadow-sm bg-white z-10 sticky top-0">
     <div class="container mx-auto h-full px-4 flex items-center gap-6">
       <!-- Logo -->
-      <div class="flex-shrink-0 cursor-pointer" @click="clickLogo">
-        <img class="h-12 w-auto" src="/src/assets/wedding-ring.png" alt="Logo">
+      <div class="flex-shrink-0 cursor-pointer flex items-center" @click="clickLogo">
+        <img class="h-10 w-auto mr-2" src="/src/assets/wedding-ring.png" alt="Logo">
+        <span class="text-xl font-bold text-red-600 font-serif tracking-wider">良缘喜事</span>
       </div>
 
       <!-- Main Navigation -->
-      <div class="hidden md:flex items-center gap-6">
+      <div class="hidden md:flex items-center gap-8">
         <div
-          v-for="nav in navList"
-          :key="nav.path"
-          class="cursor-pointer flex items-center py-2 px-1 border-b-2 transition-colors duration-150"
+          v-for="item in navigationItems"
+          :key="item.path"
+          class="cursor-pointer flex items-center py-2 px-1 border-b-2 transition-colors duration-200 text-gray-700 hover:opacity-80"
           :class="[
-            router.currentRoute.value.path === nav.path
-              ? 'border-primary-500 text-primary-600'
-              : 'border-transparent hover:text-primary-500',
+            currentPath === item.path || (item.path !== '/' && currentPath.startsWith(item.path))
+              ? [item.activeColor || 'text-gray-900 border-gray-900', 'font-medium']
+              : 'border-transparent hover:border-gray-300',
           ]"
-          @click="() => clickNav(nav)"
+          @click="() => clickNav(item.path)"
         >
-          <component :is="nav.icon" v-if="nav.icon" class="h-4 w-4 mr-1" />
-          {{ nav.label }}
+          <component :is="item.icon" v-if="item.icon" class="h-4 w-4 mr-1.5" />
+          {{ item.label }}
         </div>
       </div>
 
       <!-- User Area -->
       <div class="flex items-center gap-4 ml-auto">
-        <!-- Search - Could be expanded later -->
-
         <!-- User Profile / Login -->
         <div v-if="isLoggedIn">
           <NDropdown trigger="click" :options="userOptions" @select="handleUserAction">
@@ -121,5 +177,13 @@ function handleUserAction(key: string) {
 </template>
 
 <style scoped>
-/* Add any custom styling here */
+/* 定制头像样式 */
+:deep(.n-avatar) {
+  background-color: #f3f4f6;
+}
+
+/* 中国风字体 */
+.font-serif {
+  font-family: 'STZhongsong', 'SimSun', serif;
+}
 </style>
