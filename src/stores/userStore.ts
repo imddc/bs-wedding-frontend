@@ -1,5 +1,7 @@
+// src/stores/userStore.ts
 import { defineStore } from 'pinia'
 import { login } from '~/api/auth'
+import { getUserById } from '~/api/user'
 import type { UserInfo } from '~/api/user/type'
 import { useUserInfo, useUserToken } from '~/composables/useUserStorage'
 
@@ -7,6 +9,16 @@ import { useUserInfo, useUserToken } from '~/composables/useUserStorage'
 interface LoginPayload {
   username: string
   password: string
+}
+
+// 登录响应数据接口
+interface LoginResponseData {
+  token: string
+  user: {
+    id: number
+    username: string
+    [key: string]: any
+  }
 }
 
 // 用户状态接口
@@ -25,8 +37,8 @@ export const useUserStore = defineStore('user', {
   // 状态定义：存储用户相关的核心数据
   state: (): UserState => {
     return {
-      userInfo: null,
-      token: null,
+      userInfo: userInfo.value || null,
+      token: userToken.value || null,
       loading: false,
       error: null,
     }
@@ -37,6 +49,7 @@ export const useUserStore = defineStore('user', {
     isLoggedIn: state => !!state.token,
     currentUser: state => state.userInfo,
     hasError: state => !!state.error,
+    isAdmin: state => state.userInfo?.userType === 1, // 1 表示商家/管理员
   },
 
   actions: {
@@ -63,6 +76,7 @@ export const useUserStore = defineStore('user', {
       this.setError(null)
 
       try {
+        // 执行登录请求
         const response = await login(payload)
 
         if (!response.success) {
@@ -70,11 +84,15 @@ export const useUserStore = defineStore('user', {
           return false
         }
 
-        const { token, user } = response.data
+        const { token, user } = response.data as LoginResponseData
 
+        // 先设置令牌，以便后续请求可以使用
         this.setToken(token)
-        this.setUserInfo(user)
 
+        // 获取完整的用户信息
+        await this.fetchAndUpdateUserInfo(user.id)
+
+        window.$message?.success('登录成功')
         return true
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : '登录失败，请稍后重试'
@@ -83,6 +101,25 @@ export const useUserStore = defineStore('user', {
         return false
       } finally {
         this.loading = false
+      }
+    },
+
+    // 获取完整的用户信息并更新
+    async fetchAndUpdateUserInfo(userId: number): Promise<boolean> {
+      try {
+        const response = await getUserById(userId)
+
+        if (response.success) {
+          this.setUserInfo(response.data)
+          return true
+        } else {
+          window.$message?.warning('获取用户信息失败')
+          return false
+        }
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : '获取用户信息失败'
+        window.$message?.warning(errorMessage)
+        return false
       }
     },
 
@@ -114,9 +151,38 @@ export const useUserStore = defineStore('user', {
       //   this.clearUserState()
       //   return false
       // }
-
       // 留作未来扩展
       return !!this.token
+    },
+
+    // 初始化 - 尝试从存储恢复用户会话
+    initializeUserSession(): void {
+      if (this.token && !this.userInfo) {
+        // 有令牌但没有用户信息，尝试获取用户信息
+        // 这里我们需要一个方法来从令牌中提取用户ID，或使用特定API
+        this.fetchCurrentUserInfo()
+      }
+    },
+
+    // 获取当前用户信息的方法
+    async fetchCurrentUserInfo(): Promise<boolean> {
+      // 假设有一个专门获取当前用户信息的API
+      // 或者我们可以从本地存储中获取用户ID
+      try {
+        // 这里需要实现获取当前用户ID的逻辑
+        // const userId = this.extractUserIdFromToken() 或使用其他方法
+
+        // 为了示例，我们假设调用一个getUserInfo API
+        // const response = await getUserInfo()
+        // if (response.success) {
+        //   this.setUserInfo(response.data)
+        //   return true
+        // }
+        return false
+      } catch {
+        this.clearUserState()
+        return false
+      }
     },
   },
 })

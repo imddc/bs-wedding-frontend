@@ -2,23 +2,16 @@
 <script setup lang="ts">
 import { h, ref } from 'vue'
 import type { Component } from 'vue'
-import { NAvatar, NBadge, NDropdown, NLayoutHeader } from 'naive-ui'
+import { NAvatar, NDropdown, NLayoutHeader } from 'naive-ui'
 import type { DropdownOption } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { Camera, Heart, Hotel, Mic, User } from 'lucide-vue-next'
 import { useUserStore } from '~/stores'
+import { storeToRefs } from 'pinia'
 
 const router = useRouter()
 const userStore = useUserStore()
-
-// Whether user is logged in
-const isLoggedIn = ref(true)
-
-// Example user data
-const userData = ref({
-  name: '张先生',
-  avatar: '/src/assets/avatar.png',
-})
+const {userInfo, isLoggedIn} = storeToRefs(userStore)
 
 function renderIcon(icon: Component) {
   return () => h(icon, { class: 'size-4' })
@@ -157,14 +150,12 @@ router.afterEach((to) => {
         <div v-if="isLoggedIn">
           <NDropdown trigger="click" :options="userOptions" @select="handleUserAction">
             <div class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 rounded-full p-1">
-              <NBadge :value="3" :max="99" dot>
-                <NAvatar round size="medium" :src="userData.avatar">
+                <NAvatar round size="medium" src="">
                   <template #fallback>
                     <User class="h-4 w-4" />
                   </template>
                 </NAvatar>
-              </NBadge>
-              <span class="hidden sm:inline text-sm">{{ userData.name }}</span>
+              <span class="hidden sm:inline text-sm">{{ userInfo?.realName || userInfo?.username }}</span>
             </div>
           </NDropdown>
         </div>

@@ -173,6 +173,7 @@ onMounted(() => {
           next-slide-style="transform: translateX(50%) translateZ(-800px);"
           :show-dots="hotProducts.length > 3"
           :interval="4000"
+          autoplay
           class="my-4"
         >
           <NCarouselItem v-for="product in hotProducts" :key="product.id" class="">
