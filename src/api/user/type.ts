@@ -66,7 +66,6 @@ export interface UserInfo {
   phone: string
   email: string
   userType: UserType
-  userTypeName: string
   status: UserStatus
   statusName: string
   createTime: string

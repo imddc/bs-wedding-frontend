@@ -52,10 +52,10 @@ function checkStatus(status: number, msg: string, errorMessageMode: ErrorMessage
       errMessage = `${msg}`
       break
     case 401:
-      errMessage = '请重新登录'
+      // errMessage = '请重新登录'
       // 需清除缓存
       // userStore.clearAllUserInfo()
-      router.push('/login')
+      // router.push('/login')
       break
     case 403:
       errMessage = msg || '没有权限'

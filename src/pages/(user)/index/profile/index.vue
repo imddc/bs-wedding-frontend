@@ -24,26 +24,27 @@ import {
   Heart,
   Home,
   Loader,
-  Lock,
   LogOut,
   Mic,
   Settings,
   ShoppingBag,
   User,
 } from 'lucide-vue-next'
-import { getUserById, updatePassword, updateUser } from '~/api/user'
-import { UserType } from '~/api/user/type'
-import type { PasswordUpdateParams, UserInfo, UserUpdateParams } from '~/api/user/type'
+import { storeToRefs } from 'pinia'
+import { getUserById, updateUser } from '~/api/user'
+import type { UserInfo, UserUpdateParams } from '~/api/user/type'
+import { useUserStore } from '~/stores'
+import { USER_TYPE_MAP } from '~/constants/user'
 
 const router = useRouter()
+const userStore = useUserStore()
+const { isAdmin } = storeToRefs(userStore)
 const loading = ref(false)
-const passwordLoading = ref(false)
 const activeKey = ref('profile')
 const editMode = ref(false)
 
 // 表单引用
 const formRef = ref<FormInst | null>(null)
-const passwordFormRef = ref<FormInst | null>(null)
 
 // 初始化用户信息
 const userInfo = ref<UserInfo>({
@@ -53,15 +54,11 @@ const userInfo = ref<UserInfo>({
   phone: '',
   email: '',
   userType: 0,
-  userTypeName: '',
   status: 1,
   statusName: '',
   createTime: '',
   updateTime: '',
 })
-
-// 判断是否为管理员
-const isAdmin = ref(false)
 
 // 编辑表单
 const userForm = reactive<UserUpdateParams>({
@@ -69,13 +66,6 @@ const userForm = reactive<UserUpdateParams>({
   realName: '',
   phone: '',
   email: '',
-})
-
-// 密码表单
-const passwordForm = reactive({
-  oldPassword: '',
-  newPassword: '',
-  confirmPassword: '',
 })
 
 // 表单校验规则
@@ -91,36 +81,12 @@ const rules: FormRules = {
   ],
 }
 
-// 密码表单校验规则
-const passwordRules: FormRules = {
-  oldPassword: [
-    { required: true, message: '请输入原密码', trigger: 'blur' },
-  ],
-  newPassword: [
-    { required: true, message: '请输入新密码', trigger: 'blur' },
-    { min: 6, message: '密码长度不能少于6个字符', trigger: 'blur' },
-  ],
-  confirmPassword: [
-    { required: true, message: '请再次输入新密码', trigger: 'blur' },
-    {
-      validator: (_, value) => value === passwordForm.newPassword,
-      message: '两次输入的密码不一致',
-      trigger: 'blur',
-    },
-  ],
-}
-
 // 菜单选项
 const menuOptions = ref<MenuOption[]>([
   {
     label: '基本信息',
     key: 'profile',
     icon: () => h(User, { size: 16 }),
-  },
-  {
-    label: '修改密码',
-    key: 'password',
-    icon: () => h(Lock, { size: 16 }),
   },
   {
     label: '我的订单',
@@ -185,14 +151,10 @@ const favorites = ref({
 async function fetchUserInfo() {
   try {
     // 这里应该从存储中获取当前用户ID
-    const userId = 1 // 假设当前用户ID为1
-    const response = await getUserById(userId)
+    const response = await getUserById(userStore.userInfo?.id || 1)
 
     if (response.success) {
       userInfo.value = response.data
-
-      // 判断是否为管理员
-      isAdmin.value = userInfo.value.userType === UserType.MERCHANT
 
       // 初始化编辑表单
       initUserForm()
@@ -233,37 +195,6 @@ function handleSaveProfile() {
         window.$message.error('保存失败')
       } finally {
         loading.value = false
-      }
-    }
-  })
-}
-
-// 修改密码
-function handleChangePassword() {
-  passwordFormRef.value?.validate(async (errors) => {
-    if (!errors) {
-      passwordLoading.value = true
-      try {
-        const params: PasswordUpdateParams = {
-          id: userInfo.value.id,
-          oldPassword: passwordForm.oldPassword,
-          newPassword: passwordForm.newPassword,
-        }
-        const response = await updatePassword(params)
-        if (response.success) {
-          window.$message.success('密码修改成功')
-          // 清空表单
-          passwordForm.oldPassword = ''
-          passwordForm.newPassword = ''
-          passwordForm.confirmPassword = ''
-        } else {
-          window.$message.error('密码修改失败')
-        }
-      } catch (error) {
-        console.error('修改密码错误:', error)
-        window.$message.error('密码修改失败')
-      } finally {
-        passwordLoading.value = false
       }
     }
   })
@@ -359,7 +290,7 @@ onMounted(() => {
                     {{ userInfo.realName || userInfo.username }}
                   </h3>
                   <p class="text-sm text-gray-500">
-                    {{ userInfo.userTypeName }}
+                    {{ USER_TYPE_MAP[userInfo.userType] }}
                   </p>
 
                   <!-- 管理员入口 -->
@@ -495,50 +426,6 @@ onMounted(() => {
                     </div>
                   </NForm>
                 </div>
-              </div>
-
-              <!-- 密码修改 -->
-              <div v-if="activeKey === 'password'">
-                <h2 class="text-xl font-bold text-gray-800 mb-6">
-                  修改密码
-                </h2>
-                <NForm
-                  ref="passwordFormRef"
-                  :model="passwordForm"
-                  :rules="passwordRules"
-                  label-placement="left"
-                  label-width="80"
-                >
-                  <NFormItem label="原密码" path="oldPassword">
-                    <NInput
-                      v-model:value="passwordForm.oldPassword"
-                      type="password"
-                      placeholder="请输入原密码"
-                      show-password-on="click"
-                    />
-                  </NFormItem>
-                  <NFormItem label="新密码" path="newPassword">
-                    <NInput
-                      v-model:value="passwordForm.newPassword"
-                      type="password"
-                      placeholder="请输入新密码"
-                      show-password-on="click"
-                    />
-                  </NFormItem>
-                  <NFormItem label="确认密码" path="confirmPassword">
-                    <NInput
-                      v-model:value="passwordForm.confirmPassword"
-                      type="password"
-                      placeholder="请再次输入新密码"
-                      show-password-on="click"
-                    />
-                  </NFormItem>
-                  <div class="flex justify-end gap-2 mt-4">
-                    <NButton type="primary" :loading="passwordLoading" @click="handleChangePassword">
-                      确认修改
-                    </NButton>
-                  </div>
-                </NForm>
               </div>
 
               <!-- 我的订单 -->
