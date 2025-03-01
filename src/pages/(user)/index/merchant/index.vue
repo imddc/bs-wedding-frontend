@@ -201,16 +201,6 @@ onMounted(() => {
               <div class="text-lg font-bold">
                 {{ getMerchantTypeName(queryParams.merchantType || MerchantType.PHOTOGRAPHY) }}商家列表
               </div>
-              <div class="flex items-center space-x-2">
-                <span class="text-sm text-gray-500">仅显示上架商家：</span>
-                <NSwitch
-                  :value="queryParams.status === MerchantStatus.ONLINE"
-                  @update:value="(val) => {
-                    queryParams.status = val ? MerchantStatus.ONLINE : MerchantStatus.OFFLINE
-                    handleSearch()
-                  }"
-                />
-              </div>
             </div>
 
             <div v-if="loading" class="py-8 flex justify-center">

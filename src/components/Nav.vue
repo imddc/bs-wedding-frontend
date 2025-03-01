@@ -5,13 +5,13 @@ import type { Component } from 'vue'
 import { NAvatar, NDropdown, NLayoutHeader } from 'naive-ui'
 import type { DropdownOption } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import { Camera, Heart, Hotel, Mic, User } from 'lucide-vue-next'
-import { useUserStore } from '~/stores'
+import { Camera, Heart, Hotel, Mic, Store, User } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
+import { useUserStore } from '~/stores'
 
 const router = useRouter()
 const userStore = useUserStore()
-const {userInfo, isLoggedIn} = storeToRefs(userStore)
+const { userInfo, isLoggedIn } = storeToRefs(userStore)
 
 function renderIcon(icon: Component) {
   return () => h(icon, { class: 'size-4' })
@@ -98,18 +98,16 @@ const navigationItems = [
     icon: Heart,
     activeColor: 'text-pink-600 border-pink-600',
   },
+  {
+    label: '商家精选',
+    path: '/merchant',
+    icon: Store,
+    activeColor: 'text-indigo-600 border-indigo-600',
+  },
 ]
 
 // 获取当前活动路由
 const currentPath = ref(router.currentRoute.value.path)
-
-// 计算当前活动项的颜色
-// function getActiveColor(path: string) {
-//   const activeItem = navigationItems.find(item =>
-//     path === item.path || (item.path !== '/' && path.startsWith(item.path)),
-//   )
-//   return activeItem?.activeColor || 'text-gray-900 border-gray-900'
-// }
 
 // 监听路由变化
 router.afterEach((to) => {
@@ -150,11 +148,11 @@ router.afterEach((to) => {
         <div v-if="isLoggedIn">
           <NDropdown trigger="click" :options="userOptions" @select="handleUserAction">
             <div class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 rounded-full p-1">
-                <NAvatar round size="medium" src="">
-                  <template #fallback>
-                    <User class="h-4 w-4" />
-                  </template>
-                </NAvatar>
+              <NAvatar round size="medium" src="">
+                <template #fallback>
+                  <User class="h-4 w-4" />
+                </template>
+              </NAvatar>
               <span class="hidden sm:inline text-sm">{{ userInfo?.realName || userInfo?.username }}</span>
             </div>
           </NDropdown>

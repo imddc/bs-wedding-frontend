@@ -74,7 +74,7 @@ async function fetchMerchantProducts() {
 
 // 返回列表页
 function goBack() {
-  router.push('/merchants')
+  router.push('/merchant')
 }
 
 // 收藏商家
