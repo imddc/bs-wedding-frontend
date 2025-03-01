@@ -1,41 +1,35 @@
-// ~/api/order/index.ts
 import { request } from '~/plugins/http'
-import type { DataType } from '~/plugins/http/type'
 import type {
-  OrderCreateParams,
-  OrderDetail,
-  OrderPageResult,
-  OrderQueryParams,
-  OrderStatusUpdateParams,
-  OrderUpdateParams,
+  OrdersCreateParams,
+  OrdersUpdateParams,
+  OrdersStatusUpdateParams,
+  OrdersQueryParams,
+  OrdersDetailResponse,
+  OrdersPageResponse
 } from './type'
-
-/**
- * API 基础路径
- */
-const BASE_URL = '/api/orders'
+import type { DataType } from '~/plugins/http/type'
 
 /**
  * 创建订单
  * @param data 创建订单参数
  * @returns 订单ID
  */
-export async function createOrder(data: OrderCreateParams) {
+export async function createOrder(data: OrdersCreateParams) {
   return request.post<DataType<number>>({
-    url: BASE_URL,
-    data,
+    url: '/orders',
+    data
   })
 }
 
 /**
- * 更新订单
+ * 更新订单信息
  * @param data 更新订单参数
  * @returns 是否成功
  */
-export async function updateOrder(data: OrderUpdateParams) {
+export async function updateOrder(data: OrdersUpdateParams) {
   return request.put<DataType<boolean>>({
-    url: BASE_URL,
-    data,
+    url: '/orders',
+    data
   })
 }
 
@@ -44,10 +38,10 @@ export async function updateOrder(data: OrderUpdateParams) {
  * @param data 订单状态更新参数
  * @returns 是否成功
  */
-export async function updateOrderStatus(data: OrderStatusUpdateParams) {
+export async function updateOrderStatus(data: OrdersStatusUpdateParams) {
   return request.put<DataType<boolean>>({
-    url: `${BASE_URL}/status`,
-    data,
+    url: '/orders/status',
+    data
   })
 }
 
@@ -58,7 +52,7 @@ export async function updateOrderStatus(data: OrderStatusUpdateParams) {
  */
 export async function deleteOrder(id: number) {
   return request.delete<DataType<boolean>>({
-    url: `${BASE_URL}/${id}`,
+    url: `/orders/${id}`
   })
 }
 
@@ -68,8 +62,8 @@ export async function deleteOrder(id: number) {
  * @returns 订单详情
  */
 export async function getOrderDetail(id: number) {
-  return request.get<DataType<OrderDetail>>({
-    url: `${BASE_URL}/${id}`,
+  return request.get<DataType<OrdersDetailResponse>>({
+    url: `/orders/${id}`
   })
 }
 
@@ -78,9 +72,9 @@ export async function getOrderDetail(id: number) {
  * @param params 查询参数
  * @returns 分页订单列表
  */
-export async function getOrderPage(params: OrderQueryParams) {
-  return request.get<DataType<OrderPageResult>>({
-    url: `${BASE_URL}/page`,
-    params,
+export async function getOrdersPage(params: OrdersQueryParams) {
+  return request.get<DataType<OrdersPageResponse>>({
+    url: '/orders/page',
+    params
   })
 }

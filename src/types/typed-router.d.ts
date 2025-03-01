@@ -28,6 +28,7 @@ declare module 'vue-router/auto-routes' {
     '/(admin)/admin/merchant/': RouteRecordInfo<'/(admin)/admin/merchant/', '/admin/merchant', Record<never, never>, Record<never, never>>,
     '/(admin)/admin/merchant/[id]/': RouteRecordInfo<'/(admin)/admin/merchant/[id]/', '/admin/merchant/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/(admin)/admin/message/': RouteRecordInfo<'/(admin)/admin/message/', '/admin/message', Record<never, never>, Record<never, never>>,
+    '/(admin)/admin/order/': RouteRecordInfo<'/(admin)/admin/order/', '/admin/order', Record<never, never>, Record<never, never>>,
     '/(admin)/admin/priceRange/': RouteRecordInfo<'/(admin)/admin/priceRange/', '/admin/priceRange', Record<never, never>, Record<never, never>>,
     '/(admin)/admin/product/': RouteRecordInfo<'/(admin)/admin/product/', '/admin/product', Record<never, never>, Record<never, never>>,
     '/(admin)/admin/user/': RouteRecordInfo<'/(admin)/admin/user/', '/admin/user', Record<never, never>, Record<never, never>>,
@@ -38,7 +39,6 @@ declare module 'vue-router/auto-routes' {
     '/(user)//favorite/': RouteRecordInfo<'/(user)//favorite/', '/favorite', Record<never, never>, Record<never, never>>,
     '/(user)//hotel/': RouteRecordInfo<'/(user)//hotel/', '/hotel', Record<never, never>, Record<never, never>>,
     '/(user)//hotel/[id]/': RouteRecordInfo<'/(user)//hotel/[id]/', '/hotel/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
-    '/(user)//mechant/': RouteRecordInfo<'/(user)//mechant/', '/mechant', Record<never, never>, Record<never, never>>,
     '/(user)//merchant/': RouteRecordInfo<'/(user)//merchant/', '/merchant', Record<never, never>, Record<never, never>>,
     '/(user)//merchant/[id]/': RouteRecordInfo<'/(user)//merchant/[id]/', '/merchant/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/(user)//photoGraphy/': RouteRecordInfo<'/(user)//photoGraphy/', '/photoGraphy', Record<never, never>, Record<never, never>>,
@@ -47,5 +47,6 @@ declare module 'vue-router/auto-routes' {
     '/(user)//siyi/': RouteRecordInfo<'/(user)//siyi/', '/siyi', Record<never, never>, Record<never, never>>,
     '/(user)//siyi/[id]/': RouteRecordInfo<'/(user)//siyi/[id]/', '/siyi/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/(user)/[...all]': RouteRecordInfo<'/(user)/[...all]', '/:all(.*)', { all: ParamValue<true> }, { all: ParamValue<false> }>,
+    '/(manage)/admin/order/': RouteRecordInfo<'/(manage)/admin/order/', '/admin/order', Record<never, never>, Record<never, never>>,
   }
 }
