@@ -79,14 +79,6 @@ const experienceOptions = [
   { label: '10年以上', value: 15 },
 ]
 
-const styleOptions = [
-  { label: '欢快活泼', value: '欢快活泼' },
-  { label: '稳重大气', value: '稳重大气' },
-  { label: '温馨感人', value: '温馨感人' },
-  { label: '幽默诙谐', value: '幽默诙谐' },
-  { label: '创意互动', value: '创意互动' },
-]
-
 const sortOptions = [
   { label: '评分高到低', value: 'rating_desc' },
   { label: '价格高到低', value: 'price_desc' },
@@ -324,17 +316,6 @@ onMounted(() => {
                 clearable
                 placeholder="选择经验年限"
                 :options="experienceOptions"
-              />
-            </div>
-
-            <div class="mb-4">
-              <label class="block text-gray-700 text-sm font-bold mb-2">主持风格</label>
-              <NSelect
-                v-model:value="queryParams.tags"
-                filterable
-                clearable
-                placeholder="选择风格"
-                :options="styleOptions"
               />
             </div>
 

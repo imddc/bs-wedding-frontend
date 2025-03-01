@@ -8,11 +8,8 @@ import {
   CalendarClock,
   Check,
   FileText,
-  Heart,
   History,
   Languages,
-  MessageSquare,
-  Phone,
   Sparkles,
   Star,
   Store,
@@ -282,23 +279,8 @@ onMounted(() => {
                   color="#4F46E5"
                   class="mt-4"
                 >
-                  立即预约
+                  加入购物车
                 </NButton>
-
-                <div class="flex justify-between mt-4">
-                  <NButton quaternary class="flex items-center">
-                    <Phone :size="16" class="mr-1" />
-                    电话咨询
-                  </NButton>
-                  <NButton quaternary class="flex items-center">
-                    <Heart :size="16" class="mr-1" />
-                    收藏
-                  </NButton>
-                  <NButton quaternary class="flex items-center">
-                    <MessageSquare :size="16" class="mr-1" />
-                    留言
-                  </NButton>
-                </div>
               </div>
 
               <!-- 预约表单 -->
