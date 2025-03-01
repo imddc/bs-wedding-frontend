@@ -197,7 +197,6 @@ function removeLogo() {
 
 <template>
   <div class="merchant-form">
-    {{ form }}
     <NForm
       ref="formRef"
       :model="form"
@@ -237,6 +236,7 @@ function removeLogo() {
           :read-only="!formData.isEditing"
           :max-images="1"
           :initial-images="formData.logo ? [formData.logo] : []"
+          class="size-16"
           @update:images="uploadedLogo"
           @remove="removeLogo"
         />

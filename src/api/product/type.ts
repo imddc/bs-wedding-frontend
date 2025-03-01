@@ -47,6 +47,7 @@ export interface HostProduct extends Product {
 }
 
 export interface ProductQueryParams {
+  merchantId?: string
   productName?: string
   categoryId?: number
   productType?: number
