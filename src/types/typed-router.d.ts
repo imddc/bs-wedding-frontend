@@ -33,6 +33,7 @@ declare module 'vue-router/auto-routes' {
     '/(admin)/admin': RouteRecordInfo<'/(admin)/admin', '/admin', Record<never, never>, Record<never, never>>,
     '/(admin)/admin/': RouteRecordInfo<'/(admin)/admin/', '/admin', Record<never, never>, Record<never, never>>,
     '/(admin)/admin/district/': RouteRecordInfo<'/(admin)/admin/district/', '/admin/district', Record<never, never>, Record<never, never>>,
+    '/(admin)/admin/favorite/': RouteRecordInfo<'/(admin)/admin/favorite/', '/admin/favorite', Record<never, never>, Record<never, never>>,
     '/(admin)/admin/host/': RouteRecordInfo<'/(admin)/admin/host/', '/admin/host', Record<never, never>, Record<never, never>>,
     '/(admin)/admin/hotel/': RouteRecordInfo<'/(admin)/admin/hotel/', '/admin/hotel', Record<never, never>, Record<never, never>>,
     '/(admin)/admin/merchant/': RouteRecordInfo<'/(admin)/admin/merchant/', '/admin/merchant', Record<never, never>, Record<never, never>>,
