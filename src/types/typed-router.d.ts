@@ -24,8 +24,6 @@ declare module 'vue-router/auto-routes' {
     '/(manage)/admin/': RouteRecordInfo<'/(manage)/admin/', '/admin', Record<never, never>, Record<never, never>>,
     '/(manage)/admin/district/': RouteRecordInfo<'/(manage)/admin/district/', '/admin/district', Record<never, never>, Record<never, never>>,
     '/(manage)/admin/favorite/': RouteRecordInfo<'/(manage)/admin/favorite/', '/admin/favorite', Record<never, never>, Record<never, never>>,
-    '/(manage)/admin/host/': RouteRecordInfo<'/(manage)/admin/host/', '/admin/host', Record<never, never>, Record<never, never>>,
-    '/(manage)/admin/hotel/': RouteRecordInfo<'/(manage)/admin/hotel/', '/admin/hotel', Record<never, never>, Record<never, never>>,
     '/(manage)/admin/merchant/': RouteRecordInfo<'/(manage)/admin/merchant/', '/admin/merchant', Record<never, never>, Record<never, never>>,
     '/(manage)/admin/merchant/[id]/': RouteRecordInfo<'/(manage)/admin/merchant/[id]/', '/admin/merchant/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/(manage)/admin/message/': RouteRecordInfo<'/(manage)/admin/message/', '/admin/message', Record<never, never>, Record<never, never>>,

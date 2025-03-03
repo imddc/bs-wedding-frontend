@@ -4,7 +4,7 @@ import { Heart, MessageCircle } from 'lucide-vue-next'
 import { NButton, NCard, NRate, NTag } from 'naive-ui'
 import type { FavoriteItem } from '~/components/profile/FavoritesPanel.vue'
 
-const props = defineProps<{
+defineProps<{
   item: FavoriteItem
   type: string
 }>()
