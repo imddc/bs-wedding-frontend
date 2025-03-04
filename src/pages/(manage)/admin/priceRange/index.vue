@@ -14,7 +14,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import type { DataTableColumns, FormInst } from 'naive-ui'
-import { AlertCircleIcon, DeleteIcon, EyeIcon, PencilIcon, PlusIcon } from 'lucide-vue-next'
+import { AlertCircleIcon, DeleteIcon, EyeIcon, PlusIcon } from 'lucide-vue-next'
 import {
   createPriceRange,
   deletePriceRange,

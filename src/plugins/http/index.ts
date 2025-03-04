@@ -4,7 +4,6 @@ import {
   BASE_URL,
   TIME_OUT,
 } from '~/plugins/http/request/config'
-import { router } from '~/plugins/router'
 import type { DataType } from './type'
 import type { ErrorMessageMode } from './request/type'
 import Request from './request'

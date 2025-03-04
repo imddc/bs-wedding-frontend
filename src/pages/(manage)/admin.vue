@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { CalendarRangeIcon, Heart, Inbox, LayoutDashboard, MessageCircle, PopsicleIcon, ShoppingCart, Store, User } from 'lucide-vue-next'
+import { CalendarRangeIcon, Heart, LayoutDashboard, MessageCircle, ShoppingCart, Store, User } from 'lucide-vue-next'
 import { NLayout, NLayoutContent, NLayoutSider, NMenu } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { h, ref, watchEffect } from 'vue'

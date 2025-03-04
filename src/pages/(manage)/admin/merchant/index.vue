@@ -15,7 +15,6 @@ import {
   useMessage,
 } from 'naive-ui'
 import {
-  EditIcon,
   EyeIcon,
   PlusIcon,
   RefreshCwIcon,

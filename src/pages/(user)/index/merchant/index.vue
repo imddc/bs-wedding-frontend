@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { NButton, NInput, NPagination, NSelect, NSpin, NSwitch } from 'naive-ui'
+import { NButton, NInput, NPagination, NSelect, NSpin } from 'naive-ui'
 import { Camera, Heart, Image, MapPin, Users } from 'lucide-vue-next'
 import {
   pageMerchants,

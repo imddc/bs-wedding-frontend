@@ -19,8 +19,8 @@ export const MESSAGE_TABLE_COLUMNS = [
     key: 'content',
     width: 300,
     ellipsis: {
-      tooltip: true
-    }
+      tooltip: true,
+    },
   },
   {
     title: '已读状态',
@@ -54,5 +54,5 @@ export const PAGINATION_CONFIG = {
 export const READ_STATUS_OPTIONS = [
   { label: '全部', value: null },
   { label: '已读', value: true },
-  { label: '未读', value: false }
+  { label: '未读', value: false },
 ]

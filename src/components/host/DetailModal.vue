@@ -3,7 +3,6 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import type {
   FormInst,
   FormRules,
-  UploadCustomRequestOptions,
   UploadFileInfo,
 } from 'naive-ui'
 import {
@@ -21,10 +20,8 @@ import {
   NSelect,
   NTabPane,
   NTabs,
-  NUpload,
   useMessage,
 } from 'naive-ui'
-import { UploadIcon } from 'lucide-vue-next'
 import { createProduct, updateProduct } from '~/api/product'
 import { PRODUCT_STATUS_OPTIONS, ProductStatus, ProductType } from '~/api/product/type'
 import type { HostProduct, SelectOption } from '~/api/product/type'

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NBadge, NRate } from 'naive-ui'
-import { Check, Star } from 'lucide-vue-next'
+import { Check } from 'lucide-vue-next'
 import type { Studio } from '~/pages/(user)/index/photoGraphy/type'
 
 withDefaults(defineProps<{
