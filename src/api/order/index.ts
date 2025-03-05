@@ -1,13 +1,13 @@
 import { request } from '~/plugins/http'
+import type { DataType } from '~/plugins/http/type'
 import type {
   OrdersCreateParams,
-  OrdersUpdateParams,
-  OrdersStatusUpdateParams,
-  OrdersQueryParams,
   OrdersDetailResponse,
-  OrdersPageResponse
+  OrdersPageResponse,
+  OrdersQueryParams,
+  OrdersStatusUpdateParams,
+  OrdersUpdateParams,
 } from './type'
-import type { DataType } from '~/plugins/http/type'
 
 /**
  * 创建订单
@@ -17,7 +17,7 @@ import type { DataType } from '~/plugins/http/type'
 export async function createOrder(data: OrdersCreateParams) {
   return request.post<DataType<number>>({
     url: '/orders',
-    data
+    data,
   })
 }
 
@@ -29,7 +29,7 @@ export async function createOrder(data: OrdersCreateParams) {
 export async function updateOrder(data: OrdersUpdateParams) {
   return request.put<DataType<boolean>>({
     url: '/orders',
-    data
+    data,
   })
 }
 
@@ -41,7 +41,7 @@ export async function updateOrder(data: OrdersUpdateParams) {
 export async function updateOrderStatus(data: OrdersStatusUpdateParams) {
   return request.put<DataType<boolean>>({
     url: '/orders/status',
-    data
+    data,
   })
 }
 
@@ -52,7 +52,7 @@ export async function updateOrderStatus(data: OrdersStatusUpdateParams) {
  */
 export async function deleteOrder(id: number) {
   return request.delete<DataType<boolean>>({
-    url: `/orders/${id}`
+    url: `/orders/${id}`,
   })
 }
 
@@ -63,7 +63,7 @@ export async function deleteOrder(id: number) {
  */
 export async function getOrderDetail(id: number) {
   return request.get<DataType<OrdersDetailResponse>>({
-    url: `/orders/${id}`
+    url: `/orders/${id}`,
   })
 }
 
@@ -75,6 +75,6 @@ export async function getOrderDetail(id: number) {
 export async function getOrdersPage(params: OrdersQueryParams) {
   return request.get<DataType<OrdersPageResponse>>({
     url: '/orders/page',
-    params
+    params,
   })
 }

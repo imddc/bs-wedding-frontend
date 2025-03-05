@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { NButton, NDatePicker, NInput, NSelect, NSpin } from 'naive-ui'
+import { NButton, NSpin } from 'naive-ui'
 import {
   ArrowLeft,
   CalendarClock,
@@ -18,27 +18,15 @@ import {
 } from 'lucide-vue-next'
 import { getHostProduct } from '~/api/product'
 import type { HostProduct } from '~/api/product/type'
+import { createOrder } from '~/api/order'
+import type { OrdersCreateParams } from '~/api/order/type'
+import { useUserStore } from '~/stores/userStore'
 
 const route = useRoute()
 const router = useRouter()
 const loading = ref(true)
 const product = ref<HostProduct | null>(null)
-
-// 预约表单
-const bookingDate = ref(null)
-const serviceType = ref(null)
-const contactPhone = ref('')
-const remark = ref('')
-
-// 服务类型选项
-const serviceTypeOptions = [
-  { label: '中式婚礼', value: 'chinese' },
-  { label: '西式婚礼', value: 'western' },
-  { label: '创意婚礼', value: 'creative' },
-  { label: '户外婚礼', value: 'outdoor' },
-  { label: '小型婚礼', value: 'small' },
-  { label: '大型婚礼', value: 'large' },
-]
+const userStore = useUserStore()
 
 async function fetchProductDetail() {
   loading.value = true
@@ -67,9 +55,35 @@ function goBack() {
   router.push('/siyi')
 }
 
+function goToMerchant() {
+  if (product.value?.merchantId) {
+    router.push(`/merchant/${product.value.merchantId}`)
+  } else {
+    window.$message.warning('商家信息不可用')
+  }
+}
+
 onMounted(() => {
   fetchProductDetail()
 })
+
+async function handleBooking() {
+  const order: OrdersCreateParams = {
+    productId: product.value?.id || 0,
+    merchantId: product.value?.merchantId || 0,
+    userId: userStore.userInfo?.id || 0,
+    weddingDate: '',
+    remark: '',
+  }
+
+  // 调用订单接口
+  const response = await createOrder(order)
+  if (response.success) {
+    router.push(`/order/${response.data}`)
+  } else {
+    window.$message.error('预订失败')
+  }
+}
 </script>
 
 <template>
@@ -268,79 +282,38 @@ onMounted(() => {
             <!-- 价格预约卡片 -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6 sticky top-4">
               <div class="bg-indigo-50 p-6">
-                <div class="text-3xl font-bold text-indigo-700 mb-2">
-                  ￥{{ product.price.toLocaleString() }}
+                <!-- 简化价格展示 -->
+                <div class="flex items-end gap-2 mb-4">
+                  <div class="text-3xl font-bold text-indigo-700">
+                    ￥{{ product.price.toLocaleString() }}
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    / 场
+                  </div>
                 </div>
 
+                <!-- 优化预订按钮 -->
                 <NButton
                   type="primary"
                   block
                   size="large"
                   color="#4F46E5"
-                  class="mt-4"
+                  class="mt-2 hover:bg-indigo-700 transition-colors font-medium text-base"
+                  @click="handleBooking"
                 >
-                  加入购物车
+                  立即预订
                 </NButton>
-              </div>
 
-              <!-- 预约表单 -->
-              <div class="p-6 border-t border-indigo-100">
-                <h3 class="font-bold text-lg mb-4">
-                  预约咨询
-                </h3>
-
-                <div class="space-y-4">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">婚礼日期</label>
-                    <NDatePicker
-                      v-model:value="bookingDate"
-                      type="date"
-                      placeholder="选择预定日期"
-                      clearable
-                      class="w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">服务类型</label>
-                    <NSelect
-                      v-model:value="serviceType"
-                      placeholder="选择服务类型"
-                      :options="serviceTypeOptions"
-                      class="w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">联系电话</label>
-                    <NInput
-                      v-model:value="contactPhone"
-                      placeholder="输入手机号码"
-                      clearable
-                      class="w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">备注</label>
-                    <NInput
-                      v-model:value="remark"
-                      type="textarea"
-                      placeholder="其他需求..."
-                      :rows="3"
-                      class="w-full"
-                    />
+                <!-- 简单提示信息 -->
+                <div class="mt-4 text-center text-xs text-gray-500">
+                  <div class="flex justify-center gap-2">
+                    <span>支持退款</span>
+                    <span>|</span>
+                    <span>平台担保</span>
+                    <span>|</span>
+                    <span>专业服务</span>
                   </div>
                 </div>
-
-                <NButton
-                  type="primary"
-                  block
-                  class="mt-4"
-                  color="#4F46E5"
-                >
-                  提交预约
-                </NButton>
               </div>
 
               <!-- 商家信息 -->
@@ -362,6 +335,18 @@ onMounted(() => {
                     </div>
                   </div>
                 </div>
+
+                <NButton
+                  class="w-full mb-4"
+                  type="default"
+                  :disabled="!product.merchantId"
+                  @click="goToMerchant"
+                >
+                  <div class="flex items-center justify-center">
+                    <Store class="mr-2" :size="16" />
+                    查看商家详情
+                  </div>
+                </NButton>
 
                 <div v-if="product.servicesMap" class="border-t border-gray-100 pt-4 mt-4">
                   <div class="text-sm text-gray-500 mb-2">

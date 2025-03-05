@@ -184,7 +184,7 @@ onMounted(() => {
                   type="primary"
                   quaternary
                   class="flex items-center"
-                  @click="router.push('/admin/')"
+                  @click="router.push('/admin/user')"
                 >
                   <template #icon>
                     <LayoutDashboard class="mr-1" :size="14" />
