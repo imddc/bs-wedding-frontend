@@ -14,7 +14,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import type { DataTableColumns, FormInst } from 'naive-ui'
-import { AlertCircleIcon, EyeIcon, PencilIcon, PlusIcon } from 'lucide-vue-next'
+import { AlertCircleIcon, DeleteIcon, EyeIcon, PencilIcon, PlusIcon } from 'lucide-vue-next'
 import {
   createPriceRange,
   deletePriceRange,
@@ -80,7 +80,7 @@ const rules = {
   maxPrice: [
     { type: 'number', message: '请输入有效的价格', trigger: 'blur' },
     {
-      validator: (rule: any, value: number | null) => {
+      validator: (_: any, value: number | null) => {
         if (value !== null && formModel.minPrice !== null && value < formModel.minPrice) {
           return new Error('最高价格不能低于最低价格')
         }
@@ -187,7 +187,7 @@ const columns = computed<DataTableColumns<PriceRangeDTO>>(() => [
             onClick: () => handleDelete(row.id),
           },
           {
-            default: () => h(PencilIcon, { size: 16 }),
+            default: () => h(DeleteIcon, { size: 16 }),
           },
         ),
       ])

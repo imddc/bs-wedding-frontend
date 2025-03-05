@@ -1,4 +1,4 @@
-import {  type App } from 'vue'
+import type { App } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 import { useUserStore } from '~/stores'
@@ -8,10 +8,16 @@ const router = createRouter({
   routes,
 })
 
-
 // 添加全局前置守卫
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
+
+  const needAuth = ['/admin', '/user', '/favorite', '/order']
+  if (needAuth.includes(to.path)) {
+    if (!userStore.isLoggedIn) {
+      next({ path: '/login' })
+    }
+  }
 
   // 检查是否是管理员路由
   if (to.path.startsWith('/admin')) {
