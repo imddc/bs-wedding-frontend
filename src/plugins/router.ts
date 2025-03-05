@@ -12,7 +12,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
 
-  const needAuth = ['/admin', '/user', '/favorite', '/order']
+  const needAuth = ['/user', '/favorite', '/order', '/weddingPackage']
   if (needAuth.includes(to.path)) {
     if (!userStore.isLoggedIn) {
       next({ path: '/login' })
@@ -21,9 +21,7 @@ router.beforeEach(async (to, from, next) => {
 
   // 检查是否是管理员路由
   if (to.path.startsWith('/admin')) {
-    // 这里可以调用你的检查管理员权限的方法
-    // 例如: const isAdmin = await checkIsAdmin()
-    const isAdmin = userStore.isAdmin // 这里替换成你的管理员验证逻辑
+    const isAdmin = userStore.isAdmin
 
     if (!isAdmin) {
       // 如果不是管理员，可以重定向到登录页或者显示错误页

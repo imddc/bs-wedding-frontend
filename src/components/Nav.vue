@@ -5,7 +5,7 @@ import type { Component } from 'vue'
 import { NAvatar, NDropdown, NLayoutHeader } from 'naive-ui'
 import type { DropdownOption } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import { Camera, Heart, Hotel, ListOrderedIcon, Mic, Store, User } from 'lucide-vue-next'
+import { CalendarClock, Camera, Heart, Hotel, ListOrderedIcon, Mic, Store, User } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '~/stores'
 
@@ -85,6 +85,12 @@ const navigationItems = [
     label: '司仪主持',
     path: '/siyi',
     icon: Mic,
+    activeColor: 'text-indigo-600 border-indigo-600',
+  },
+  {
+    label: '婚礼策划',
+    path: '/weddingPackage',
+    icon: CalendarClock,
     activeColor: 'text-indigo-600 border-indigo-600',
   },
   {
