@@ -7,6 +7,7 @@ import {
   NDrawerContent,
   NForm,
   NFormItem,
+  NImage,
   NInput,
   NPopconfirm,
   NSelect,
@@ -90,6 +91,21 @@ const formTitle = computed(() => formData.value.id ? '编辑商家' : '添加商
 // 表格列定义
 const columns = ref<DataTableColumns<MerchantInfo>>([
   { title: '商家ID', key: 'id', width: 80 },
+  {
+    title: 'Logo',
+    key: 'logo',
+    width: 100,
+    render(row) {
+      if (row.logo) {
+        return h(NImage, {
+          src: row.logo,
+          alt: row.merchantName,
+          style: 'width: 60px; height: 60px; object-fit: cover; border-radius: 4px;',
+        })
+      }
+      return '暂无logo'
+    },
+  },
   { title: '商家名称', key: 'merchantName', width: 180 },
   { title: '城市', key: 'city', width: 100 },
   {

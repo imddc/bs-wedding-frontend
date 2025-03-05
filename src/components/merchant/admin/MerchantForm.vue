@@ -24,7 +24,6 @@ import {
   MerchantType,
 } from '~/api/merchant/type'
 import type { MerchantCreateParams, MerchantInfo, MerchantUpdateParams } from '~/api/merchant/type'
-import PreviewUpload from '~/components/common/PreviewUpload.vue'
 
 const props = defineProps<{
   formData: Partial<MerchantInfo> & { isEditing: boolean }
@@ -184,15 +183,6 @@ async function handleSubmit() {
 function handleCancel() {
   emit('cancel')
 }
-
-function uploadedLogo(v: string[]) {
-  console.log(v)
-  form.logo = v[0]
-}
-
-function removeLogo() {
-  form.logo = ''
-}
 </script>
 
 <template>
@@ -232,13 +222,10 @@ function removeLogo() {
       </NFormItem>
 
       <NFormItem label="商家LOGO" path="logo">
-        <PreviewUpload
-          :read-only="!formData.isEditing"
-          :max-images="1"
-          :initial-images="formData.logo ? [formData.logo] : []"
-          class="size-16"
-          @update:images="uploadedLogo"
-          @remove="removeLogo"
+        <NInput
+          v-model:value="form.logo"
+          placeholder="请输入商家LOGO图片URL"
+          :disabled="viewMode"
         />
       </NFormItem>
 
