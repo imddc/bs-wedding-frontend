@@ -91,8 +91,6 @@ export const useUserStore = defineStore('user', {
 
         // 获取完整的用户信息
         await this.fetchAndUpdateUserInfo(user.id)
-
-        window.$message?.success('登录成功')
         return true
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : '登录失败，请稍后重试'
