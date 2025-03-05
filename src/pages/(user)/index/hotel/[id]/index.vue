@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { NButton, NDatePicker, NInput, NSelect, NSpin } from 'naive-ui'
+import { NButton, NSpin } from 'naive-ui'
 import {
   ArrowLeft,
   CalendarClock,
@@ -17,76 +17,17 @@ import {
 } from 'lucide-vue-next'
 import { getHotelProduct } from '~/api/product'
 import type { HotelProduct } from '~/api/product/type'
+import type { OrdersCreateParams } from '~/api/order/type'
+import { useUserStore } from '~/stores'
+import { createOrder } from '~/api/order'
 
 const route = useRoute()
 const router = useRouter()
 const loading = ref(true)
 const product = ref<HotelProduct | null>(null)
+const userStore = useUserStore()
 
-// 预约表单
-const bookingDate = ref(null)
-const guestCount = ref(null)
-const contactPhone = ref('')
 const submitting = ref(false)
-
-// 预约选项
-const guestCountOptions = [
-  { label: '100人以下（10桌以内）', value: 10 },
-  { label: '100-200人（10-20桌）', value: 20 },
-  { label: '200-300人（20-30桌）', value: 30 },
-  { label: '300-500人（30-50桌）', value: 50 },
-  { label: '500人以上（50桌以上）', value: 100 },
-]
-
-// 表单验证
-function validateForm() {
-  if (!bookingDate.value) {
-    window.$message.warning('请选择预定日期')
-    return false
-  }
-  if (!guestCount.value) {
-    window.$message.warning('请选择预计宾客数量')
-    return false
-  }
-  if (!contactPhone.value) {
-    window.$message.warning('请输入联系电话')
-    return false
-  }
-  const phoneRegex = /^1[3-9]\d{9}$/
-  if (!phoneRegex.test(contactPhone.value)) {
-    window.$message.warning('请输入正确的手机号码')
-    return false
-  }
-  return true
-}
-
-// 创建订单
-async function createOrder(p?: HotelProduct) {
-  if (!p)
-    return
-  if (!validateForm())
-    return
-
-  submitting.value = true
-  try {
-    // TODO: 调用创建订单API
-    const orderData = {
-      productId: p.id,
-      bookingDate: bookingDate.value,
-      guestCount: guestCount.value,
-      contactPhone: contactPhone.value,
-    }
-    console.log('创建订单:', orderData)
-
-    window.$message.success('订单创建成功')
-    router.push('/order/list') // 跳转到订单列表页
-  } catch (error) {
-    console.error('创建订单失败:', error)
-    window.$message.error('创建订单失败,请重试')
-  } finally {
-    submitting.value = false
-  }
-}
 
 async function fetchProductDetail() {
   loading.value = true
@@ -118,6 +59,24 @@ function goBack() {
 onMounted(() => {
   fetchProductDetail()
 })
+
+async function handleBooking() {
+  const order: OrdersCreateParams = {
+    productId: product.value?.id || 0,
+    merchantId: product.value?.merchantId || 0,
+    userId: userStore.userInfo?.id || 0,
+    weddingDate: '',
+    remark: '',
+  }
+
+  // 调用订单接口
+  const response = await createOrder(order)
+  if (response.success) {
+    router.push(`/order/${response.data}`)
+  } else {
+    window.$message.error('预订失败')
+  }
+}
 </script>
 
 <template>
@@ -326,30 +285,6 @@ onMounted(() => {
                   价格可能因日期、厅室和套餐选择而有所不同
                 </div>
 
-                <div class="space-y-4">
-                  <NDatePicker
-                    v-model:value="bookingDate"
-                    type="date"
-                    placeholder="选择预定日期"
-                    clearable
-                    class="w-full"
-                  />
-
-                  <NSelect
-                    v-model:value="guestCount"
-                    placeholder="预计宾客数量"
-                    :options="guestCountOptions"
-                    class="w-full"
-                  />
-
-                  <NInput
-                    v-model:value="contactPhone"
-                    placeholder="联系电话"
-                    clearable
-                    class="w-full"
-                  />
-                </div>
-
                 <div class="mt-6 space-y-2">
                   <NButton
                     type="primary"
@@ -357,7 +292,7 @@ onMounted(() => {
                     size="large"
                     color="#D97706"
                     :loading="submitting"
-                    @click="() => createOrder(product)"
+                    @click="handleBooking"
                   >
                     立即预定
                   </NButton>

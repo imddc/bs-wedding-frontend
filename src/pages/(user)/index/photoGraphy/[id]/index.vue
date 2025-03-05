@@ -3,9 +3,12 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NButton, NCarousel, NCarouselItem, NSpin } from 'naive-ui'
-import { ArrowLeft, Award, Calendar, Camera, Check, Info, MapPin, MessageCircle, Shirt, Star, Store } from 'lucide-vue-next'
+import { ArrowLeft, Award, Calendar, Camera, Info, MapPin, Shirt, Star } from 'lucide-vue-next'
 import { getPhotographyProduct } from '~/api/product'
 import type { PhotographyProduct } from '~/api/product/type'
+import type { OrdersCreateParams } from '~/api/order/type'
+import { useUserStore } from '~/stores'
+import { createOrder } from '~/api/order'
 
 const route = useRoute()
 const router = useRouter()
@@ -42,6 +45,25 @@ function goBack() {
 onMounted(() => {
   fetchProductDetail()
 })
+
+const userStore = useUserStore()
+async function handleBooking() {
+  const order: OrdersCreateParams = {
+    productId: product.value?.id || 0,
+    merchantId: product.value?.merchantId || 0,
+    userId: userStore.userInfo?.id || 0,
+    weddingDate: '',
+    remark: '',
+  }
+
+  // 调用订单接口
+  const response = await createOrder(order)
+  if (response.success) {
+    router.push(`/order/${response.data}`)
+  } else {
+    window.$message.error('预订失败')
+  }
+}
 </script>
 
 <template>
@@ -218,6 +240,7 @@ onMounted(() => {
                     size="large"
                     class="flex-1"
                     color="#D32029"
+                    @click="handleBooking"
                   >
                     立即预约
                   </NButton>
