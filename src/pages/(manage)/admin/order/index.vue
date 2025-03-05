@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { h, onMounted, reactive, ref } from 'vue'
-import { NButton, NCard, NDataTable, NDatePicker, NForm, NFormItem, NInput, NPopconfirm, NSelect, NSpace, NTag } from 'naive-ui'
-import { RefreshCw, Search, Trash2 } from 'lucide-vue-next'
+import { NButton, NCard, NDataTable, NForm, NFormItem, NInput, NPopconfirm, NSelect, NSpace, NTag } from 'naive-ui'
+import { Eye, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
 import { deleteOrder, getOrdersPage, updateOrderStatus } from '~/api/order'
 import type { OrdersDetailResponse, OrdersPageResponse, OrdersQueryParams } from '~/api/order/type'
-import { ORDER_STATUS, ORDER_STATUS_DESCRIPTIONS, ORDER_STATUS_TAG_TYPES } from '~/constants/order'
+import { ORDER_STATUS, ORDER_STATUS_DESC, ORDER_STATUS_TYPE } from '~/constants/order'
 import { formatDate } from '~/utils/core'
 
 const loading = ref(false)
@@ -35,6 +36,8 @@ const searchForm = reactive<OrdersQueryParams>({
   pageSize: 10,
 })
 
+const router = useRouter()
+
 const columns = [
   { title: '订单编号', key: 'orderNo' },
   { title: '用户ID', key: 'userId' },
@@ -51,7 +54,7 @@ const columns = [
     title: '订单状态',
     key: 'orderStatus',
     render: (row: OrdersDetailResponse) => {
-      const type = ORDER_STATUS_TAG_TYPES[row.orderStatus] || 'default'
+      const type = ORDER_STATUS_TYPE[row.orderStatus] || 'default'
       return h(NTag, { type }, { default: () => row.orderStatusDesc })
     },
   },
@@ -65,8 +68,16 @@ const columns = [
         { align: 'center' },
         {
           default: () => [
-            // 移除了编辑按钮，因为订单只能修改状态
-            row.orderStatus === ORDER_STATUS.PENDING_PAYMENT
+            h(
+              NButton,
+              {
+                size: 'small',
+                type: 'info',
+                onClick: () => viewOrderDetail(row.id),
+              },
+              { default: () => '详情', icon: () => h(Eye) },
+            ),
+            row.orderStatus === ORDER_STATUS.PENDING
               ? h(
                   NButton,
                   {
@@ -126,7 +137,7 @@ const columns = [
 
 const statusOptions = [
   { label: '全部状态', value: null },
-  { label: '待支付', value: ORDER_STATUS.PENDING_PAYMENT },
+  { label: '待支付', value: ORDER_STATUS.PENDING },
   { label: '已支付', value: ORDER_STATUS.PAID },
   { label: '已完成', value: ORDER_STATUS.COMPLETED },
   { label: '已取消', value: ORDER_STATUS.CANCELLED },
@@ -197,7 +208,7 @@ async function changeOrderStatus(id: number, status: number) {
   try {
     const response = await updateOrderStatus({ id, orderStatus: status })
     if (response.success) {
-      window.$message.success(`订单状态更新为${ORDER_STATUS_DESCRIPTIONS[status]}`)
+      window.$message.success(`订单状态更新为${ORDER_STATUS_DESC[status]}`)
       loadOrders()
     } else {
       window.$message.error(response.message || '更新订单状态失败')
@@ -206,6 +217,10 @@ async function changeOrderStatus(id: number, status: number) {
     console.error('更新订单状态出错:', error)
     window.$message.error('更新订单状态出错')
   }
+}
+
+function viewOrderDetail(id: number) {
+  router.push(`/admin/order/${id}`)
 }
 </script>
 

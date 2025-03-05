@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { CalendarRangeIcon, Heart, Inbox, LayoutDashboard, MessageCircle, PopsicleIcon, Store, User } from 'lucide-vue-next'
+import { CalendarRangeIcon, Heart, Inbox, LayoutDashboard, MessageCircle, PopsicleIcon, ShoppingCart, Store, User } from 'lucide-vue-next'
 import { NLayout, NLayoutContent, NLayoutSider, NMenu } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { h, ref, watchEffect } from 'vue'
@@ -44,6 +44,11 @@ const menuOptions: MenuOption[] = [
     label: () => renderLabel('商品管理', '/admin/product'),
     key: 'product',
     icon: () => h(Store),
+  },
+  {
+    label: () => renderLabel('订单管理', '/admin/order'),
+    key: 'order',
+    icon: () => h(ShoppingCart),
   },
   {
     label: () => renderLabel('消息管理', '/admin/message'),

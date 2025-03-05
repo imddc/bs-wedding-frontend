@@ -1,23 +1,26 @@
 // 订单状态常量
 export const ORDER_STATUS = {
-  PENDING_PAYMENT: 0,
-  PAID: 1,
-  COMPLETED: 2,
-  CANCELLED: 3,
+  PENDING: 0, // 待付款
+  PAID: 1, // 已付款
+  SHIPPED: 2, // 已发货
+  COMPLETED: 3, // 已完成
+  CANCELLED: 4, // 已取消
 }
 
 // 订单状态描述
-export const ORDER_STATUS_DESCRIPTIONS = {
-  [ORDER_STATUS.PENDING_PAYMENT]: '待支付',
-  [ORDER_STATUS.PAID]: '已支付',
+export const ORDER_STATUS_DESC = {
+  [ORDER_STATUS.PENDING]: '待付款',
+  [ORDER_STATUS.PAID]: '已付款',
+  [ORDER_STATUS.SHIPPED]: '已发货',
   [ORDER_STATUS.COMPLETED]: '已完成',
   [ORDER_STATUS.CANCELLED]: '已取消',
 }
 
-// 订单状态标签类型
-export const ORDER_STATUS_TAG_TYPES = {
-  [ORDER_STATUS.PENDING_PAYMENT]: 'warning',
+// 订单状态类型映射
+export const ORDER_STATUS_TYPE = {
+  [ORDER_STATUS.PENDING]: 'warning',
   [ORDER_STATUS.PAID]: 'info',
+  [ORDER_STATUS.SHIPPED]: 'processing',
   [ORDER_STATUS.COMPLETED]: 'success',
   [ORDER_STATUS.CANCELLED]: 'error',
 }

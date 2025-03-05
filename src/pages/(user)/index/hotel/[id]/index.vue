@@ -118,10 +118,6 @@ function goBack() {
 onMounted(() => {
   fetchProductDetail()
 })
-
-function joinCar(p?: HotelProduct) {
-  console.log(p)
-}
 </script>
 
 <template>
