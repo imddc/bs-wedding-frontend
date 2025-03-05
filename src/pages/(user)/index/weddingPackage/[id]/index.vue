@@ -1,4 +1,3 @@
-<!-- src/views/wedding-package/WeddingPackageDetail.vue -->
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -29,10 +28,12 @@ import { confirmWeddingPackage, getWeddingPackageDetail } from '~/api/weddingPac
 import type { WeddingPackageDetail } from '~/api/weddingPackage/type'
 import { WeddingPackageStatus, WeddingPackageStatusMap } from '~/constants/weddingPackage'
 import { handleImgUrl } from '~/utils/core'
+import { createOrder } from '~/api/order'
+import { useUserStore } from '~/stores'
 
 const route = useRoute()
 const router = useRouter()
-
+const userStore = useUserStore()
 // 方案ID
 const packageId = ref<number>(Number(route.params.id))
 
@@ -68,13 +69,56 @@ function backToList() {
   router.push('/weddingPackage')
 }
 
+async function createWeddingPackageOrder() {
+  const orders = [
+    // 婚纱摄影
+    createOrder({
+      productId: packageDetail.value?.photographyProduct.id!,
+      merchantId: packageDetail.value?.photographyProduct.merchantId!,
+      weddingDate: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+      remark: `${packageDetail.value?.packageName} 婚纱摄影订单`,
+      userId: userStore.userInfo?.id!,
+    }),
+    // 婚宴酒店
+    createOrder({
+      productId: packageDetail.value?.venueProduct.id!,
+      merchantId: packageDetail.value?.venueProduct.merchantId!,
+      remark: `${packageDetail.value?.packageName}婚宴酒店订单`,
+      userId: userStore.userInfo?.id!,
+      weddingDate: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    }),
+    // 司仪主持
+    createOrder({
+      productId: packageDetail.value?.hostProduct.id!,
+      merchantId: packageDetail.value?.hostProduct.merchantId!,
+      remark: `${packageDetail.value?.packageName}司仪主持订单`,
+      userId: userStore.userInfo?.id!,
+      weddingDate: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    }),
+  ]
+
+  try {
+    const response = await Promise.all(orders)
+    console.log(response)
+  } catch (error) {
+    window.$message.error('创建订单失败')
+    console.error(error)
+  }
+}
+
 // 确认方案
 async function handleConfirmPackage() {
   try {
     const response = await confirmWeddingPackage(packageId.value)
+
     if (response.success) {
       window.$message.success('婚礼方案已确认')
       fetchPackageDetail() // 重新获取数据
+
+      console.log(packageDetail.value)
+      await createWeddingPackageOrder()
+      window.$message.success('婚礼方案确认, 已为您创建订单')
+      router.push('/order')
     } else {
       window.$message.error('确认方案失败')
     }
@@ -195,8 +239,8 @@ onMounted(() => {
             </div>
 
             <div class="mt-4 md:mt-0">
+              <!-- v-if="packageDetail.status === WeddingPackageStatus.DRAFT" -->
               <NButton
-                v-if="packageDetail.status === WeddingPackageStatus.DRAFT"
                 type="success"
                 class="mr-2"
                 @click="handleConfirmPackage"
