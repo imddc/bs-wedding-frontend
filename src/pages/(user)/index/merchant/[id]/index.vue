@@ -360,14 +360,6 @@ onMounted(() => {
                 <User :size="18" class="mr-2 text-red-600" />
                 <span>联系人：{{ merchant.contactPerson }}</span>
               </div>
-              <NButton
-                block
-                type="primary"
-                color="#B91C1C"
-                class="mt-2"
-              >
-                在线咨询
-              </NButton>
             </div>
           </NCard>
 
