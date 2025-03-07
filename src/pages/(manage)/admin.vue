@@ -10,14 +10,16 @@ useHead({
   titleTemplate: 'wedding admin',
 })
 
+const defaultKey = 'user'
+
 const route = useRoute()
-const activeKey = ref('dashboard')
+const activeKey = ref(defaultKey)
 
 // 监听路由变化，更新菜单选中项
 watchEffect(() => {
   const path = route.path
   // 从路径中提取关键字，例如 /admin/hotel -> hotel
-  const key = path.split('/').pop() || 'dashboard'
+  const key = path.split('/').pop() || defaultKey
   activeKey.value = key
 })
 
