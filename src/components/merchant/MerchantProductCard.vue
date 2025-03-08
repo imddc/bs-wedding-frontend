@@ -22,7 +22,7 @@ function handleViewDetails() {
 <template>
   <div class="flex flex-col sm:flex-row border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition">
     <!-- 商品图片 -->
-    <div class="sm:w-1/3 h-48 sm:h-auto bg-gray-100 overflow-hidden">
+    <div class="sm:w-1/3 h-48 bg-gray-100 overflow-hidden">
       <img
         v-if="product.mainImage"
         :src="handleImgUrl(product.mainImage)"
