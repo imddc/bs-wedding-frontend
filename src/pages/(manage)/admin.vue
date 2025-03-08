@@ -35,11 +35,11 @@ function renderLabel(label: string, path: string) {
 
 // 侧边栏菜单配置
 const menuOptions: MenuOption[] = [
-  {
-    label: () => renderLabel('dashboard', '/admin'),
-    key: 'dashboard',
-    icon: () => h(LayoutDashboard),
-  },
+  // {
+  //   label: () => renderLabel('dashboard', '/admin'),
+  //   key: 'dashboard',
+  //   icon: () => h(LayoutDashboard),
+  // },
   {
     label: () => renderLabel('商品管理', '/admin/product'),
     key: 'product',
@@ -50,11 +50,11 @@ const menuOptions: MenuOption[] = [
     key: 'order',
     icon: () => h(ShoppingCart),
   },
-  {
-    label: () => renderLabel('消息管理', '/admin/message'),
-    key: 'message',
-    icon: () => h(MessageCircle),
-  },
+  // {
+  //   label: () => renderLabel('消息管理', '/admin/message'),
+  //   key: 'message',
+  //   icon: () => h(MessageCircle),
+  // },
   {
     label: () => renderLabel('收藏管理', '/admin/favorite'),
     key: 'favorite',
