@@ -2,10 +2,11 @@
 import { h, onMounted, reactive, ref } from 'vue'
 import { NButton, NCard, NDataTable, NForm, NFormItem, NInput, NPopconfirm, NSelect, NSpace, NTag } from 'naive-ui'
 import { Eye, RefreshCw, Search, Trash2 } from 'lucide-vue-next'
+import type { TagProps } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { deleteOrder, getOrdersPage, updateOrderStatus } from '~/api/order'
 import type { OrdersDetailResponse, OrdersPageResponse, OrdersQueryParams } from '~/api/order/type'
-import { ORDER_STATUS, ORDER_STATUS_DESC, ORDER_STATUS_TYPE } from '~/constants/order'
+import { ORDER_STATUS, ORDER_STATUS_DESC, ORDER_STATUS_OPTIONS, ORDER_STATUS_TYPE } from '~/constants/order'
 import { formatDate } from '~/utils/core'
 
 const loading = ref(false)
@@ -54,8 +55,7 @@ const columns = [
     title: '订单状态',
     key: 'orderStatus',
     render: (row: OrdersDetailResponse) => {
-      const type = ORDER_STATUS_TYPE[row.orderStatus] || 'default'
-      return h(NTag, { type }, { default: () => ORDER_STATUS_DESC[row.orderStatus] })
+      return h(NTag, { type: ORDER_STATUS_TYPE[row.orderStatus] as TagProps['type'] }, { default: () => ORDER_STATUS_DESC[row.orderStatus] })
     },
   },
   { title: '创建时间', key: 'createTime' },
@@ -133,14 +133,6 @@ const columns = [
       )
     },
   },
-]
-
-const statusOptions = [
-  { label: '全部状态', value: null },
-  { label: '待支付', value: ORDER_STATUS.PENDING },
-  { label: '已支付', value: ORDER_STATUS.PAID },
-  { label: '已完成', value: ORDER_STATUS.COMPLETED },
-  { label: '已取消', value: ORDER_STATUS.CANCELLED },
 ]
 
 onMounted(() => {
@@ -241,7 +233,7 @@ function viewOrderDetail(id: number) {
           <NFormItem label="订单状态">
             <NSelect
               v-model:value="searchForm.orderStatus"
-              :options="statusOptions"
+              :options="ORDER_STATUS_OPTIONS"
               placeholder="请选择订单状态"
               class="w-full"
             />

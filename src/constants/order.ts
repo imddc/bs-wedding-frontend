@@ -21,6 +21,13 @@ export const ORDER_STATUS_OPTIONS = [
   { label: ORDER_STATUS_DESC[ORDER_STATUS.CANCELLED], value: ORDER_STATUS.CANCELLED },
 ]
 
+export const ORDER_STATUS_TYPE = {
+  [ORDER_STATUS.PENDING]: 'warning',
+  [ORDER_STATUS.PAID]: 'info',
+  [ORDER_STATUS.COMPLETED]: 'success',
+  [ORDER_STATUS.CANCELLED]: 'error',
+}
+
 // 默认分页参数
 export const DEFAULT_PAGE_PARAMS = {
   pageNum: 1,
