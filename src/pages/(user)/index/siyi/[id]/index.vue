@@ -265,91 +265,108 @@ onMounted(() => {
           <!-- 右侧：预约和商家信息 -->
           <div class="lg:col-span-4">
             <!-- 价格预约卡片 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6 sticky top-4">
-              <div class="bg-indigo-50 p-6">
-                <!-- 简化价格展示 -->
-                <div class="flex items-end gap-2 mb-4">
-                  <div class="text-3xl font-bold text-indigo-700">
-                    ￥{{ product.price.toLocaleString() }}
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    / 场
-                  </div>
-                </div>
-
-                <!-- 修改预约按钮 -->
-                <NButton
-                  type="primary"
-                  block
-                  size="large"
-                  color="#991B1B"
-                  :loading="submitting"
-                  class="h-[52px] text-[15px] font-medium !bg-gradient-to-r from-red-800 via-red-700 to-red-800 hover:from-red-700 hover:via-red-600 hover:to-red-700 shadow-[0_2px_12px_rgba(185,28,28,0.2)] hover:shadow-[0_4px_16px_rgba(185,28,28,0.3)] transition-all duration-300 group"
-                  @click="open"
-                >
-                  <div class="flex items-center justify-center gap-2">
-                    <div class="i-carbon-calendar-add text-xl opacity-90 group-hover:scale-110 transition-transform" />
-                    <span class="tracking-wide">立即预定</span>
-                  </div>
-                </NButton>
-
-                <!-- 简单提示信息 -->
-                <div class="mt-4 text-center text-xs text-gray-500">
-                  <div class="flex justify-center gap-2">
-                    <span>支持退款</span>
-                    <span>|</span>
-                    <span>平台担保</span>
-                    <span>|</span>
-                    <span>专业服务</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 商家信息 -->
-              <div class="p-6 border-t border-gray-200">
-                <h3 class="font-bold text-lg mb-4">
-                  商家信息
-                </h3>
-
-                <div class="flex items-center mb-4">
-                  <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
-                    <Store :size="24" class="text-indigo-500" />
-                  </div>
-                  <div>
-                    <div class="font-bold">
-                      {{ product.merchantName || '暂无商家信息' }}
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 sticky top-4 border border-red-100/60">
+              <div class="p-6">
+                <!-- 价格区域 -->
+                <div class="mb-8">
+                  <div class="flex items-baseline">
+                    <div class="text-4xl font-bold text-red-800">
+                      ￥{{ product.price.toLocaleString() }}
                     </div>
-                    <div class="text-sm text-gray-500">
-                      ID: {{ product.merchantId }}
+                    <span class="text-base text-gray-500 font-normal ml-2">/ 场</span>
+                  </div>
+                  <div class="mt-3 text-sm text-gray-500 bg-red-50/50 rounded-lg p-3 border border-red-100/60">
+                    价格可能因婚礼时长、服务内容和档期而有所调整
+                  </div>
+                </div>
+
+                <!-- 商家信息卡片 -->
+                <div class="p-5 bg-gradient-to-br from-red-50/70 to-white rounded-xl border border-red-100/60 mb-8">
+                  <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center border-2 border-white shadow-sm">
+                      <Store :size="24" class="text-red-600" />
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="font-medium text-gray-800">
+                        {{ product.merchantName || '未知商家' }}
+                      </div>
+                      <div class="text-sm text-gray-500 mt-0.5">
+                        经营年限：{{ product.establishmentYears || '未知' }}年
+                      </div>
                     </div>
                   </div>
+                  <NButton
+                    type="default"
+                    block
+                    class="!bg-white/80 hover:!bg-white transition-colors border border-red-200/50"
+                    @click="goToMerchant"
+                  >
+                    <template #icon>
+                      <Store :size="16" class="text-red-800" />
+                    </template>
+                    <span class="text-red-800 font-medium">查看商家详情</span>
+                  </NButton>
                 </div>
 
-                <NButton
-                  class="w-full mb-4"
-                  type="default"
-                  :disabled="!product.merchantId"
-                  @click="goToMerchant"
-                >
-                  <div class="flex items-center justify-center">
-                    <Store class="mr-2" :size="16" />
-                    查看商家详情
+                <!-- 主持特色 -->
+                <div class="p-5 bg-red-50/30 rounded-xl border border-red-100/60 mb-8">
+                  <h3 class="text-base font-medium text-gray-800 mb-4 flex items-center">
+                    <Sparkles class="text-red-600 mr-2" :size="18" />
+                    主持特色
+                  </h3>
+                  <div class="space-y-3">
+                    <div class="flex items-center">
+                      <Languages class="text-red-500 mr-2" :size="16" />
+                      <span class="font-medium text-gray-700">语言能力:</span>
+                      <span class="ml-2 text-gray-600">{{ product.languagesList ? product.languagesList.join('、') : '未设定' }}</span>
+                    </div>
+                    <div class="flex items-center">
+                      <History class="text-red-500 mr-2" :size="16" />
+                      <span class="font-medium text-gray-700">主持经验:</span>
+                      <span class="ml-2 text-gray-600">{{ product.hostingExperience ? `${product.hostingExperience}年` : '未设定' }}</span>
+                    </div>
+                    <div class="flex items-center">
+                      <CalendarClock class="text-red-500 mr-2" :size="16" />
+                      <span class="font-medium text-gray-700">入行年份:</span>
+                      <span class="ml-2 text-gray-600">{{ product.establishmentYears ? `${product.establishmentYears}年` : '未设定' }}</span>
+                    </div>
                   </div>
-                </NButton>
+                </div>
 
-                <div v-if="product.servicesMap" class="border-t border-gray-100 pt-4 mt-4">
-                  <div class="text-sm text-gray-500 mb-2">
-                    提供服务
-                  </div>
-                  <div class="space-y-2">
+                <!-- 按钮组 -->
+                <div class="space-y-4">
+                  <NButton
+                    type="primary"
+                    block
+                    size="large"
+                    color="#991B1B"
+                    :loading="submitting"
+                    class="h-[52px] text-[15px] font-medium !bg-gradient-to-r from-red-800 via-red-700 to-red-800 hover:from-red-700 hover:via-red-600 hover:to-red-700 shadow-[0_2px_12px_rgba(185,28,28,0.2)] hover:shadow-[0_4px_16px_rgba(185,28,28,0.3)] transition-all duration-300 group"
+                    @click="open"
+                  >
+                    <div class="flex items-center justify-center gap-2">
+                      <div class="i-carbon-calendar-add text-xl opacity-90 group-hover:scale-110 transition-transform" />
+                      <span class="tracking-wide">立即预定</span>
+                    </div>
+                  </NButton>
+                </div>
+
+                <!-- 服务内容 -->
+                <div v-if="product.servicesMap" class="mt-8 pt-6 border-t border-red-100/60">
+                  <h3 class="text-base font-medium text-gray-800 mb-4 flex items-center">
+                    <Check class="text-red-600 mr-2" :size="18" />
+                    服务内容
+                  </h3>
+                  <div class="space-y-3">
                     <div
                       v-for="(value, key) in product.servicesMap"
                       :key="key"
                       class="flex items-start"
                     >
-                      <Check class="text-green-500 mr-2 flex-shrink-0 mt-1" :size="16" />
+                      <Check class="text-red-500 mr-2 flex-shrink-0 mt-1" :size="16" />
                       <div>
-                        <span class="font-medium">{{ key }}:</span> {{ value }}
+                        <span class="font-medium text-gray-700">{{ key }}:</span>
+                        <span class="ml-1 text-gray-600">{{ value }}</span>
                       </div>
                     </div>
                   </div>
