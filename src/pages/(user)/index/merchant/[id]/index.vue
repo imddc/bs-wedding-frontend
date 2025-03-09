@@ -13,6 +13,7 @@ import { MerchantType } from '~/api/merchant/type'
 import type { MerchantInfo } from '~/api/merchant/type'
 import type { Product, ProductQueryParams } from '~/api/product/type'
 import { handleImgUrl } from '~/utils/core'
+import MerchantProductCard from '~/components/merchant/MerchantProductCard.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -172,6 +173,24 @@ async function fetchMerchantProducts() {
   }
 }
 
+function handleViewProduct(id: number) {
+  // 根据商品类型跳转到不同的详情页
+  const product = productList.value.find(p => p.id === id)
+  if (!product)
+    return
+
+  const routeMap: Record<number, string> = {
+    1: '/photography',
+    2: '/hotel',
+    3: '/siyi',
+  }
+
+  const route = routeMap[product.productType]
+  if (route) {
+    router.push(`${route}/${id}`)
+  }
+}
+
 onMounted(() => {
   fetchMerchantDetail()
     .then(() => {
@@ -299,73 +318,13 @@ onMounted(() => {
                   暂无产品服务
                 </div>
                 <div v-else class="space-y-4">
-                  <div
+                  <MerchantProductCard
                     v-for="product in productList"
                     :key="product.id"
-                    class="flex flex-col sm:flex-row border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition"
-                  >
-                    <div class="sm:w-1/3 h-48 sm:h-auto bg-gray-100 overflow-hidden">
-                      <img
-                        v-if="product.mainImage"
-                        :src="handleImgUrl(product.mainImage)"
-                        :alt="product.productName"
-                        class="w-full h-full object-cover"
-                      >
-                      <div v-else class="w-full h-full flex items-center justify-center">
-                        <component
-                          :is="getMerchantTypeIcon(merchant?.merchantType)"
-                          class="text-gray-400"
-                          :size="48"
-                        />
-                      </div>
-                    </div>
-                    <div class="sm:w-2/3 p-4">
-                      <div class="flex justify-between items-start">
-                        <h3 class="text-lg font-bold mb-2">
-                          {{ product.productName }}
-                        </h3>
-                        <div class="flex items-center">
-                          <Star class="text-yellow-400 mr-1" :size="16" />
-                          <span>{{ product.rating }}</span>
-                        </div>
-                      </div>
-
-                      <div class="flex flex-wrap gap-1 mb-2">
-                        <NTag v-if="product.categoryName" type="info" size="small">
-                          {{ product.categoryName }}
-                        </NTag>
-                        <NTag
-                          v-for="(tag, index) in product.tagsList"
-                          :key="index"
-                          type="success"
-                          size="small"
-                        >
-                          {{ tag }}
-                        </NTag>
-                      </div>
-
-                      <p class="text-gray-600 mb-3">
-                        {{ product.description || '暂无描述' }}
-                      </p>
-
-                      <div class="flex justify-between items-center mt-auto pt-2 border-t border-gray-100">
-                        <div class="text-red-600 font-bold text-lg">
-                          ¥ {{ product.price.toLocaleString() }}
-                          <span class="text-gray-500 text-sm ml-1">起</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                          <NButton
-                            type="primary"
-                            color="#B91C1C"
-                            size="small"
-                            @click="$router.push(`/photography/${product.id}`)"
-                          >
-                            查看详情
-                          </NButton>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    :product="product"
+                    :merchant-type="merchant?.merchantType"
+                    @view-details="handleViewProduct"
+                  />
                 </div>
               </NTabPane>
 
