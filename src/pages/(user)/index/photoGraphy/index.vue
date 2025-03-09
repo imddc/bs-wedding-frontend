@@ -1,4 +1,3 @@
-<!-- src/views/PhotographyList.vue -->
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'

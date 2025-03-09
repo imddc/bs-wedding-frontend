@@ -1,14 +1,14 @@
-<!-- src/views/PhotographyDetail.vue -->
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { NButton, NCarousel, NCarouselItem, NSpin } from 'naive-ui'
-import { ArrowLeft, Award, Calendar, Camera, Info, MapPin, Shirt, Star } from 'lucide-vue-next'
+import { NAvatar, NButton, NImage, NRate, NScrollbar, NSpace, NTabPane, NTabs, NTag } from 'naive-ui'
+import { ChartArea, Circle } from 'lucide-vue-next'
 import { getPhotographyProduct } from '~/api/product'
 import type { PhotographyProduct } from '~/api/product/type'
 import type { OrdersCreateParams } from '~/api/order/type'
 import { useUserStore } from '~/stores'
 import { createOrder } from '~/api/order'
+import defaultAvatar from '~/assets/banner.png'
 
 const route = useRoute()
 const router = useRouter()
@@ -64,241 +64,195 @@ async function handleBooking() {
     window.$message.error('预订失败')
   }
 }
+
+const subImagesList = computed(() => {
+  return product.value?.subImagesList ? product.value.subImagesList : []
+})
+
+function handleImageClick(image: string) {
+  // 这里可以触发事件来更新主图
+  // 实现逻辑
+
+  console.log(image)
+}
+
+// 当前显示的图片
+const currentImage = ref(product.value?.mainImage || '')
+
+// 所有图片列表
+const allImages = computed(() => {
+  const subImages = product.value?.subImagesList ? product.value.subImagesList : []
+  return [product.value?.mainImage || '', ...subImages]
+})
+
+// 标签列表
+const tagsList = computed(() => {
+  return product.value?.tagsList ? product.value.tagsList : []
+})
+
+// 服务列表
+const servicesList = computed(() => {
+  return product.value?.servicesList ? product.value.servicesList : []
+})
+
+// 格式化价格
+function formatPrice(price: number) {
+  return price.toLocaleString('zh-CN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+}
+
+// 处理图片预览
+function handlePreview(image: string) {
+  // 使用 naive-ui 的 createImagePreview
+}
+
+// 处理联系商家
+function handleContact() {
+  // 实现联系商家逻辑
+}
 </script>
 
 <template>
-  <div class="photography-detail-container">
-    <div class="container mx-auto px-4 py-6">
-      <!-- 返回按钮 -->
-      <div class="mb-4">
-        <NButton class="flex items-center" @click="goBack">
-          <ArrowLeft class="mr-1" :size="16" />
-          返回列表
-        </NButton>
-      </div>
-
-      <div v-if="loading" class="py-16 flex justify-center">
-        <NSpin size="large" />
-      </div>
-      <div v-else-if="!product" class="py-16 text-center text-gray-500">
-        未找到商品信息
-      </div>
-      <div v-else>
-        <!-- 商品概览 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-2">
-            <!-- 主图和轮播图 -->
-            <div class="relative">
-              <div v-if="product.mainImage || product.subImagesList?.length" class="h-96">
-                <NCarousel
-                  effect="fade"
-                  dot-type="line"
-                  autoplay
-                  :interval="4000"
-                  show-arrow
-                >
-                  <NCarouselItem v-if="product.mainImage">
-                    <div class="h-96 w-full">
-                      <img
-                        :src="product.mainImage"
-                        :alt="product.productName"
-                        class="w-full h-full object-cover"
-                      >
-                    </div>
-                  </NCarouselItem>
-                  <NCarouselItem v-for="(img, index) in product.subImagesList" :key="index">
-                    <div class="h-96 w-full">
-                      <img
-                        :src="img"
-                        :alt="`${product.productName} - 图片${index + 1}`"
-                        class="w-full h-full object-cover"
-                      >
-                    </div>
-                  </NCarouselItem>
-                </NCarousel>
-              </div>
-              <div v-else class="bg-gray-100 h-96 flex items-center justify-center">
-                <Camera :size="64" class="text-gray-300" />
-              </div>
-              <div v-if="product.sales > 100" class="absolute top-4 left-4 px-3 py-1 bg-red-600 text-white rounded-full text-sm font-bold">
-                热销产品
-              </div>
-            </div>
-
-            <!-- 商品信息 -->
-            <div class="p-6 flex flex-col">
-              <h1 class="text-2xl font-bold mb-2">
-                {{ product.productName }}
-              </h1>
-
-              <div class="flex items-center mb-4">
-                <div class="flex items-center">
-                  <Star class="text-yellow-400" :size="20" />
-                  <span class="ml-1 text-lg font-medium">{{ product.rating }}</span>
-                </div>
-                <div class="mx-4 text-gray-300">
-                  |
-                </div>
-                <div class="text-gray-600">
-                  已售 {{ product.sales }} 次
-                </div>
-              </div>
-
-              <div class="text-red-600 text-3xl font-bold mb-4">
-                ￥{{ product.price.toLocaleString() }}
-              </div>
-
-              <div class="mb-4 flex items-center text-gray-600">
-                <MapPin :size="16" class="mr-1" />
-                <span>{{ product.location || '未设定地区' }}</span>
-              </div>
-
-              <div class="bg-gray-50 p-4 rounded-lg mb-4">
-                <p class="text-gray-700">
-                  {{ product.description || '暂无描述' }}
-                </p>
-              </div>
-
-              <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="flex items-center">
-                  <Camera class="text-gray-500 mr-2" :size="20" />
-                  <div>
-                    <div class="text-sm text-gray-500">
-                      照片数量
-                    </div>
-                    <div class="font-medium">
-                      {{ product.photoCount || '未设定' }}
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center">
-                  <Shirt class="text-gray-500 mr-2" :size="20" />
-                  <div>
-                    <div class="text-sm text-gray-500">
-                      服装套数
-                    </div>
-                    <div class="font-medium">
-                      {{ product.costumeCount || '未设定' }}
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center">
-                  <Award class="text-gray-500 mr-2" :size="20" />
-                  <div>
-                    <div class="text-sm text-gray-500">
-                      摄影师等级
-                    </div>
-                    <div class="font-medium">
-                      {{ product.photographerLevel || '未设定' }}
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center">
-                  <Calendar class="text-gray-500 mr-2" :size="20" />
-                  <div>
-                    <div class="text-sm text-gray-500">
-                      成立年份
-                    </div>
-                    <div class="font-medium">
-                      {{ product.establishmentYears || '未设定' }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div v-if="product.tagsList && product.tagsList.length" class="mb-4">
-                <div class="flex flex-wrap gap-2">
-                  <span
-                    v-for="(tag, index) in product.tagsList"
-                    :key="index"
-                    class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-sm"
-                  >
-                    {{ tag }}
-                  </span>
-                </div>
-              </div>
-
-              <div v-if="product.shootingLocationsList && product.shootingLocationsList.length" class="mb-4">
-                <h3 class="text-gray-700 font-medium mb-2">
-                  拍摄地点
-                </h3>
-                <div class="flex flex-wrap gap-2">
-                  <span
-                    v-for="(location, index) in product.shootingLocationsList"
-                    :key="index"
-                    class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm"
-                  >
-                    {{ location }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="mt-auto">
-                <div class="flex gap-4">
-                  <NButton
-                    type="primary"
-                    size="large"
-                    class="flex-1"
-                    color="#D32029"
-                    @click="handleBooking"
-                  >
-                    立即预约
-                  </NButton>
-
-                  <NButton
-                    size="large"
-                    class="flex-1"
-                    @click="$router.push(`/merchant/${product.merchantId}`)"
-                  >
-                    查看商家
-                  </NButton>
-                </div>
-              </div>
-            </div>
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- 左侧图片区域 -->
+      <div class="w-full lg:w-[600px] flex flex-col gap-4">
+        <!-- 主图 -->
+        <div class="relative rounded-lg overflow-hidden">
+          <NImage
+            :src="currentImage"
+            :alt="product?.productName"
+            class="w-full aspect-[4/3] object-cover cursor-zoom-in"
+            object-fit="cover"
+            preview-disabled
+            @click="handlePreview(currentImage)"
+          />
+          <div
+            class="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors
+                      flex items-center justify-center opacity-0 hover:opacity-100"
+          >
+            hha
           </div>
         </div>
 
-        <!-- 详细信息部分 -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- 左侧详情 -->
-          <div class="lg:col-span-2">
-            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-              <div class="border-b border-gray-200">
-                <div class="p-4">
-                  <h2 class="text-xl font-bold flex items-center">
-                    <Info class="mr-2" :size="20" />
-                    服务详情
-                  </h2>
-                </div>
+        <!-- 子图列表 -->
+        <div class="w-full">
+          <NScrollbar x-scrollable>
+            <div class="flex gap-2 py-2">
+              <div
+                v-for="(image, index) in allImages"
+                :key="index"
+                class="w-24 flex-shrink-0 rounded-md overflow-hidden cursor-pointer border-2 transition-all"
+                :class="[
+                  currentImage === image ? 'border-primary' : 'border-transparent',
+                ]"
+                @click="currentImage = image"
+              >
+                <NImage
+                  :src="image"
+                  :alt="`${product?.productName}-${index + 1}`"
+                  class="w-full aspect-square object-cover"
+                  object-fit="cover"
+                  preview-disabled
+                />
               </div>
-              <div class="p-6">
-                <div v-if="product.detail" class="rich-text" v-html="product.detail" />
-                <div v-else class="text-gray-500 text-center py-8">
-                  暂无详细信息
-                </div>
+            </div>
+          </NScrollbar>
+        </div>
+      </div>
+
+      <!-- 右侧商品信息 -->
+      <div class="flex-1 flex flex-col gap-6">
+        <h1 class="text-2xl font-medium text-gray-900">
+          {{ product?.productName }}
+        </h1>
+
+        <!-- 评分和销量 -->
+        <div class="flex items-center gap-3 text-sm text-gray-500">
+          <NRate :value="product?.rating" readonly size="small" />
+          <span class="text-primary">{{ product?.rating }}</span>
+          <span>销量 {{ product?.sales || 0 }}</span>
+        </div>
+
+        <!-- 价格 -->
+        <div class="flex items-baseline gap-2">
+          <span class="text-gray-600">价格</span>
+          <span class="text-3xl font-semibold text-primary">
+            ¥{{ formatPrice(product?.price || 0) }}
+          </span>
+        </div>
+
+        <!-- 商品标签 -->
+        <div v-if="product?.tagsList" class="py-2">
+          <NSpace>
+            <NTag
+              v-for="tag in tagsList"
+              :key="tag"
+              size="small"
+              :bordered="false"
+              type="success"
+            >
+              {{ tag }}
+            </NTag>
+          </NSpace>
+        </div>
+
+        <!-- 服务承诺 -->
+        <div v-if="product?.servicesList" class="border-t border-b py-4">
+          <div class="text-gray-600 mb-2">
+            服务承诺
+          </div>
+          <NSpace>
+            <div
+              v-for="service in servicesList"
+              :key="service"
+              class="flex items-center gap-1 text-sm text-gray-600"
+            >
+              <Circle />
+              <span>{{ service }}</span>
+            </div>
+          </NSpace>
+        </div>
+
+        <!-- 商家信息 -->
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div class="flex items-center gap-3">
+            <NAvatar
+              :src="merchant?.avatar"
+              :fallback-src="defaultAvatar"
+              size="medium"
+            />
+            <div class="flex flex-col">
+              <div class="font-medium">
+                {{ merchant?.name }}
+              </div>
+              <div class="text-sm text-gray-500">
+                经营年限：{{ product.establishmentYears }}年
               </div>
             </div>
           </div>
+          <NButton type="primary" @click="handleContact">
+            <template #icon>
+              <ChartArea />
+            </template>
+            联系商家
+          </NButton>
         </div>
       </div>
     </div>
+
+    <!-- 商品详情 -->
+    <div class="mt-12">
+      <NTabs type="line" animated>
+        <NTabPane name="detail" tab="商品详情">
+          <div v-html="product.detail" />
+        </NTabPane>
+        <NTabPane name="comments" tab="用户评价">
+          <!-- 评价组件 -->
+        </NTabPane>
+      </NTabs>
+    </div>
   </div>
 </template>
-
-<style scoped>
-.photography-detail-container {
-  background-color: #f9f8f6;
-  min-height: 100vh;
-}
-
-.rich-text img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* 中国风细节 */
-h1,
-h2 {
-  font-family: 'STZhongsong', 'SimSun', serif;
-}
-</style>
