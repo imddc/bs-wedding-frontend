@@ -159,7 +159,7 @@ onMounted(() => {
   <div class="favorites-container">
     <!-- 头部横幅 -->
     <div
-      class="banner relative h-48 bg-gradient-to-r from-red-800 to-red-600 mb-8 overflow-hidden rounded-lg"
+      class="banner relative h-48 bg-gradient-to-r from-red-800 to-red-600 mb-8 overflow-hidden"
     >
       <div class="container mx-auto px-4 h-full flex flex-col justify-center z-10 relative">
         <h1 class="text-3xl font-bold text-white mb-2">
