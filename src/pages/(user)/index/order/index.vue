@@ -5,6 +5,7 @@ import { NButton, NPagination, NSelect, NSpin, NTag } from 'naive-ui'
 import { ClipboardList } from 'lucide-vue-next'
 import { getOrdersPage } from '~/api/order'
 import type { OrdersPageResponse, OrdersQueryParams } from '~/api/order/type'
+import { ORDER_STATUS_OPTIONS } from '~/constants/product'
 
 const router = useRouter()
 
@@ -26,15 +27,6 @@ const queryParams = reactive<OrdersQueryParams>({
   pageSize: 8,
   orderStatus: undefined,
 })
-
-// 订单状态选项
-const orderStatusOptions = [
-  { label: '待付款', value: 1 },
-  { label: '已付款', value: 2 },
-  { label: '已确认', value: 3 },
-  { label: '已完成', value: 4 },
-  { label: '已取消', value: 5 },
-]
 
 // 获取订单列表
 async function fetchOrders() {
@@ -116,7 +108,7 @@ onMounted(() => {
           <NSelect
             v-model:value="queryParams.orderStatus"
             placeholder="订单状态"
-            :options="orderStatusOptions"
+            :options="ORDER_STATUS_OPTIONS"
             clearable
             class="w-40"
           />

@@ -5,6 +5,15 @@ export const PRODUCT_TYPE = {
   HOST: 3,
 }
 
+// 订单状态选项
+export const ORDER_STATUS_OPTIONS = [
+  { label: '待付款', value: 1 },
+  { label: '已付款', value: 2 },
+  { label: '已确认', value: 3 },
+  { label: '已完成', value: 4 },
+  { label: '已取消', value: 5 },
+]
+
 // 筛选器选项
 export const LOCATION_OPTIONS = [
   { label: '北京', value: '北京' },
