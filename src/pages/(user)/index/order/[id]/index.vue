@@ -10,6 +10,7 @@ import type { HostProduct, HotelProduct, PhotographyProduct, Product } from '~/a
 import type { MerchantInfo } from '~/api/merchant/type'
 import { getMerchantById } from '~/api/merchant'
 import { MerchantType } from '~/api/merchant/type'
+import { ORDER_STATUS, ORDER_STATUS_DESC } from '~/constants/order'
 
 const route = useRoute()
 const router = useRouter()
@@ -24,13 +25,6 @@ const orderInfo = ref<OrdersDetailResponse>()
 const merchantInfo = ref<MerchantInfo>()
 // 产品信息
 const productInfo = ref<Product | HotelProduct | PhotographyProduct | HostProduct>()
-
-// 订单状态步骤
-const orderSteps = [
-  { title: '待支付', description: '订单待支付' },
-  { title: '已支付', description: '等待完成' },
-  { title: '已完成', description: '订单已完成' },
-]
 
 // 获取订单状态标签类型
 function getStatusType(status: number) {
@@ -144,10 +138,10 @@ onMounted(() => {
             :status="orderInfo?.orderStatus === 3 ? 'error' : undefined"
           >
             <NStep
-              v-for="(step, index) in orderSteps"
-              :key="index"
-              :title="step.title"
-              :description="step.description"
+              v-for="step in ORDER_STATUS"
+              :key="step"
+              :title="ORDER_STATUS_DESC[step]"
+              :status="step === orderInfo?.orderStatus ? 'finish' : undefined"
             />
           </NSteps>
         </NCard>

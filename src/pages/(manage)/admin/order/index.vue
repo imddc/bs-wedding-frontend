@@ -55,7 +55,7 @@ const columns = [
     key: 'orderStatus',
     render: (row: OrdersDetailResponse) => {
       const type = ORDER_STATUS_TYPE[row.orderStatus] || 'default'
-      return h(NTag, { type }, { default: () => row.orderStatusDesc })
+      return h(NTag, { type }, { default: () => ORDER_STATUS_DESC[row.orderStatus] })
     },
   },
   { title: '创建时间', key: 'createTime' },
@@ -178,7 +178,7 @@ async function loadOrders() {
 
 function resetSearch() {
   Object.keys(searchForm).forEach((key) => {
-    searchForm[key] = undefined
+    searchForm[key as keyof OrdersQueryParams] = undefined
   })
   pagination.page = 1
   loadOrders()

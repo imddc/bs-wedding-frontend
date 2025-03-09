@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { NButton, NPagination, NSelect, NSpin, NTag } from 'naive-ui'
+import { NButton, NPagination, NSelect, NSpin } from 'naive-ui'
 import { ClipboardList } from 'lucide-vue-next'
 import { getOrdersPage } from '~/api/order'
 import type { OrdersPageResponse, OrdersQueryParams } from '~/api/order/type'
-import { ORDER_STATUS_OPTIONS } from '~/constants/product'
+import { ORDER_STATUS_OPTIONS } from '~/constants/order'
+import OrderCard from '~/components/order/OrderCard.vue'
 
 const router = useRouter()
 
@@ -66,18 +67,6 @@ function viewDetails(id: number) {
   router.push(`/order/${id}`)
 }
 
-// 获取订单状态标签类型
-function getStatusType(status: number) {
-  const typeMap: Record<number, 'default' | 'success' | 'warning' | 'error' | 'info'> = {
-    1: 'warning', // 待付款
-    2: 'info', // 已付款
-    3: 'success', // 已确认
-    4: 'success', // 已完成
-    5: 'error', // 已取消
-  }
-  return typeMap[status] || 'default'
-}
-
 onMounted(() => {
   fetchOrders()
 })
@@ -135,50 +124,27 @@ onMounted(() => {
           暂无订单记录
         </div>
         <div v-else class="space-y-4">
-          <div
-            v-for="order in orders.records"
-            :key="order.id"
-            class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
-          >
-            <div class="flex justify-between items-start mb-3">
-              <div>
-                <span class="text-gray-500 mr-2">订单号：{{ order.orderNo }}</span>
-                <NTag :type="getStatusType(order.orderStatus)">
-                  {{ order.orderStatusDesc }}
-                </NTag>
-              </div>
-              <span class="text-gray-500">{{ order.createTime }}</span>
-            </div>
-
-            <div class="flex items-center justify-between">
-              <div>
-                <div v-if="order.weddingDate" class="text-sm text-gray-500 mb-1">
-                  婚礼日期：{{ order.weddingDate }}
-                </div>
-                <div v-if="order.remark" class="text-sm text-gray-500">
-                  备注：{{ order.remark }}
-                </div>
-              </div>
-              <div class="flex items-center gap-4">
-                <NButton
-                  type="primary"
-                  size="small"
-                  @click="viewDetails(order.id)"
-                >
-                  查看详情
-                </NButton>
-              </div>
-            </div>
+          <template v-if="orders.records.length">
+            <OrderCard
+              v-for="order in orders.records"
+              :key="order.id"
+              :order="order"
+              @view-details="viewDetails"
+            />
+          </template>
+          <div v-else class="text-center py-8 text-gray-500">
+            暂无订单记录
           </div>
         </div>
 
         <!-- 分页 -->
-        <div v-if="orders.records.length > 0" class="mt-4 flex justify-center">
+        <div v-if="orders.records.length" class="flex justify-center mt-6">
           <NPagination
             v-model:page="queryParams.pageNum"
-            :page-count="orders.pages"
-            :page-size="queryParams.pageSize"
-            @update:page="fetchOrders"
+            v-model:page-size="queryParams.pageSize"
+            :item-count="orders.total"
+            show-size-picker
+            :page-sizes="[10, 20, 30, 40]"
           />
         </div>
       </div>
