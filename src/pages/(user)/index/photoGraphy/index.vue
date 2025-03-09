@@ -134,7 +134,7 @@ onMounted(() => {
   <div class="photography-list-container">
     <!-- 头部横幅 -->
     <div
-      class="banner relative h-64 bg-gradient-to-r from-red-800 to-red-600 mb-8 overflow-hidden rounded-lg"
+      class="banner relative h-64 bg-gradient-to-r from-red-800 to-red-600 mb-8 overflow-hidden"
     >
       <div class="container mx-auto px-4 h-full flex flex-col justify-center z-10 relative">
         <h1 class="text-4xl font-bold text-white mb-2">
@@ -177,7 +177,7 @@ onMounted(() => {
         >
           <NCarouselItem v-for="product in hotProducts" :key="product.id" class="">
             <div class="hot-product-card">
-              <div class="relative overflow-hidden rounded-t-lg h-72">
+              <div class="relative overflow-hidden rounded-t-lg min-h-60">
                 <img
                   v-if="product.mainImage"
                   :src="product.mainImage"
