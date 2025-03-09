@@ -3,6 +3,7 @@ import { defineProps, ref } from 'vue'
 import { CheckCheckIcon, CheckCircleIcon, CheckIcon } from 'lucide-vue-next'
 import { NAvatar, NImage, NModal, NTooltip } from 'naive-ui'
 import type { Message } from '~/components/profile/MessagesPanel.vue'
+import { handleImgUrl } from '~/utils/core'
 
 const props = defineProps<{
   message: Message & {
@@ -98,7 +99,7 @@ function calculateImageSize(width?: number, height?: number) {
         <!-- Image message -->
         <div v-else-if="message.contentType === 'image'" class="max-w-xs">
           <NImage
-            :src="message.content"
+            :src="handleImgUrl(message.content)"
             preview-disabled
             object-fit="cover"
             class="rounded cursor-pointer"
@@ -140,7 +141,7 @@ function calculateImageSize(width?: number, height?: number) {
     >
       <NImage
         v-if="message.contentType === 'image'"
-        :src="message.content"
+        :src="handleImgUrl(message.content)"
         object-fit="contain"
         style="max-width: 100%; max-height: 80vh;"
       />

@@ -12,6 +12,7 @@ import {
   Users,
 } from 'lucide-vue-next'
 import { NButton, NCard } from 'naive-ui'
+import { handleImgUrl } from '~/utils/core'
 
 interface StatItem {
   label: string
@@ -52,7 +53,7 @@ function resolveIcon(iconName: string): LucideIcon {
       <!-- Card Header with Image -->
       <div class="relative h-60 -mx-4 -mt-4 mb-6 overflow-hidden">
         <img
-          :src="image"
+          :src="handleImgUrl(image)"
           :alt="title"
           class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         >

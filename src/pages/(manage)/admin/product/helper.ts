@@ -4,6 +4,7 @@ import type { DataTableColumns } from 'naive-ui'
 import { h } from 'vue'
 import type { Product } from '~/api/product/type'
 import { PRODUCT_STATUS } from '~/constants/product'
+import { handleImgUrl } from '~/utils/core'
 
 interface CreateColumnsProps {
   handleStatusChange: (id: number, status: number) => void
@@ -34,7 +35,7 @@ export function createColumns({
           ? h(NImage, {
               width: 60,
               height: 60,
-              src: row.mainImage,
+              src: handleImgUrl(row.mainImage),
               objectFit: 'cover',
               fallbackSrc: 'https://via.placeholder.com/60',
               previewDisabled: false,

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ChevronRight, Star } from 'lucide-vue-next'
 import { NButton, NTag } from 'naive-ui'
+import { handleImgUrl } from '~/utils/core'
 
 withDefaults(defineProps<{
   image: string
@@ -18,7 +19,7 @@ withDefaults(defineProps<{
     <!-- Package Image -->
     <div class="relative aspect-[4/3] overflow-hidden">
       <img
-        :src="image"
+        :src="handleImgUrl(image)"
         :alt="title"
         class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
       >

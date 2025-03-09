@@ -37,6 +37,7 @@ import {
 import type { MerchantInfo, MerchantQueryParams } from '~/api/merchant/type'
 import MerchantForm from '~/components/merchant/admin/MerchantForm.vue'
 import { router } from '~/plugins'
+import { handleImgUrl } from '~/utils/core'
 
 const message = useMessage()
 
@@ -97,7 +98,7 @@ const columns = ref<DataTableColumns<MerchantInfo>>([
     render(row) {
       if (row.logo) {
         return h(NImage, {
-          src: row.logo,
+          src: handleImgUrl(row.logo),
           alt: row.merchantName,
           style: 'width: 60px; height: 60px; object-fit: cover; border-radius: 4px;',
         })

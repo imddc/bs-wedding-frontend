@@ -19,6 +19,7 @@ import {
 import { getHotelProduct } from '~/api/product'
 import type { HotelProduct } from '~/api/product/type'
 import OrderCreateModal, { useOrderCreateModal } from '~/components/order/OrderCreateModal'
+import { handleImgUrl } from '~/utils/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -85,7 +86,7 @@ onMounted(() => {
         <div class="relative h-[500px] mb-6 rounded-lg overflow-hidden">
           <img
             v-if="product.mainImage"
-            :src="product.mainImage"
+            :src="handleImgUrl(product.mainImage)"
             :alt="product.productName"
             class="w-full h-full object-cover"
           >
@@ -224,7 +225,7 @@ onMounted(() => {
                     class="aspect-square rounded-lg overflow-hidden"
                   >
                     <img
-                      :src="img"
+                      :src="handleImgUrl(img)"
                       :alt="`${product.productName} - 场景${index + 1}`"
                       class="w-full h-full object-cover hover:scale-105 transition duration-300"
                     >

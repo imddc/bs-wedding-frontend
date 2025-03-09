@@ -2,6 +2,7 @@
 import { NButton } from 'naive-ui'
 import { Image, MapPin, Star } from 'lucide-vue-next'
 import type { HostProduct } from '~/api/product/type'
+import { handleImgUrl } from '~/utils/core'
 
 const props = defineProps<{
   product: HostProduct
@@ -31,7 +32,7 @@ function handleViewDetails() {
     <div class="relative h-48 overflow-hidden">
       <img
         v-if="product.mainImage"
-        :src="product.mainImage"
+        :src="handleImgUrl(product.mainImage)"
         :alt="product.productName"
         class="w-full h-full object-cover object-top"
       >

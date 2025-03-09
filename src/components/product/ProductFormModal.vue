@@ -49,6 +49,7 @@ import type {
   PhotographyProductParams,
   ProductCreateParams,
 } from '~/api/product/type'
+import { handleImgUrl } from '~/utils/core'
 
 const props = defineProps<{
   show: boolean
@@ -569,7 +570,7 @@ watch(
     >
       <NImage
         v-if="previewUrl"
-        :src="previewUrl"
+        :src="handleImgUrl(previewUrl)"
         object-fit="contain"
         style="max-width: 100%; max-height: 80vh"
       />

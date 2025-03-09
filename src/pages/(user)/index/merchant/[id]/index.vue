@@ -12,6 +12,7 @@ import { useUserStore } from '~/stores'
 import { MerchantType } from '~/api/merchant/type'
 import type { MerchantInfo } from '~/api/merchant/type'
 import type { Product, ProductQueryParams } from '~/api/product/type'
+import { handleImgUrl } from '~/utils/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -211,7 +212,7 @@ onMounted(() => {
               <div class="md:w-1/3 h-60 bg-gray-100 rounded-lg overflow-hidden">
                 <img
                   v-if="merchant.logo"
-                  :src="merchant.logo"
+                  :src="handleImgUrl(merchant.logo)"
                   :alt="merchant.merchantName"
                   class="w-full h-full object-cover"
                 >
@@ -306,7 +307,7 @@ onMounted(() => {
                     <div class="sm:w-1/3 h-48 sm:h-auto bg-gray-100 overflow-hidden">
                       <img
                         v-if="product.mainImage"
-                        :src="product.mainImage"
+                        :src="handleImgUrl(product.mainImage)"
                         :alt="product.productName"
                         class="w-full h-full object-cover"
                       >

@@ -14,6 +14,7 @@ import type { Favorite, FavoriteQueryParams } from '~/api/favorite/type'
 import { MerchantType } from '~/api/merchant/type'
 import type { MerchantInfo } from '~/api/merchant/type'
 import { useUserStore } from '~/stores'
+import { handleImgUrl } from '~/utils/core'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -224,7 +225,7 @@ onMounted(() => {
                   >
                     <img
                       v-if="merchant.logo"
-                      :src="merchant.logo"
+                      :src="handleImgUrl(merchant.logo)"
                       :alt="merchant.merchantName"
                       class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
                     >

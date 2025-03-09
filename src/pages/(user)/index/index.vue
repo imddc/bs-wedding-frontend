@@ -14,6 +14,7 @@ import {
   Users,
   Wallet,
 } from 'lucide-vue-next'
+import { handleImgUrl } from '~/utils/core'
 
 // 客户见证数据
 import { testimonials } from '~/constants/home'
@@ -342,7 +343,7 @@ function scrollToServices() {
               <div class="flex flex-col md:flex-row gap-8 items-center">
                 <div class="md:w-1/3 flex justify-center">
                   <div class="w-48 h-48 rounded-full overflow-hidden border-4 border-pink-100">
-                    <img :src="item.image" :alt="item.name" class="w-full h-full object-cover">
+                    <img :src="handleImgUrl(item.image)" :alt="item.name" class="w-full h-full object-cover">
                   </div>
                 </div>
                 <div class="md:w-2/3">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, h } from 'vue'
+import { handleImgUrl } from '~/utils/core'
 
 interface StudioRankItemProps {
   rank?: string
@@ -64,7 +65,7 @@ const HeartIcon = {
     <!-- Studio Logo -->
     <div class="w-16 h-16 flex-shrink-0 mr-3">
       <img
-        :src="logo"
+        :src="handleImgUrl(logo)"
         :alt="name"
         class="w-full h-full object-cover rounded"
       >

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { handleImgUrl } from '~/utils/core'
 import type { Hotel } from './type'
 
 defineProps<{
@@ -11,7 +12,7 @@ defineProps<{
     <!-- Hotel Image -->
     <div class="w-24 h-24 flex-shrink-0">
       <img
-        :src="hotel.image"
+        :src="handleImgUrl(hotel.image)"
         :alt="hotel.name"
         class="w-full h-full object-cover"
       >

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { ComputerIcon, DiamondIcon, ThumbsUp } from 'lucide-vue-next'
+import { handleImgUrl } from '~/utils/core'
 import type { Company } from './type'
 
 const props = defineProps<{
@@ -37,7 +38,7 @@ const ratingIcon = computed(() => {
     <!-- Company Image -->
     <div class="w-24 h-24 flex-shrink-0 bg-gray-400">
       <img
-        :src="company.image"
+        :src="handleImgUrl(company.image)"
         :alt="company.name"
         class="w-full h-full object-cover"
       >

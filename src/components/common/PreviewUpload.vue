@@ -352,7 +352,7 @@ onMounted(() => {
       style="max-width: 800px; width: 90vw"
     >
       <div class="flex justify-center">
-        <img :src="previewImageUrl" class="max-w-full max-h-[70vh]">
+        <img :src="handleImgUrl(previewImageUrl)" class="max-w-full max-h-[70vh]">
       </div>
 
       <!-- 预览导航 (仅当有多张图片时显示) -->

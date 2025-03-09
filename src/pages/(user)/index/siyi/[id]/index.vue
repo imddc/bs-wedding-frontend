@@ -19,6 +19,7 @@ import {
 import { getHostProduct } from '~/api/product'
 import type { HostProduct } from '~/api/product/type'
 import OrderCreateModal, { useOrderCreateModal } from '~/components/order/OrderCreateModal'
+import { handleImgUrl } from '~/utils/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -102,7 +103,7 @@ onMounted(() => {
                       <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white">
                         <img
                           v-if="product.mainImage"
-                          :src="product.mainImage"
+                          :src="handleImgUrl(product.mainImage)"
                           :alt="product.productName"
                           class="w-full h-full object-cover"
                         >
@@ -231,7 +232,7 @@ onMounted(() => {
                     class="rounded-lg overflow-hidden bg-gray-100"
                   >
                     <img
-                      :src="img"
+                      :src="handleImgUrl(img)"
                       :alt="`${product.productName} - 作品${index + 1}`"
                       class="w-full object-cover"
                     >

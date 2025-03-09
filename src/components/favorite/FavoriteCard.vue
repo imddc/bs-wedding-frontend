@@ -3,6 +3,7 @@ import { defineEmits, defineProps } from 'vue'
 import { Heart, MessageCircle } from 'lucide-vue-next'
 import { NButton, NCard, NRate, NTag } from 'naive-ui'
 import type { FavoriteItem } from '~/components/profile/FavoritesPanel.vue'
+import { handleImgUrl } from '~/utils/core'
 
 defineProps<{
   item: FavoriteItem
@@ -30,7 +31,7 @@ function formatPrice(price: number): string {
     <template #cover>
       <div class="relative h-48">
         <img
-          :src="item.coverImage"
+          :src="handleImgUrl(item.coverImage)"
           class="w-full h-full object-cover"
           alt="封面图片"
         >

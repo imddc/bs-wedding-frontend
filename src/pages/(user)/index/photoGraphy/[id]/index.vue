@@ -15,6 +15,7 @@ import { getPhotographyProduct } from '~/api/product'
 import type { PhotographyProduct } from '~/api/product/type'
 import defaultAvatar from '~/assets/banner.png'
 import OrderCreateModal, { useOrderCreateModal } from '~/components/order/OrderCreateModal'
+import { handleImgUrl } from '~/utils/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -101,7 +102,7 @@ function handleMerchantDetail() {
         <div class="relative h-[500px] mb-6 rounded-lg overflow-hidden">
           <img
             v-if="product.mainImage"
-            :src="product.mainImage"
+            :src="handleImgUrl(product.mainImage)"
             :alt="product.productName"
             class="w-full h-full object-cover"
           >
@@ -170,7 +171,7 @@ function handleMerchantDetail() {
                     class="aspect-square rounded-lg overflow-hidden"
                   >
                     <img
-                      :src="img"
+                      :src="handleImgUrl(img)"
                       :alt="`${product.productName} - 作品${index + 1}`"
                       class="w-full h-full object-cover hover:scale-105 transition duration-300"
                     >
@@ -203,7 +204,7 @@ function handleMerchantDetail() {
                 <div class="p-5 bg-gradient-to-br from-red-50/70 to-white rounded-xl border border-red-100/60 mb-8">
                   <div class="flex items-center gap-4 mb-4">
                     <NAvatar
-                      :src="product.merchant?.avatar"
+                      :src="handleImgUrl(product.merchant?.avatar)"
                       :fallback-src="defaultAvatar"
                       size="large"
                       round
@@ -211,7 +212,7 @@ function handleMerchantDetail() {
                     />
                     <div class="flex flex-col">
                       <div class="font-medium text-gray-800">
-                        {{ product.merchant?.name || '未知商家' }}
+                        {{ product.merchantName || '未知商家' }}
                       </div>
                       <div class="text-sm text-gray-500 mt-0.5">
                         经营年限：{{ product.establishmentYears || '未知' }}年

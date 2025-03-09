@@ -2,6 +2,7 @@
 import { defineProps } from 'vue'
 import { QuoteIcon } from 'lucide-vue-next'
 import { NRate, NTag } from 'naive-ui'
+import { handleImgUrl } from '~/utils/core'
 
 interface TestimonialServices {
   photography?: boolean
@@ -34,7 +35,7 @@ defineProps<{
         <div class="flex-shrink-0 text-center">
           <div class="relative w-40 h-40 mx-auto overflow-hidden rounded-full border-4 border-white shadow">
             <img
-              :src="testimonial.avatar"
+              :src="handleImgUrl(testimonial.avatar)"
               :alt="testimonial.name"
               class="w-full h-full object-cover"
             >

@@ -14,6 +14,7 @@ import type {
   PhotographyProduct,
   ProductQueryParams,
 } from '~/api/product/type'
+import { handleImgUrl } from '~/utils/core'
 
 const router = useRouter()
 
@@ -180,7 +181,7 @@ onMounted(() => {
               <div class="relative overflow-hidden rounded-t-lg min-h-60">
                 <img
                   v-if="product.mainImage"
-                  :src="product.mainImage"
+                  :src="handleImgUrl(product.mainImage)"
                   :alt="product.productName"
                   class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
                 >
@@ -321,7 +322,7 @@ onMounted(() => {
                 <div class="relative h-48 overflow-hidden bg-gray-100">
                   <img
                     v-if="product.mainImage"
-                    :src="product.mainImage"
+                    :src="handleImgUrl(product.mainImage)"
                     :alt="product.productName"
                     class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
                   >

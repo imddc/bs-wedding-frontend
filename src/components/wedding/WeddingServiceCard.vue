@@ -2,6 +2,7 @@
 import { defineEmits, defineProps } from 'vue'
 import { NButton, NCard, NSpace, NTag } from 'naive-ui'
 import type { WeddingService } from '~/components/profile/WeddingPlanPanel.vue'
+import { handleImgUrl } from '~/utils/core'
 
 defineProps<{
   service: WeddingService
@@ -53,7 +54,7 @@ function getTypeTagType(type: string): string {
     <div class="relative">
       <div class="h-40 overflow-hidden rounded-lg mb-3">
         <img
-          :src="service.image"
+          :src="handleImgUrl(service.image)"
           :alt="service.name"
           class="w-full h-full object-cover"
         >

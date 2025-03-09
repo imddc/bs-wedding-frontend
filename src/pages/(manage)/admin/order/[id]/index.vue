@@ -28,6 +28,7 @@ import { getProduct } from '~/api/product'
 import type { OrdersDetailResponse, OrdersStatusUpdateParams } from '~/api/order/type'
 import type { UserInfo } from '~/api/user/type'
 import type { Product } from '~/api/product/type'
+import { handleImgUrl } from '~/utils/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -232,7 +233,7 @@ onMounted(fetchOrderDetail)
                 <div class="w-full md:w-1/4 mb-4 md:mb-0">
                   <img
                     v-if="product.mainImage"
-                    :src="product.mainImage"
+                    :src="handleImgUrl(product.mainImage)"
                     :alt="product.productName"
                     class="w-full h-auto rounded object-cover"
                   >

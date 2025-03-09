@@ -24,6 +24,7 @@ import {
 import { getMerchantById } from '~/api/merchant'
 import type { MerchantInfo } from '~/api/merchant/type'
 import MerchantForm from '~/components/merchant/admin/MerchantForm.vue'
+import { handleImgUrl } from '~/utils/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -201,7 +202,7 @@ onMounted(() => {
             <div class="flex justify-center p-4">
               <NImage
                 v-if="merchantInfo.logo"
-                :src="merchantInfo.logo"
+                :src="handleImgUrl(merchantInfo.logo)"
                 object-fit="contain"
                 width="200"
                 preview-disabled

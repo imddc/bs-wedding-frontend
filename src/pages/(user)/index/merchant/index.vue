@@ -13,6 +13,7 @@ import {
   MerchantType,
 } from '~/api/merchant/type'
 import type { MerchantPageResult, MerchantQueryParams } from '~/api/merchant/type'
+import { handleImgUrl } from '~/utils/core'
 
 const router = useRouter()
 
@@ -225,7 +226,7 @@ onMounted(() => {
                   <div class="relative h-48 overflow-hidden">
                     <img
                       v-if="merchant.logo"
-                      :src="merchant.logo"
+                      :src="handleImgUrl(merchant.logo)"
                       :alt="merchant.merchantName"
                       class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
                     >
