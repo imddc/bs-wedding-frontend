@@ -13,6 +13,7 @@ import {
   MapPin,
   Maximize2,
   Star,
+  Store,
   Users,
 } from 'lucide-vue-next'
 import { getHotelProduct } from '~/api/product'
@@ -257,18 +258,51 @@ onMounted(() => {
           <!-- 右侧预约和商家信息 -->
           <div class="lg:col-span-1">
             <!-- 价格预约卡片 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6 sticky top-4">
-              <div class="p-6 border-b border-amber-100">
-                <div class="text-3xl font-bold text-amber-600 mb-2">
-                  ￥{{ product.price.toLocaleString() }}
-                  <span class="text-lg text-gray-500 font-normal">起</span>
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 sticky top-4 border border-red-100/60">
+              <div class="p-6">
+                <!-- 价格区域 -->
+                <div class="mb-8">
+                  <div class="flex items-baseline">
+                    <div class="text-4xl font-bold text-red-800">
+                      ￥{{ product.price.toLocaleString() }}
+                    </div>
+                    <span class="text-base text-gray-500 font-normal ml-2">起</span>
+                  </div>
+                  <div class="mt-3 text-sm text-gray-500 bg-red-50/50 rounded-lg p-3 border border-red-100/60">
+                    价格可能因日期、厅室和套餐选择而有所不同
+                  </div>
                 </div>
 
-                <div class="text-sm text-gray-500 mb-6">
-                  价格可能因日期、厅室和套餐选择而有所不同
+                <!-- 商家信息卡片 -->
+                <div class="p-5 bg-gradient-to-br from-red-50/70 to-white rounded-xl border border-red-100/60 mb-8">
+                  <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center border-2 border-white shadow-sm">
+                      <Store :size="24" class="text-red-600" />
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="font-medium text-gray-800">
+                        {{ product.merchantName || '未知商家' }}
+                      </div>
+                      <div class="text-sm text-gray-500 mt-0.5">
+                        经营年限：{{ product.establishmentYears || '未知' }}年
+                      </div>
+                    </div>
+                  </div>
+                  <NButton
+                    type="default"
+                    block
+                    class="!bg-white/80 hover:!bg-white transition-colors border border-red-200/50"
+                    @click="$router.push(`/merchant/${product.merchantId}`)"
+                  >
+                    <template #icon>
+                      <Store :size="16" class="text-red-800" />
+                    </template>
+                    <span class="text-red-800 font-medium">查看商家详情</span>
+                  </NButton>
                 </div>
 
-                <div class="mt-6 space-y-2">
+                <!-- 按钮组 -->
+                <div class="space-y-4">
                   <NButton
                     type="primary"
                     block
@@ -282,15 +316,6 @@ onMounted(() => {
                       <div class="i-carbon-calendar-add text-xl opacity-90 group-hover:scale-110 transition-transform" />
                       <span class="tracking-wide">立即预定</span>
                     </div>
-                  </NButton>
-
-                  <NButton
-                    block
-                    size="large"
-                    class="mt-2"
-                    @click="$router.push(`/merchant/${product.merchantId}`)"
-                  >
-                    查看商家
                   </NButton>
                 </div>
               </div>
