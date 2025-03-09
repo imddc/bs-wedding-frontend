@@ -104,13 +104,12 @@ onMounted(() => {
       <!-- 筛选和列表部分 -->
       <div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
         <!-- 筛选条件 -->
-        <div class="flex flex-wrap gap-4 mb-6">
+        <div class="flex gap-4 mb-6">
           <NSelect
             v-model:value="queryParams.orderStatus"
             placeholder="订单状态"
             :options="ORDER_STATUS_OPTIONS"
             clearable
-            class="w-40"
           />
           <div class="flex gap-2">
             <NButton
