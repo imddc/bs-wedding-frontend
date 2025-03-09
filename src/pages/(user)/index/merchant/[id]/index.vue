@@ -3,7 +3,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NButton, NCard, NDivider, NEmpty, NSpin, NTabPane, NTabs, NTag } from 'naive-ui'
-import { ArrowLeft, Camera, Heart, Hotel, MapPin, Phone, Star, User, Users } from 'lucide-vue-next'
+import { ArrowLeft, Camera, Heart, Hotel, MapPin, Phone, User, Users } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
 import { getMerchantById } from '~/api/merchant'
 import { getProducts } from '~/api/product'
