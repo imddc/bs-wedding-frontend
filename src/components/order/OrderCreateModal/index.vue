@@ -39,11 +39,12 @@ function handleConfirm() {
 <template>
   <NModal
     v-model:show="show"
+    :mask-closable="false"
+    :bordered="false"
     preset="card"
     title="预约信息"
     class="max-w-md w-full mx-auto"
-    :mask-closable="false"
-    :bordered="false"
+    closable
   >
     <NForm>
       <NFormItem label="结婚日期" required>

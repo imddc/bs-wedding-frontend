@@ -14,8 +14,7 @@ import {
 import { getPhotographyProduct } from '~/api/product'
 import type { PhotographyProduct } from '~/api/product/type'
 import defaultAvatar from '~/assets/banner.png'
-import OrderCreateModal from '~/components/order/OrderCreateModal/index.vue'
-import { useOrderCreateModal } from '~/components/order/OrderCreateModal'
+import OrderCreateModal, { useOrderCreateModal } from '~/components/order/OrderCreateModal'
 
 const route = useRoute()
 const router = useRouter()
