@@ -1,6 +1,6 @@
 <!-- src/views/HotelDetail.vue -->
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NButton, NSpin } from 'naive-ui'
 import {
@@ -17,17 +17,18 @@ import {
 } from 'lucide-vue-next'
 import { getHotelProduct } from '~/api/product'
 import type { HotelProduct } from '~/api/product/type'
-import type { OrdersCreateParams } from '~/api/order/type'
-import { useUserStore } from '~/stores'
-import { createOrder } from '~/api/order'
+import OrderCreateModal, { useOrderCreateModal } from '~/components/order/OrderCreateModal'
 
 const route = useRoute()
 const router = useRouter()
 const loading = ref(true)
 const product = ref<HotelProduct | null>(null)
-const userStore = useUserStore()
 
-const submitting = ref(false)
+// 使用 hook 管理预约逻辑
+const { show, open, confirm, submitting } = useOrderCreateModal({
+  productId: computed(() => product.value?.id || 0),
+  merchantId: computed(() => product.value?.merchantId || 0),
+})
 
 async function fetchProductDetail() {
   loading.value = true
@@ -59,24 +60,6 @@ function goBack() {
 onMounted(() => {
   fetchProductDetail()
 })
-
-async function handleBooking() {
-  const order: OrdersCreateParams = {
-    productId: product.value?.id || 0,
-    merchantId: product.value?.merchantId || 0,
-    userId: userStore.userInfo?.id || 0,
-    weddingDate: '',
-    remark: '',
-  }
-
-  // 调用订单接口
-  const response = await createOrder(order)
-  if (response.success) {
-    router.push(`/order/${response.data}`)
-  } else {
-    window.$message.error('预订失败')
-  }
-}
 </script>
 
 <template>
@@ -290,11 +273,15 @@ async function handleBooking() {
                     type="primary"
                     block
                     size="large"
-                    color="#D97706"
+                    color="#991B1B"
                     :loading="submitting"
-                    @click="handleBooking"
+                    class="h-[52px] text-[15px] font-medium !bg-gradient-to-r from-red-800 via-red-700 to-red-800 hover:from-red-700 hover:via-red-600 hover:to-red-700 shadow-[0_2px_12px_rgba(185,28,28,0.2)] hover:shadow-[0_4px_16px_rgba(185,28,28,0.3)] transition-all duration-300 group"
+                    @click="open"
                   >
-                    立即预定
+                    <div class="flex items-center justify-center gap-2">
+                      <div class="i-carbon-calendar-add text-xl opacity-90 group-hover:scale-110 transition-transform" />
+                      <span class="tracking-wide">立即预定</span>
+                    </div>
                   </NButton>
 
                   <NButton
@@ -312,6 +299,13 @@ async function handleBooking() {
         </div>
       </div>
     </div>
+
+    <!-- 添加预约弹窗组件 -->
+    <OrderCreateModal
+      v-model:show="show"
+      :loading="submitting"
+      @confirm="confirm"
+    />
   </div>
 </template>
 
