@@ -4,6 +4,9 @@
  * @returns string
  */
 export function handleImgUrl(src: string) {
+  if (!src) {
+    return ''
+  }
   if (src.startsWith('/files/preview/')) {
     return `http://localhost:9527/server-api/${src}`
   }

@@ -5,13 +5,10 @@ import { useRouter } from 'vue-router'
 import { NButton, NGrid, NGridItem, NInput, NInputNumber, NPagination, NRate, NSelect, NSpin } from 'naive-ui'
 import { Mic } from 'lucide-vue-next'
 import {
-  getHotHostProducts,
   getProducts,
 } from '~/api/product'
 import type {
   HostProduct,
-  HotProduct,
-  HotProductQueryParams,
   PageResult,
   ProductQueryParams,
 } from '~/api/product/type'
@@ -29,12 +26,8 @@ const products = ref<PageResult<HostProduct>>({
   pages: 0,
 })
 
-// 热门商品
-const hotProducts = ref<HotProduct[]>([])
-
 // 加载状态
 const loading = ref(false)
-const hotLoading = ref(false)
 
 // 查询参数
 const queryParams = reactive<ProductQueryParams>({
@@ -81,28 +74,6 @@ async function fetchProducts() {
   }
 }
 
-// 获取热门商品
-async function fetchHotProducts() {
-  hotLoading.value = true
-  try {
-    const hotParams: HotProductQueryParams = {
-      productType: 3,
-      limit: 4,
-    }
-    const response = await getHotHostProducts(hotParams)
-    if (response.success) {
-      hotProducts.value = response.data
-    } else {
-      window.$message.error('获取推荐司仪失败')
-    }
-  } catch (error) {
-    window.$message.error('获取推荐司仪失败')
-    console.error(error)
-  } finally {
-    hotLoading.value = false
-  }
-}
-
 // 搜索
 function handleSearch() {
   queryParams.pageNum = 1
@@ -131,7 +102,6 @@ function viewDetails(id: number) {
 
 onMounted(() => {
   fetchProducts()
-  fetchHotProducts()
 })
 </script>
 
@@ -155,33 +125,6 @@ onMounted(() => {
     </div>
 
     <div class="container mx-auto px-4">
-      <!-- 热门推荐部分 -->
-      <div class="mb-12">
-        <div class="flex items-center mb-4">
-          <div class="w-1 h-6 bg-indigo-700 mr-3" />
-          <h2 class="text-2xl font-bold text-gray-800">
-            推荐司仪
-          </h2>
-        </div>
-        <div v-if="hotLoading" class="py-8 flex justify-center">
-          <NSpin size="large" />
-        </div>
-        <div v-else-if="hotProducts.length === 0" class="text-center py-8 text-gray-500">
-          暂无推荐司仪
-        </div>
-        <div v-else>
-          <NGrid x-gap="16" y-gap="16" cols="4">
-            <NGridItem v-for="product in hotProducts" :key="product.id">
-              <HostCard
-                :product="product as HostProduct"
-                is-hot
-                @view-details="viewDetails"
-              />
-            </NGridItem>
-          </NGrid>
-        </div>
-      </div>
-
       <!-- 筛选和列表部分 -->
       <div class="flex flex-wrap md:flex-nowrap gap-6">
         <!-- 筛选侧边栏 -->
@@ -292,7 +235,7 @@ onMounted(() => {
               暂无司仪，请调整筛选条件
             </div>
             <div v-else>
-              <NGrid x-gap="16" y-gap="16" cols="1 s:2 m:2 l:3">
+              <NGrid x-gap="16" y-gap="16" cols="3 s:2 m:2 l:3">
                 <NGridItem v-for="product in products.list" :key="product.id">
                   <HostCard
                     :product="product"
