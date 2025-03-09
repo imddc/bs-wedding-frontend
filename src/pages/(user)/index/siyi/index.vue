@@ -3,7 +3,7 @@
 import { onMounted, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { NButton, NGrid, NGridItem, NInput, NInputNumber, NPagination, NRate, NSelect, NSpin } from 'naive-ui'
-import { History, Image, Languages, MapPin, Mic, Sparkles, Star, User } from 'lucide-vue-next'
+import { Mic } from 'lucide-vue-next'
 import {
   getHotHostProducts,
   getProducts,
@@ -16,6 +16,7 @@ import type {
   ProductQueryParams,
 } from '~/api/product/type'
 import { EXPERIENCE_OPTIONS, LOCATION_OPTIONS, SORT_OPTIONS } from '~/constants/product'
+import HostCard from '~/components/host/HostCard.vue'
 
 const router = useRouter()
 
@@ -171,55 +172,11 @@ onMounted(() => {
         <div v-else>
           <NGrid x-gap="16" y-gap="16" cols="4">
             <NGridItem v-for="product in hotProducts" :key="product.id">
-              <div class="host-card relative bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300 h-full">
-                <div class="absolute top-2 right-2 px-2 py-1 rounded-full bg-indigo-600 text-white text-xs z-10">
-                  推荐
-                </div>
-                <div class="relative h-48 overflow-hidden">
-                  <img
-                    v-if="product.mainImage"
-                    :src="product.mainImage"
-                    :alt="product.productName"
-                    class="w-full h-full object-cover object-top"
-                  >
-                  <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <Image class="text-gray-400" :size="48" />
-                  </div>
-                  <div class="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black to-transparent opacity-70" />
-                  <div class="absolute bottom-2 left-2 text-white">
-                    <div class="text-lg font-bold line-clamp-1">
-                      {{ product.productName }}
-                    </div>
-                    <div class="flex items-center text-sm">
-                      <Star class="text-yellow-400 mr-1" :size="14" />
-                      <span>{{ product.rating }}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="p-4">
-                  <div class="flex justify-between items-start mb-3">
-                    <div class="text-indigo-600 font-bold">
-                      ￥{{ product.price.toLocaleString() }}
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      <MapPin :size="14" class="inline mr-1" />
-                      <span>{{ product.location || '未知' }}</span>
-                    </div>
-                  </div>
-                  <p class="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {{ product.description || '暂无描述' }}
-                  </p>
-                  <NButton
-                    type="primary"
-                    size="small"
-                    block
-                    color="#4F46E5"
-                    @click="viewDetails(product.id)"
-                  >
-                    查看详情
-                  </NButton>
-                </div>
-              </div>
+              <HostCard
+                :product="product as HostProduct"
+                is-hot
+                @view-details="viewDetails"
+              />
             </NGridItem>
           </NGrid>
         </div>
@@ -337,72 +294,10 @@ onMounted(() => {
             <div v-else>
               <NGrid x-gap="16" y-gap="16" cols="1 s:2 m:2 l:3">
                 <NGridItem v-for="product in products.list" :key="product.id">
-                  <div
-                    class="host-item bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-indigo-300 transition"
-                  >
-                    <div class="flex items-center p-4 border-b border-gray-100">
-                      <div class="w-20 h-20 rounded-full overflow-hidden mr-3 flex-shrink-0 border-2 border-indigo-100">
-                        <img
-                          v-if="product.mainImage"
-                          :src="product.mainImage"
-                          :alt="product.productName"
-                          class="w-full h-full object-cover"
-                        >
-                        <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
-                          <User class="text-gray-400" :size="32" />
-                        </div>
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <h3 class="text-lg font-bold truncate">
-                          {{ product.productName }}
-                        </h3>
-                        <div class="flex items-center text-sm text-gray-500">
-                          <MapPin :size="14" class="mr-1" />
-                          <span class="truncate">{{ product.location || '未知' }}</span>
-                        </div>
-                        <div class="flex items-center mt-1">
-                          <Star class="text-yellow-400 mr-1" :size="16" />
-                          <span class="text-gray-600 text-sm">{{ product.rating }}</span>
-                          <span class="text-gray-400 mx-2">|</span>
-                          <span class="text-gray-600 text-sm">{{ product.sales }}场</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="p-4">
-                      <div class="grid grid-cols-2 gap-2 mb-3">
-                        <div v-if="product.hostingExperience" class="text-sm text-gray-600">
-                          <History :size="14" class="inline mr-1" />
-                          <span>{{ product.hostingExperience }}年经验</span>
-                        </div>
-                        <div v-if="product.hostingStyle" class="text-sm text-gray-600">
-                          <Sparkles :size="14" class="inline mr-1" />
-                          <span>{{ product.hostingStyle }}</span>
-                        </div>
-                        <div v-if="product.languagesList?.length" class="text-sm text-gray-600 col-span-2">
-                          <Languages :size="14" class="inline mr-1" />
-                          <span>{{ product.languagesList.join('、') }}</span>
-                        </div>
-                      </div>
-
-                      <p class="text-gray-600 text-sm mb-3 line-clamp-2">
-                        {{ product.description || '暂无描述' }}
-                      </p>
-
-                      <div class="flex justify-between items-center pt-2 border-t border-gray-100">
-                        <div class="text-indigo-600 font-bold">
-                          ￥{{ product.price.toLocaleString() }}
-                        </div>
-                        <NButton
-                          type="primary"
-                          size="small"
-                          color="#4F46E5"
-                          @click="viewDetails(product.id)"
-                        >
-                          查看详情
-                        </NButton>
-                      </div>
-                    </div>
-                  </div>
+                  <HostCard
+                    :product="product"
+                    @view-details="viewDetails"
+                  />
                 </NGridItem>
               </NGrid>
             </div>
