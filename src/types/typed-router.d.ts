@@ -38,6 +38,7 @@ declare module 'vue-router/auto-routes' {
     '/(user)//favorite/': RouteRecordInfo<'/(user)//favorite/', '/favorite', Record<never, never>, Record<never, never>>,
     '/(user)//hotel/': RouteRecordInfo<'/(user)//hotel/', '/hotel', Record<never, never>, Record<never, never>>,
     '/(user)//hotel/[id]/': RouteRecordInfo<'/(user)//hotel/[id]/', '/hotel/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    '/(user)//mc/[id]/': RouteRecordInfo<'/(user)//mc/[id]/', '/mc/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/(user)//merchant/': RouteRecordInfo<'/(user)//merchant/', '/merchant', Record<never, never>, Record<never, never>>,
     '/(user)//merchant/[id]/': RouteRecordInfo<'/(user)//merchant/[id]/', '/merchant/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/(user)//order/': RouteRecordInfo<'/(user)//order/', '/order', Record<never, never>, Record<never, never>>,
