@@ -15,6 +15,7 @@ import type {
   PageResult,
   ProductQueryParams,
 } from '~/api/product/type'
+import { EXPERIENCE_OPTIONS, LOCATION_OPTIONS, SORT_OPTIONS } from '~/constants/product'
 
 const router = useRouter()
 
@@ -60,32 +61,6 @@ watch([experienceYears, language], () => {
     queryParams.tags = undefined
   }
 })
-
-// 筛选器选项
-const locationOptions = [
-  { label: '北京', value: '北京' },
-  { label: '上海', value: '上海' },
-  { label: '广州', value: '广州' },
-  { label: '深圳', value: '深圳' },
-  { label: '杭州', value: '杭州' },
-  { label: '成都', value: '成都' },
-]
-
-const experienceOptions = [
-  { label: '1年以下', value: 1 },
-  { label: '1-3年', value: 3 },
-  { label: '3-5年', value: 5 },
-  { label: '5-10年', value: 10 },
-  { label: '10年以上', value: 15 },
-]
-
-const sortOptions = [
-  { label: '评分高到低', value: 'rating_desc' },
-  { label: '价格高到低', value: 'price_desc' },
-  { label: '价格低到高', value: 'price_asc' },
-  { label: '经验高到低', value: 'hostingExperience_desc' },
-  { label: '场次多到少', value: 'sales_desc' },
-]
 
 // 获取商品列表
 async function fetchProducts() {
@@ -305,7 +280,7 @@ onMounted(() => {
                 filterable
                 clearable
                 placeholder="选择地区"
-                :options="locationOptions"
+                :options="LOCATION_OPTIONS"
               />
             </div>
 
@@ -315,7 +290,7 @@ onMounted(() => {
                 v-model:value="experienceYears"
                 clearable
                 placeholder="选择经验年限"
-                :options="experienceOptions"
+                :options="EXPERIENCE_OPTIONS"
               />
             </div>
 
@@ -347,7 +322,7 @@ onMounted(() => {
                 <NSelect
                   v-model:value="queryParams.orderBy"
                   size="small"
-                  :options="sortOptions"
+                  :options="SORT_OPTIONS"
                   style="width: 120px"
                 />
               </div>

@@ -5,6 +5,32 @@ export const PRODUCT_TYPE = {
   HOST: 3,
 }
 
+// 筛选器选项
+export const LOCATION_OPTIONS = [
+  { label: '北京', value: '北京' },
+  { label: '上海', value: '上海' },
+  { label: '广州', value: '广州' },
+  { label: '深圳', value: '深圳' },
+  { label: '杭州', value: '杭州' },
+  { label: '成都', value: '成都' },
+]
+
+export const EXPERIENCE_OPTIONS = [
+  { label: '1年以下', value: 1 },
+  { label: '1-3年', value: 3 },
+  { label: '3-5年', value: 5 },
+  { label: '5-10年', value: 10 },
+  { label: '10年以上', value: 15 },
+]
+
+export const SORT_OPTIONS = [
+  { label: '评分高到低', value: 'rating_desc' },
+  { label: '价格高到低', value: 'price_desc' },
+  { label: '价格低到高', value: 'price_asc' },
+  { label: '经验高到低', value: 'hostingExperience_desc' },
+  { label: '场次多到少', value: 'sales_desc' },
+]
+
 export const PRODUCT_TYPE_OPTIONS = [
   { label: '婚纱摄影', value: PRODUCT_TYPE.PHOTOGRAPHY },
   { label: '婚宴酒店', value: PRODUCT_TYPE.HOTEL },
