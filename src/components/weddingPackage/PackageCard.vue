@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { NButton, NTag, NPopconfirm } from 'naive-ui'
-import { Heart, ScrollText, MapPin, CalendarClock, Coins } from 'lucide-vue-next'
-import { WeddingPackageStatus, WeddingPackageStatusMap, ProductType, ProductTypeMap } from '~/constants/weddingPackage'
+import { NButton, NPopconfirm, NTag } from 'naive-ui'
+import { CalendarClock, Coins, Heart, MapPin, ScrollText } from 'lucide-vue-next'
+import { ProductType, ProductTypeMap, WeddingPackageStatus, WeddingPackageStatusMap } from '~/constants/weddingPackage'
 import { handleImgUrl } from '~/utils/core'
 
-interface Props {
+defineProps<{
   package: {
     id: number
     packageName: string
@@ -17,16 +17,13 @@ interface Props {
     venueProduct: any
     hostProduct: any
   }
-}
+}>()
 
-interface Emits {
+const emit = defineEmits<{
   (e: 'edit'): void
   (e: 'view'): void
   (e: 'delete'): void
-}
-
-defineProps<Props>()
-const emit = defineEmits<Emits>()
+}>()
 
 // 格式化预算显示
 function formatBudget(budget: number): string {
@@ -73,7 +70,7 @@ function getStatusTagType(status: number): 'default' | 'success' | 'warning' | '
           </div>
         </div>
       </div>
-      
+
       <div class="p-4 flex-1">
         <div class="grid grid-cols-3 gap-3 mb-4">
           <!-- 婚纱摄影 -->
@@ -90,12 +87,18 @@ function getStatusTagType(status: number): 'default' | 'success' | 'warning' | '
               </div>
             </div>
             <div class="text-xs">
-              <div class="font-bold line-clamp-1 text-pink-800">{{ ProductTypeMap[ProductType.PHOTOGRAPHY] }}</div>
-              <div class="line-clamp-1">{{ package.photographyProduct.productName }}</div>
-              <div class="text-pink-600">¥{{ package.photographyProduct.price.toLocaleString() }}</div>
+              <div class="font-bold line-clamp-1 text-pink-800">
+                {{ ProductTypeMap[ProductType.PHOTOGRAPHY] }}
+              </div>
+              <div class="line-clamp-1">
+                {{ package.photographyProduct.productName }}
+              </div>
+              <div class="text-pink-600">
+                ¥{{ package.photographyProduct.price.toLocaleString() }}
+              </div>
             </div>
           </div>
-          
+
           <!-- 婚宴酒店 -->
           <div class="flex flex-col overflow-hidden bg-blue-50 rounded-lg p-2">
             <div class="h-24 overflow-hidden rounded-md mb-2">
@@ -110,12 +113,18 @@ function getStatusTagType(status: number): 'default' | 'success' | 'warning' | '
               </div>
             </div>
             <div class="text-xs">
-              <div class="font-bold line-clamp-1 text-blue-800">{{ ProductTypeMap[ProductType.HOTEL] }}</div>
-              <div class="line-clamp-1">{{ package.venueProduct.productName }}</div>
-              <div class="text-blue-600">¥{{ package.venueProduct.price.toLocaleString() }}</div>
+              <div class="font-bold line-clamp-1 text-blue-800">
+                {{ ProductTypeMap[ProductType.HOTEL] }}
+              </div>
+              <div class="line-clamp-1">
+                {{ package.venueProduct.productName }}
+              </div>
+              <div class="text-blue-600">
+                ¥{{ package.venueProduct.price.toLocaleString() }}
+              </div>
             </div>
           </div>
-          
+
           <!-- 司仪主持 -->
           <div class="flex flex-col overflow-hidden bg-purple-50 rounded-lg p-2">
             <div class="h-24 overflow-hidden rounded-md mb-2">
@@ -130,13 +139,19 @@ function getStatusTagType(status: number): 'default' | 'success' | 'warning' | '
               </div>
             </div>
             <div class="text-xs">
-              <div class="font-bold line-clamp-1 text-purple-800">{{ ProductTypeMap[ProductType.HOST] }}</div>
-              <div class="line-clamp-1">{{ package.hostProduct.productName }}</div>
-              <div class="text-purple-600">¥{{ package.hostProduct.price.toLocaleString() }}</div>
+              <div class="font-bold line-clamp-1 text-purple-800">
+                {{ ProductTypeMap[ProductType.HOST] }}
+              </div>
+              <div class="line-clamp-1">
+                {{ package.hostProduct.productName }}
+              </div>
+              <div class="text-purple-600">
+                ¥{{ package.hostProduct.price.toLocaleString() }}
+              </div>
             </div>
           </div>
         </div>
-        
+
         <div class="flex justify-between items-center mt-2">
           <div class="text-sm">
             <span class="text-gray-500">总价: </span>
@@ -155,17 +170,21 @@ function getStatusTagType(status: number): 'default' | 'success' | 'warning' | '
               </template>
               <template #default>
                 <div class="max-w-[200px]">
-                  <p class="font-medium mb-1">确认删除</p>
-                  <p class="text-gray-500 text-sm">是否确认删除该婚礼方案？此操作不可恢复。</p>
+                  <p class="font-medium mb-1">
+                    确认删除
+                  </p>
+                  <p class="text-gray-500 text-sm">
+                    是否确认删除该婚礼方案？此操作不可恢复。
+                  </p>
                 </div>
               </template>
             </NPopconfirm>
             <NButton size="small" @click="emit('edit')">
               编辑
             </NButton>
-            <NButton 
-              size="small" 
-              type="primary" 
+            <NButton
+              size="small"
+              type="primary"
               color="#DB2777"
               @click="emit('view')"
             >
@@ -184,7 +203,7 @@ function getStatusTagType(status: number): 'default' | 'success' | 'warning' | '
 }
 
 .package-card:hover {
-  border-color: #DB2777;
+  border-color: #db2777;
 }
 
 :deep(.n-button.n-button--error-type) {
@@ -194,4 +213,4 @@ function getStatusTagType(status: number): 'default' | 'success' | 'warning' | '
     border-color: #dc2626;
   }
 }
-</style> 
+</style>
