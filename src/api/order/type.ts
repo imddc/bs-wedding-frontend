@@ -48,3 +48,10 @@ export interface OrdersPageResponse {
   current: number
   pages: number
 }
+
+export interface CreateOrderParams {
+  productId: number
+  merchantId: number
+  remark?: string
+  packageId?: number // 关联的婚礼方案ID
+}

@@ -1,27 +1,25 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { 
-  NModal,
-  NButton, 
-  NForm, 
-  NFormItem, 
-  NInputNumber, 
-  NSelect, 
-  NSpace, 
-  NStep, 
-  NSteps, 
-  NSpin,
-  NResult,
+import {
+  NButton,
   NDescriptions,
-  NDescriptionsItem
+  NDescriptionsItem,
+  NForm,
+  NFormItem,
+  NInputNumber,
+  NModal,
+  NResult,
+  NSelect,
+  NSpace,
+  NSpin,
+  NStep,
+  NSteps,
 } from 'naive-ui'
+import { ArrowRight, Check, Gift } from 'lucide-vue-next'
 import { createWeddingPackage } from '~/api/weddingPackage'
 import type { WeddingPackageParams } from '~/api/weddingPackage/type'
 import { CityOptions } from '~/constants/weddingPackage'
-import { Gift, ArrowRight, Check } from 'lucide-vue-next'
 import { useUserStore } from '~/stores'
-
-const userStore = useUserStore()
 
 const show = defineModel<boolean>('show', { required: true })
 
@@ -30,46 +28,49 @@ const emit = defineEmits<{
   (e: 'success', packageId: number): void
 }>()
 
+const userStore = useUserStore()
+
 // 当前步骤
 const currentStep = ref(0)
 
 // 表单数据
 const formData = reactive<Partial<WeddingPackageParams>>({
   budget: 100000,
-  location: undefined
+  location: undefined,
 })
 
 // 表单规则
 const rules = {
   budget: [
     { required: true, message: '请输入预算', trigger: 'blur', type: 'number' },
-    { type: 'number', min: 10000, message: '预算不能低于1万', trigger: 'blur' }
+    { type: 'number', min: 10000, message: '预算不能低于1万', trigger: 'blur' },
   ],
   location: [
-    { required: true, message: '请选择地区', trigger: 'blur' }
-  ]
+    { required: true, message: '请选择地区', trigger: 'blur' },
+  ],
 }
 
 const formRef = ref(null)
 const loading = ref(false)
 const createResult = ref({
   success: false,
-  packageId: 0
+  packageId: 0,
 })
 
 // 提交表单
 async function handleSubmit() {
-  if (!formRef.value) return
-  
+  if (!formRef.value)
+    return
+
   try {
     await (formRef.value as any).validate()
-    
+
     loading.value = true
     const response = await createWeddingPackage({
       ...formData,
-      userId: userStore.userInfo?.id
+      userId: userStore.userInfo?.id,
     } as WeddingPackageParams)
-    
+
     if (response.success) {
       createResult.value.success = true
       createResult.value.packageId = response.data
@@ -100,7 +101,7 @@ function handleClose() {
     formData.location = undefined
     createResult.value = {
       success: false,
-      packageId: 0
+      packageId: 0,
     }
   }, 300)
 }
@@ -133,47 +134,49 @@ function formatBudget(budget: number): string {
         <NStep title="完成" />
       </NSteps>
     </div>
-    
+
     <!-- 第一步：填写基本信息 -->
     <div v-if="currentStep === 0">
-      <NForm 
-        ref="formRef" 
-        :model="formData" 
-        :rules="rules as any" 
-        label-placement="left" 
+      <NForm
+        ref="formRef"
+        :model="formData"
+        :rules="rules as any"
+        label-placement="left"
         label-width="80"
         require-mark-placement="right-hanging"
       >
         <NFormItem label="预算" path="budget" required>
-          <NInputNumber 
-            v-model:value="formData.budget" 
-            :min="10000" 
+          <NInputNumber
+            v-model:value="formData.budget"
+            :min="10000"
             :step="10000"
             style="width: 100%"
           >
-            <template #prefix>¥</template>
+            <template #prefix>
+              ¥
+            </template>
           </NInputNumber>
           <div class="text-xs text-gray-500 mt-1">
             提示：建议预算至少10万元，以确保获得优质服务
           </div>
         </NFormItem>
-        
+
         <NFormItem label="地区" path="location" required>
-          <NSelect 
-            v-model:value="formData.location" 
-            :options="CityOptions" 
+          <NSelect
+            v-model:value="formData.location"
+            :options="CityOptions"
             placeholder="请选择城市"
             filterable
           />
         </NFormItem>
       </NForm>
-      
+
       <div class="flex justify-end gap-2 mt-6">
         <NButton @click="handleClose">
           取消
         </NButton>
-        <NButton 
-          type="primary" 
+        <NButton
+          type="primary"
           color="#DB2777"
           :loading="loading"
           @click="handleSubmit"
@@ -185,28 +188,32 @@ function formatBudget(budget: number): string {
         </NButton>
       </div>
     </div>
-    
+
     <!-- 第二步：智能匹配中 -->
     <div v-else-if="currentStep === 1" class="py-8 flex flex-col items-center">
       <NSpin size="large" />
-      <p class="mt-4 text-lg">正在为您智能匹配最适合的婚礼方案...</p>
-      <p class="text-gray-500 mt-2">根据您的预算和地区，我们正在精选优质服务</p>
-      
-      <NButton 
-        type="primary" 
+      <p class="mt-4 text-lg">
+        正在为您智能匹配最适合的婚礼方案...
+      </p>
+      <p class="text-gray-500 mt-2">
+        根据您的预算和地区，我们正在精选优质服务
+      </p>
+
+      <NButton
+        type="primary"
         color="#DB2777"
-        @click="nextStep" 
         class="mt-8"
+        @click="nextStep"
       >
         匹配完成，查看结果
       </NButton>
     </div>
-    
+
     <!-- 第三步：完成 -->
     <div v-else class="py-4">
-      <NResult 
-        status="success" 
-        title="婚礼方案创建成功" 
+      <NResult
+        status="success"
+        title="婚礼方案创建成功"
         description="我们已为您智能匹配了最适合的婚纱摄影、婚宴酒店和司仪主持服务"
       >
         <template #icon>
@@ -214,7 +221,7 @@ function formatBudget(budget: number): string {
             <Gift :size="40" class="text-pink-600" />
           </div>
         </template>
-        
+
         <div class="bg-pink-50 p-4 rounded-lg my-4">
           <NDescriptions title="方案基本信息" bordered>
             <NDescriptionsItem label="预算">
@@ -227,14 +234,14 @@ function formatBudget(budget: number): string {
               {{ createResult.packageId }}
             </NDescriptionsItem>
           </NDescriptions>
-          
+
           <div class="mt-4 text-center">
             <p class="text-pink-800">
               <Check :size="16" class="inline-block mr-1" /> 我们已为您匹配了3种婚礼必备服务
             </p>
           </div>
         </div>
-        
+
         <template #footer>
           <NSpace>
             <NButton @click="handleClose">
@@ -248,4 +255,4 @@ function formatBudget(budget: number): string {
       </NResult>
     </div>
   </NModal>
-</template> 
+</template>

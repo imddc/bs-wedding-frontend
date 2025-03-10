@@ -4,7 +4,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { NButton, NEmpty, NPagination, NSpin } from 'naive-ui'
 import { Gift } from 'lucide-vue-next'
-import { deleteWeddingPackage, getWeddingPackageList } from '~/api/weddingPackage'
+import { confirmWeddingPackage, deleteWeddingPackage, getWeddingPackageList } from '~/api/weddingPackage'
 import type { PaginationResult, WeddingPackageItem } from '~/api/weddingPackage/type'
 import { useUserStore } from '~/stores'
 import CreatePackageModal from '~/components/weddingPackage/CreatePackageModal.vue'
@@ -97,6 +97,25 @@ async function handleDeletePackage(id: number) {
   }
 }
 
+// 处理方案确认
+async function handlePackageConfirm(packageId: number) {
+  try {
+    // 更新方案状态为已确认
+    const response = await confirmWeddingPackage(packageId)
+
+    if (response.success) {
+      window.$message.success('方案已确认')
+      // 刷新列表
+      fetchWeddingPackages()
+    } else {
+      window.$message.error('方案确认失败')
+    }
+  } catch (error) {
+    console.error('确认方案失败:', error)
+    window.$message.error('方案确认失败')
+  }
+}
+
 // 初始化
 onMounted(() => {
   fetchWeddingPackages()
@@ -154,6 +173,7 @@ onMounted(() => {
               @edit="editPackage(pkg.id)"
               @view="viewPackageDetails(pkg.id)"
               @delete="handleDeletePackage(pkg.id)"
+              @confirm="handlePackageConfirm(pkg.id)"
             />
           </div>
         </div>

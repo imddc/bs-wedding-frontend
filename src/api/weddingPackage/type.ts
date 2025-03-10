@@ -1,4 +1,4 @@
-import type { Product } from '~/api/product/type'
+import type { HostProduct, HotelProduct, PhotographyProduct } from '~/api/product/type'
 
 // 创建婚礼方案请求参数
 export interface WeddingPackageParams {
@@ -43,9 +43,9 @@ export interface WeddingPackageDetail {
   status: number
   createTime: string
   updateTime: string
-  photographyProduct: Product
-  venueProduct: Product
-  hostProduct: Product
+  photographyProduct: PhotographyProduct
+  venueProduct: HotelProduct
+  hostProduct: HostProduct
 }
 
 // 分页结果
