@@ -7,8 +7,10 @@ import { getOrdersPage } from '~/api/order'
 import type { OrdersPageResponse, OrdersQueryParams } from '~/api/order/type'
 import { ORDER_STATUS_OPTIONS } from '~/constants/order'
 import OrderCard from '~/components/order/OrderCard.vue'
+import { useUserStore } from '~/stores'
 
 const router = useRouter()
+const userStore = useUserStore()
 
 // 订单列表数据
 const orders = ref<OrdersPageResponse>({
@@ -33,7 +35,10 @@ const queryParams = reactive<OrdersQueryParams>({
 async function fetchOrders() {
   loading.value = true
   try {
-    const response = await getOrdersPage(queryParams)
+    const response = await getOrdersPage({
+      ...queryParams,
+      userId: userStore.userInfo?.id
+    })
     if (response.code === 200) {
       orders.value = response.data
     } else {

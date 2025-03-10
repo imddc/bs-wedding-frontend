@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { NButton, NCarousel, NCarouselItem, NInput, NInputNumber, NPagination, NRate, NSelect, NSpin } from 'naive-ui'
-import { Camera, Image, MapPin, Shirt, Star } from 'lucide-vue-next'
+import { Camera } from 'lucide-vue-next'
 import {
   getHotPhotographyProducts,
   getProducts,
@@ -14,9 +13,8 @@ import type {
   PhotographyProduct,
   ProductQueryParams,
 } from '~/api/product/type'
-import { handleImgUrl } from '~/utils/core'
+import ProductCard from '~/components/product/ProductCard.vue'
 
-const router = useRouter()
 
 // 商品列表数据
 const products = ref<PageResult<PhotographyProduct>>({
@@ -120,10 +118,6 @@ function handleReset() {
   fetchProducts()
 }
 
-// 查看商品详情
-function viewDetails(id: number) {
-  router.push(`/photography/${id}`)
-}
 
 onMounted(() => {
   fetchProducts()
@@ -176,40 +170,12 @@ onMounted(() => {
           autoplay
           class="my-4"
         >
-          <NCarouselItem v-for="product in hotProducts" :key="product.id" class="">
-            <div class="hot-product-card">
-              <div class="relative overflow-hidden rounded-t-lg min-h-60">
-                <img
-                  v-if="product.mainImage"
-                  :src="handleImgUrl(product.mainImage)"
-                  :alt="product.productName"
-                  class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-                >
-                <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
-                  <Image class="text-gray-400" :size="48" />
-                </div>
-                <div class="absolute top-2 right-2 px-2 py-1 rounded bg-red-600 text-white text-sm">
-                  热门
-                </div>
-              </div>
-              <div class="p-4 border-t-0 border border-gray-200 rounded-b-lg">
-                <h3 class="text-lg font-bold mb-2 line-clamp-1">
-                  {{ product.productName }}
-                </h3>
-                <p class="text-gray-600 text-sm mb-2 line-clamp-2">
-                  {{ product.description || '暂无描述' }}
-                </p>
-                <div class="flex justify-between items-center">
-                  <div class="text-red-600 font-bold">
-                    ￥{{ product.price.toLocaleString() }}
-                  </div>
-                  <div class="flex items-center">
-                    <Star class="text-yellow-400 mr-1" :size="16" />
-                    <span class="text-gray-600 text-sm">{{ product.rating }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <NCarouselItem v-for="product in hotProducts" :key="product.id">
+            <ProductCard
+              :product="product"
+              :show-hot-tag="true"
+              size="large"
+            />
           </NCarouselItem>
         </NCarousel>
       </div>
@@ -314,71 +280,13 @@ onMounted(() => {
               暂无商品，请调整筛选条件
             </div>
             <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div
+              <ProductCard
                 v-for="product in products.list"
                 :key="product.id"
-                class="product-card border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition"
-              >
-                <div class="relative h-48 overflow-hidden bg-gray-100">
-                  <img
-                    v-if="product.mainImage"
-                    :src="handleImgUrl(product.mainImage)"
-                    :alt="product.productName"
-                    class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-                  >
-                  <div v-else class="w-full h-full flex items-center justify-center">
-                    <Image class="text-gray-300" :size="48" />
-                  </div>
-                  <div
-                    v-if="product.sales > 100"
-                    class="absolute top-2 left-2 px-2 py-1 rounded bg-orange-500 text-white text-xs"
-                  >
-                    热销
-                  </div>
-                </div>
-                <div class="p-4">
-                  <h3 class="text-lg font-bold mb-2 line-clamp-1">
-                    {{ product.productName }}
-                  </h3>
-                  <div class="flex items-center text-sm text-gray-500 mb-2">
-                    <MapPin :size="14" class="mr-1" />
-                    <span>{{ product.location || '未知' }}</span>
-                  </div>
-                  <p class="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {{ product.description || '暂无描述' }}
-                  </p>
-
-                  <div class="flex justify-between items-center mb-2">
-                    <div>
-                      <div v-if="product.photoCount" class="text-sm text-gray-500">
-                        <span class="mr-2">
-                          <Camera :size="14" class="inline mr-1" />
-                          {{ product.photoCount }}张照片
-                        </span>
-                      </div>
-                      <div v-if="product.costumeCount" class="text-sm text-gray-500">
-                        <Shirt :size="14" class="inline mr-1" />
-                        {{ product.costumeCount }}套服装
-                      </div>
-                    </div>
-                    <div class="flex items-center">
-                      <Star class="text-yellow-400 mr-1" :size="16" />
-                      <span class="text-gray-600 text-sm">{{ product.rating }}</span>
-                    </div>
-                  </div>
-
-                  <div class="flex justify-between items-center pt-2 border-t border-gray-100">
-                    <div>
-                      <span class="text-red-600 font-bold text-lg">
-                        ￥{{ product.price.toLocaleString() }}
-                      </span>
-                    </div>
-                    <NButton size="small" type="primary" @click="viewDetails(product.id)">
-                      查看详情
-                    </NButton>
-                  </div>
-                </div>
-              </div>
+                :product="product"
+                :show-hot-tag="product.sales > 100"
+                size="default"
+              />
             </div>
 
             <!-- 分页 -->

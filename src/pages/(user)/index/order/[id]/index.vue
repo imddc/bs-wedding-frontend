@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NButton, NCard, NDescriptions, NDescriptionsItem, NSpin, NStep, NSteps, NTag } from 'naive-ui'
 import { ArrowLeft, Building2, Package, User } from 'lucide-vue-next'
-import { getOrderDetail } from '~/api/order'
+import { getOrderDetail , updateOrderStatus } from '~/api/order'
 import { getHostProduct, getHotelProduct, getPhotographyProduct, getProduct } from '~/api/product'
 import type { OrdersDetailResponse } from '~/api/order/type'
 import type { HostProduct, HotelProduct, PhotographyProduct, Product } from '~/api/product/type'
@@ -95,6 +95,20 @@ function goBack() {
 onMounted(() => {
   fetchOrderDetail()
 })
+
+async function cancleOrder() {
+  try {
+    await updateOrderStatus({
+    id: orderId,
+    orderStatus: 3
+  })
+  window.$message.success('订单已取消')
+  await fetchOrderDetail()
+
+  } catch {
+    window.$message.success('订单取消失败，请重试')
+  }
+}
 </script>
 
 <template>
@@ -120,9 +134,15 @@ onMounted(() => {
         <NCard class="mb-6" :bordered="false">
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h1 class="text-2xl font-bold mb-2">
-                订单详情
-              </h1>
+              <div class="flex gap-4 items-center">
+                <h1 class="text-2xl font-bold mb-2">
+                  订单详情
+                </h1>
+                <NButton v-if="orderInfo?.orderStatus !== 3" size="tiny" @click="cancleOrder">
+                  取消订单
+                </NButton>
+              </div>
+              
               <div class="flex items-center text-gray-500">
                 <span class="mr-2">订单号：{{ orderInfo?.orderNo }}</span>
                 <NTag :type="getStatusType(orderInfo?.orderStatus || 0)">
