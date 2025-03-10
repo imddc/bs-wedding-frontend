@@ -179,9 +179,6 @@ function getStatusTagType(status: number): 'default' | 'success' | 'warning' | '
                 </div>
               </template>
             </NPopconfirm>
-            <NButton size="small" @click="emit('edit')">
-              编辑
-            </NButton>
             <NButton
               size="small"
               type="primary"
