@@ -24,7 +24,7 @@ withDefaults(defineProps<Props>(), {
   <div
     class="transition-all duration-300 group"
     :class="[
-      size === 'large' ? 'w-[90%] mx-auto' : 'w-full'
+      size === 'large' ? 'w-[80%] mx-auto' : 'w-full'
     ]"
   >
     <div
