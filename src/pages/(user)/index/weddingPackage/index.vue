@@ -2,13 +2,13 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { NButton, NEmpty, NPagination, NSelect, NSpin, NTag, NPopconfirm } from 'naive-ui'
-import { Gift, Heart, ScrollText, MapPin, CalendarClock, Coins } from 'lucide-vue-next'
-import { getWeddingPackageList, deleteWeddingPackage } from '~/api/weddingPackage'
-import type { WeddingPackageItem, PaginationResult } from '~/api/weddingPackage/type'
-import { WeddingPackageStatus, WeddingPackageStatusMap, ProductType, ProductTypeMap, CityOptions, BudgetRangeOptions } from '~/constants/weddingPackage'
-import { handleImgUrl } from '~/utils/core'
+import { NButton, NEmpty, NPagination, NSpin } from 'naive-ui'
+import { Gift } from 'lucide-vue-next'
+import { deleteWeddingPackage, getWeddingPackageList } from '~/api/weddingPackage'
+import type { PaginationResult, WeddingPackageItem } from '~/api/weddingPackage/type'
 import { useUserStore } from '~/stores'
+import CreatePackageModal from '~/components/weddingPackage/CreatePackageModal.vue'
+import PackageCard from '~/components/weddingPackage/PackageCard.vue'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -33,6 +33,9 @@ const queryParams = reactive({
   budgetRange: null as number[] | null,
 })
 
+// 创建弹窗控制
+const showCreateModal = ref(false)
+
 // 获取婚礼方案列表
 async function fetchWeddingPackages() {
   loading.value = true
@@ -55,23 +58,17 @@ async function fetchWeddingPackages() {
   }
 }
 
-// 搜索
-function handleSearch() {
-  queryParams.page = 1
+// 创建成功回调
+function handleCreateSuccess(packageId: number) {
+  // 刷新列表
   fetchWeddingPackages()
+  // 跳转到详情页
+  router.push(`/weddingPackage/${packageId}`)
 }
 
-// 重置
-function handleReset() {
-  queryParams.location = undefined
-  queryParams.budgetRange = null
-  queryParams.page = 1
-  fetchWeddingPackages()
-}
-
-// 创建新方案
+// 修改原有的创建方法
 function createWeddingPackage() {
-  router.push('/weddingPackage/create')
+  showCreateModal.value = true
 }
 
 // 查看方案详情
@@ -100,26 +97,6 @@ async function handleDeletePackage(id: number) {
   }
 }
 
-// 格式化预算显示
-function formatBudget(budget: number): string {
-  if (budget >= 10000) {
-    return `${(budget / 10000).toFixed(1)}万`
-  }
-  return `${budget}元`
-}
-
-// 获取状态标签类型
-function getStatusTagType(status: number): 'default' | 'success' | 'warning' | 'error' | 'info' {
-  switch (status) {
-    case WeddingPackageStatus.DRAFT:
-      return 'warning'
-    case WeddingPackageStatus.CONFIRMED:
-      return 'success'
-    default:
-      return 'default'
-  }
-}
-
 // 初始化
 onMounted(() => {
   fetchWeddingPackages()
@@ -144,231 +121,63 @@ onMounted(() => {
     </div>
 
     <div class="container mx-auto px-4">
-      <!-- 筛选和列表部分 -->
-      <div class="flex flex-wrap md:flex-nowrap gap-6">
-        <!-- 筛选侧边栏 -->
-        <div class="w-full md:w-1/4 lg:w-1/5">
-          <div class="bg-white rounded-lg border border-gray-200 p-4 sticky top-4">
-            <h3 class="text-lg font-bold mb-4 pb-2 border-b border-pink-100">
-              筛选条件
-            </h3>
+      <!-- 列表内容 -->
+      <div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+        <div class="flex justify-between items-center mb-4">
+          <div class="text-lg font-bold">
+            我的婚礼方案
+          </div>
+          <NButton type="primary" color="#DB2777" @click="createWeddingPackage">
+            创建新方案
+          </NButton>
+        </div>
 
-            <div class="mb-4">
-              <label class="block text-gray-700 text-sm font-bold mb-2">所在城市</label>
-              <NSelect
-                v-model:value="queryParams.location"
-                filterable
-                clearable
-                placeholder="选择城市"
-                :options="CityOptions"
-              />
-            </div>
-
-            <div class="mb-4">
-              <label class="block text-gray-700 text-sm font-bold mb-2">预算范围</label>
-              <NSelect
-                v-model:value="queryParams.budgetRange"
-                clearable
-                placeholder="选择预算范围"
-                :options="BudgetRangeOptions as any"
-              />
-            </div>
-
-            <div class="flex items-center gap-2 pt-2">
-              <NButton
-                type="primary"
-                color="#DB2777"
-                :loading="loading"
-                @click="handleSearch"
-              >
-                搜索
+        <div v-if="loading" class="py-8 flex justify-center">
+          <NSpin size="large" />
+        </div>
+        <div v-else-if="weddingPackages.records.length === 0" class="py-8">
+          <NEmpty description="暂无婚礼方案">
+            <template #extra>
+              <NButton type="primary" color="#DB2777" @click="createWeddingPackage">
+                立即创建
               </NButton>
-              <NButton type="default" @click="handleReset">
-                重置
-              </NButton>
-            </div>
+            </template>
+          </NEmpty>
+        </div>
+        <div v-else>
+          <!-- 卡片列表 -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PackageCard
+              v-for="pkg in weddingPackages.records"
+              :key="pkg.id"
+              :package="pkg"
+              @edit="editPackage(pkg.id)"
+              @view="viewPackageDetails(pkg.id)"
+              @delete="handleDeletePackage(pkg.id)"
+            />
           </div>
         </div>
 
-        <!-- 列表内容 -->
-        <div class="w-full md:w-3/4 lg:w-4/5">
-          <div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
-            <div class="flex justify-between items-center mb-4">
-              <div class="text-lg font-bold">
-                我的婚礼方案
-              </div>
-              <NButton type="primary" color="#DB2777" @click="createWeddingPackage">
-                创建新方案
-              </NButton>
-            </div>
-
-            <div v-if="loading" class="py-8 flex justify-center">
-              <NSpin size="large" />
-            </div>
-            <div v-else-if="weddingPackages.records.length === 0" class="py-8">
-              <NEmpty description="暂无婚礼方案">
-                <template #extra>
-                  <NButton type="primary" color="#DB2777" @click="createWeddingPackage">
-                    立即创建
-                  </NButton>
-                </template>
-              </NEmpty>
-            </div>
-            <div v-else>
-              <!-- 卡片列表 -->
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div
-                  v-for="pkg in weddingPackages.records"
-                  :key="pkg.id"
-                  class="package-card bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-md transition relative"
-                >
-                  <div class="flex flex-col h-full">
-                    <div class="p-4 border-b border-gray-100">
-                      <div class="flex justify-between items-start">
-                        <h3 class="text-lg font-bold mb-1 line-clamp-1 flex-1">
-                          {{ pkg.packageName }}
-                        </h3>
-                        <NTag :type="getStatusTagType(pkg.status)" size="small">
-                          {{ WeddingPackageStatusMap[pkg.status] }}
-                        </NTag>
-                      </div>
-                      <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500 mb-2">
-                        <div class="flex items-center">
-                          <MapPin :size="14" class="mr-1" />
-                          <span>{{ pkg.location }}</span>
-                        </div>
-                        <div class="flex items-center">
-                          <Coins :size="14" class="mr-1" />
-                          <span>预算: {{ formatBudget(pkg.budget) }}</span>
-                        </div>
-                        <div class="flex items-center">
-                          <CalendarClock :size="14" class="mr-1" />
-                          <span>{{ new Date(pkg.createTime).toLocaleDateString() }}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="p-4 flex-1">
-                      <div class="grid grid-cols-3 gap-3 mb-4">
-                        <!-- 婚纱摄影 -->
-                        <div class="flex flex-col overflow-hidden bg-pink-50 rounded-lg p-2">
-                          <div class="h-24 overflow-hidden rounded-md mb-2">
-                            <img
-                              v-if="pkg.photographyProduct?.mainImage"
-                              :src="handleImgUrl(pkg.photographyProduct.mainImage)"
-                              :alt="pkg.photographyProduct.productName"
-                              class="w-full h-full object-cover"
-                            >
-                            <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
-                              <Heart class="text-pink-300" :size="24" />
-                            </div>
-                          </div>
-                          <div class="text-xs">
-                            <div class="font-bold line-clamp-1 text-pink-800">{{ ProductTypeMap[ProductType.PHOTOGRAPHY] }}</div>
-                            <div class="line-clamp-1">{{ pkg.photographyProduct.productName }}</div>
-                            <div class="text-pink-600">¥{{ pkg.photographyProduct.price.toLocaleString() }}</div>
-                          </div>
-                        </div>
-                        
-                        <!-- 婚宴酒店 -->
-                        <div class="flex flex-col overflow-hidden bg-blue-50 rounded-lg p-2">
-                          <div class="h-24 overflow-hidden rounded-md mb-2">
-                            <img
-                              v-if="pkg.venueProduct?.mainImage"
-                              :src="handleImgUrl(pkg.venueProduct.mainImage)"
-                              :alt="pkg.venueProduct.productName"
-                              class="w-full h-full object-cover"
-                            >
-                            <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
-                              <MapPin class="text-blue-300" :size="24" />
-                            </div>
-                          </div>
-                          <div class="text-xs">
-                            <div class="font-bold line-clamp-1 text-blue-800">{{ ProductTypeMap[ProductType.HOTEL] }}</div>
-                            <div class="line-clamp-1">{{ pkg.venueProduct.productName }}</div>
-                            <div class="text-blue-600">¥{{ pkg.venueProduct.price.toLocaleString() }}</div>
-                          </div>
-                        </div>
-                        
-                        <!-- 司仪主持 -->
-                        <div class="flex flex-col overflow-hidden bg-purple-50 rounded-lg p-2">
-                          <div class="h-24 overflow-hidden rounded-md mb-2">
-                            <img
-                              v-if="pkg.hostProduct?.mainImage"
-                              :src="handleImgUrl(pkg.hostProduct.mainImage)"
-                              :alt="pkg.hostProduct.productName"
-                              class="w-full h-full object-cover"
-                            >
-                            <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
-                              <ScrollText class="text-purple-300" :size="24" />
-                            </div>
-                          </div>
-                          <div class="text-xs">
-                            <div class="font-bold line-clamp-1 text-purple-800">{{ ProductTypeMap[ProductType.HOST] }}</div>
-                            <div class="line-clamp-1">{{ pkg.hostProduct.productName }}</div>
-                            <div class="text-purple-600">¥{{ pkg.hostProduct.price.toLocaleString() }}</div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div class="flex justify-between items-center mt-2">
-                        <div class="text-sm">
-                          <span class="text-gray-500">总价: </span>
-                          <span class="text-lg font-bold text-pink-700">¥{{ pkg.totalPrice.toLocaleString() }}</span>
-                        </div>
-                        <div class="flex gap-2">
-                          <NPopconfirm
-                            positive-text="确定"
-                            negative-text="取消"
-                            @positive-click="handleDeletePackage(pkg.id)"
-                          >
-                            <template #trigger>
-                              <NButton size="small" type="error" ghost>
-                                删除
-                              </NButton>
-                            </template>
-                            <template #default>
-                              <div class="max-w-[200px]">
-                                <p class="font-medium mb-1">确认删除</p>
-                                <p class="text-gray-500 text-sm">是否确认删除该婚礼方案？此操作不可恢复。</p>
-                              </div>
-                            </template>
-                          </NPopconfirm>
-                          <NButton size="small" @click="editPackage(pkg.id)">
-                            编辑
-                          </NButton>
-                          <NButton 
-                            size="small" 
-                            type="primary" 
-                            color="#DB2777"
-                            @click="viewPackageDetails(pkg.id)"
-                          >
-                            查看详情
-                          </NButton>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 分页 -->
-            <div v-if="weddingPackages.records.length > 0" class="mt-6 flex justify-center">
-              <NPagination
-                v-model:page="weddingPackages.current"
-                :page-count="weddingPackages.pages"
-                :page-size="weddingPackages.size"
-                @update:page="(page) => {
-                  queryParams.page = page
-                  fetchWeddingPackages()
-                }"
-              />
-            </div>
-          </div>
+        <!-- 分页 -->
+        <div v-if="weddingPackages.records.length > 0" class="mt-6 flex justify-center">
+          <NPagination
+            v-model:page="weddingPackages.current"
+            :page-count="weddingPackages.pages"
+            :page-size="weddingPackages.size"
+            @update:page="(page) => {
+              queryParams.page = page
+              fetchWeddingPackages()
+            }"
+          />
         </div>
       </div>
     </div>
+
+    <!-- 添加创建弹窗组件 -->
+    <CreatePackageModal
+      v-model:show="showCreateModal"
+      @success="handleCreateSuccess"
+    />
   </div>
 </template>
 
@@ -388,7 +197,7 @@ onMounted(() => {
 }
 
 .package-card:hover {
-  border-color: #DB2777;
+  border-color: #db2777;
 }
 
 /* 响应式调整 */

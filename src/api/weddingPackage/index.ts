@@ -70,15 +70,6 @@ export async function getWeddingPackageDetail(id: number) {
   })
 }
 
-/**
- * 确认婚礼方案
- * @param id 婚礼方案ID
- */
-export async function confirmWeddingPackage(id: number) {
-  return request.put<DataType<boolean>>({
-    url: `${BASE_URL}/${id}/confirm`,
-  })
-}
 
 /**
  * 获取用户的所有婚礼方案
@@ -98,5 +89,15 @@ export async function getRecommendedWeddingPackages(limit: number = 5) {
   return request.get<DataType<WeddingPackageItem[]>>({
     url: `${BASE_URL}/recommended`,
     params: { limit }
+  })
+}
+
+/**
+ * 确认婚礼方案
+ * @param id 婚礼方案ID
+ */
+export async function confirmWeddingPackage(id: number) {
+  return request.put<DataType<boolean>>({
+    url: `${BASE_URL}/${id}/confirm`,
   })
 }

@@ -68,11 +68,6 @@ function backToList() {
   router.push('/weddingPackage')
 }
 
-// 编辑方案
-function editPackage() {
-  router.push(`/weddingPackage/${packageId.value}`)
-}
-
 // 确认方案
 async function handleConfirmPackage() {
   try {
@@ -138,14 +133,14 @@ onMounted(() => {
 <template>
   <div class="wedding-package-detail-container">
     <div class="container mx-auto px-4 py-8">
-      <div class="flex items-center mb-4">
-        <NButton text @click="backToList" class="mr-2">
+      <div class="flex items-center justify-between mb-4">
+        <h1 class="text-2xl font-bold text-pink-800">婚礼方案详情</h1>
+        <NButton @click="backToList" class="mr-2">
           <template #icon>
             <ArrowLeft :size="16" />
           </template>
           返回列表
         </NButton>
-        <h1 class="text-2xl font-bold text-pink-800">婚礼方案详情</h1>
       </div>
       
       <div v-if="loading" class="py-16 flex justify-center">
@@ -196,9 +191,6 @@ onMounted(() => {
                 class="mr-2"
               >
                 确认方案
-              </NButton>
-              <NButton type="primary" color="#DB2777" @click="editPackage">
-                编辑方案
               </NButton>
             </div>
           </div>

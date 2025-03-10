@@ -5,6 +5,7 @@ export interface WeddingPackageParams {
   userId: number
   budget: number
   location: string
+  status: number
 }
 
 // 婚礼方案简要信息中的商品信息
